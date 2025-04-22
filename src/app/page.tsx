@@ -93,7 +93,7 @@ export default function Home() {
 
             {/* Service Cards */}
             <div id="services" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 scroll-mt-20">
-               <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+               <a href="/services/sperm-donation" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
                   <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
                      <Image src="/images/sperm-donation.jpg" alt="Sperm Donation" fill className="rounded-xl object-cover" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
@@ -103,8 +103,8 @@ export default function Home() {
                         </div>
                      </div>
                   </div>
-               </div>
-               <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+               </a>
+               <a href="/services/surrogacy" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
                   <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
                      <Image src="/images/surrogacy.jpg" alt="Surrogacy" fill className="rounded-xl object-cover" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
@@ -114,8 +114,8 @@ export default function Home() {
                         </div>
                      </div>
                   </div>
-               </div>
-               <div className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+               </a>
+               <a href="/services/fertility-treatment" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1 cursor-pointer">
                   <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
                      <Image src="/images/fertility-treatment.jpg" alt="Fertility Treatment" fill className="rounded-xl object-cover" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
@@ -125,7 +125,7 @@ export default function Home() {
                         </div>
                      </div>
                   </div>
-               </div>
+               </a>
             </div>
          </section>
 
@@ -134,7 +134,7 @@ export default function Home() {
             <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 lg:p-12">
                <div className="flex flex-col sm:flex-row justify-between items-start mb-8 sm:mb-12">
                   <div>
-                     <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-gray-900">Our Services</h2>
+                     <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-gray-900">Our services</h2>
                      <p className="text-gray-600 max-w-xl text-sm sm:text-base">
                         Web3-powered fertility solutions with smart contracts and blockchain verification
                      </p>
@@ -147,7 +147,7 @@ export default function Home() {
 
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 sm:mb-16">
                   {/* Donor Program */}
-                  <div className="bg-white rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all relative overflow-hidden">
+                  <a href="/services/sperm-donation" className="bg-white rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all relative overflow-hidden cursor-pointer">
                      <div className="flex justify-between items-start mb-4 sm:mb-6">
                         <div>
                            <h3 className="font-bold mb-1 text-gray-900">Sperm Donor Program</h3>
@@ -162,10 +162,10 @@ export default function Home() {
                         <span className="px-2 py-1 bg-blue-50 rounded-full">0.5 ETH</span>
                         <span>Average Compensation</span>
                      </div>
-                  </div>
+                  </a>
 
                   {/* Surrogacy Program */}
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all relative overflow-hidden text-white">
+                  <a href="/services/surrogacy" className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all relative overflow-hidden text-white cursor-pointer">
                      <div className="flex justify-between items-start mb-4 sm:mb-6">
                         <div>
                            <h3 className="font-bold mb-1">Surrogacy Program</h3>
@@ -180,10 +180,10 @@ export default function Home() {
                         <span className="px-2 py-1 bg-white/20 rounded-full">Smart Escrow</span>
                         <span>Protected Payments</span>
                      </div>
-                  </div>
+                  </a>
 
                   {/* Fertility Treatments */}
-                  <div className="bg-white rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
+                  <a href="/services/fertility-treatment" className="bg-white rounded-2xl p-4 sm:p-6 group hover:shadow-md transition-all sm:col-span-2 lg:col-span-1 cursor-pointer">
                      <div className="flex justify-between items-start mb-4 sm:mb-6">
                         <div>
                            <h3 className="font-bold mb-1 text-gray-900">Fertility Treatments</h3>
@@ -198,7 +198,7 @@ export default function Home() {
                         <span className="px-2 py-1 bg-blue-50 rounded-full">NFT Based</span>
                         <span>Treatment Tracking</span>
                      </div>
-                  </div>
+                  </a>
                </div>
 
                <div className="text-center">
