@@ -254,7 +254,7 @@ export default function Home() {
                      </div>
                      <div className="flex-1">
                         <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 text-sm">
-                           Hello! I'm your FertilityAI assistant. I can help you with:
+                           Hello! I&apos;m your FertilityAI assistant. I can help you with:
                            <ul className="mt-2 space-y-1 list-disc list-inside">
                               <li>Understanding our fertility services</li>
                               <li>Explaining Web3 integration</li>
