@@ -71,15 +71,15 @@ export default function MobileMenu() {
             <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Home</div>
             </a>
-            <div className="border-b border-gray-200"></div>
+            <div className="border-b border-gray-200 my-1"></div>
             <a href="#services" onClick={(e) => handleNavClick(e, 'services')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Services</div>
             </a>
-            <div className="border-b border-gray-200"></div>
+            <div className="border-b border-gray-200 my-1"></div>
             <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">About</div>
             </a>
-            <div className="border-b border-gray-200"></div>
+            <div className="border-b border-gray-200 my-1"></div>
             <a href="#resources" onClick={(e) => handleNavClick(e, 'resources')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Resources</div>
             </a>
