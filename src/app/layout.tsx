@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans, Outfit, Lato } from "next/font/google";
 import "./globals.css";
+import RainbowProvider from "./contexts/rainbowkit";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -50,7 +51,9 @@ export default function RootLayout({
         className={`${openSans.variable} ${outfit.variable} ${lato.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        {children}
+        <RainbowProvider>
+          {children}
+        </RainbowProvider>
       </body>
     </html>
   );
