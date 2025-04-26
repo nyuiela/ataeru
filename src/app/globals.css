@@ -151,7 +151,7 @@ body {
 
 
 
-/* Animation for chat bubble slide-in */
+/* Animation for chat bubble slide in */
 @keyframes slideIn {
   from {
     transform: translateY(20px);
