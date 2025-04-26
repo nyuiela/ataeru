@@ -18,8 +18,10 @@ const outfit = Outfit({
 const lato = Lato({
   subsets: ["latin"],
   variable: "--font-lato",
-  weight: ["100", "300", "400", "700", "900"],
-  style: ["normal", "italic"],
+  weight: ["400", "700", "900"],
+  // weight: ["100", "300", "400", "700", "900"],
+  style: ["normal"],
+  // style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -40,12 +42,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin=""
-        />
+        /> */}
       </head>
       <body
         className={`${openSans.variable} ${outfit.variable} ${lato.variable} font-sans antialiased`}
