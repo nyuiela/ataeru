@@ -9,6 +9,7 @@ import { useState } from 'react';
 
 export default function Home() {
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userType, setUserType] = useState<'user' | 'hospital'>('user');
 
   const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {

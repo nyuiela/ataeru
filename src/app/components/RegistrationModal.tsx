@@ -8,7 +8,7 @@ interface RegistrationModalProps {
   userType: 'user' | 'hospital';
 }
 
-export default function RegistrationModal({ isOpen, onClose, userType }: RegistrationModalProps) {
+export default function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
