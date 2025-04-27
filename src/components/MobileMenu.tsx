@@ -1,20 +1,30 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/contexts/use-auth';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  
+  const { isOnboarded, userType } = useAuth();
+  const router = useRouter();
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    e.preventDefault();
+  const closeMenu = () => {
     setIsOpen(false);
-    
-    const targetElement = document.getElementById(targetId);
+  };
+
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    closeMenu();
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    closeMenu();
+    const targetElement = document.getElementById(sectionId);
     if (targetElement) {
       const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
@@ -24,68 +34,188 @@ export default function MobileMenu() {
     }
   };
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    // Only add the event listener when the menu is open
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
   return (
-    <div className="hidden sm:block lg:hidden" ref={menuRef}>
-      {/* Hamburger Button */}
+    <div className="lg:hidden">
       <button
         onClick={toggleMenu}
-        className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5 focus:outline-none"
-        aria-label="Toggle mobile menu"
+        className="flex items-center justify-center h-10 w-10 rounded-md text-gray-600 hover:text-gray-900 focus:outline-none"
       >
-        <span className={`block w-6 h-0.5 bg-blue-600 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-        <span className={`block w-6 h-0.5 bg-blue-600 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
-        <span className={`block w-6 h-0.5 bg-blue-600 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+        <svg
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          {isOpen ? (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          ) : (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          )}
+        </svg>
       </button>
 
-      {/* Mobile Menu */}
       {isOpen && (
-        <div 
-          className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 z-50 transform transition-transform duration-300"
-        >
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="font-bold text-xl">Menu</h2>
-            <button onClick={toggleMenu} className="text-gray-500 hover:text-gray-700">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <div className="fixed inset-0 z-50 flex flex-col bg-white">
+          <div className="flex justify-between items-center p-4 border-b">
+            <div className="text-xl font-bold text-blue-600">LifeSpring</div>
+            <button
+              onClick={closeMenu}
+              className="flex items-center justify-center h-10 w-10 rounded-md text-gray-600 hover:text-gray-900 focus:outline-none"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
-          <div className="flex flex-col space-y-4">
-            <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')}>
-              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Home</div>
-            </a>
-            <div className="border-b border-gray-200 my-1"></div>
-            <a href="#services" onClick={(e) => handleNavClick(e, 'services')}>
-              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Services</div>
-            </a>
-            <div className="border-b border-gray-200 my-1"></div>
-            <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>
-              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">About</div>
-            </a>
-            <div className="border-b border-gray-200 my-1"></div>
-            <a href="#resources" onClick={(e) => handleNavClick(e, 'resources')}>
-              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Resources</div>
-            </a>
+
+          <div className="flex-1 overflow-y-auto p-4">
+            <ul className="space-y-4">
+              {!isOnboarded ? (
+                <>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('hero')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Home
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('services')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Services
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('about')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      About Us
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => scrollToSection('resources')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Resources
+                    </button>
+                  </li>
+                </>
+              ) : userType === 'user' ? (
+                <>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/ai/recommendations')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Recommendations
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/donors')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Donors
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/surrogates')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Surrogates
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/treatments')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Treatments
+                    </button>
+                  </li>
+                </>
+              ) : userType === 'hospital' ? (
+                <>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/hospital/dashboard')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Dashboard
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/hospital/dashboard?tab=donors')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Donors
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/hospital/dashboard?tab=customers')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Customers
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => handleNavigation('/hospital/dashboard?tab=treatments')}
+                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
+                    >
+                      Treatments
+                    </button>
+                  </li>
+                </>
+              ) : null}
+            </ul>
+          </div>
+
+          <div className="p-4 border-t">
+            <button
+              onClick={() => {
+                // Sign Out Logic
+                localStorage.removeItem('userType');
+                localStorage.removeItem('isOnboarded');
+                localStorage.removeItem('isHospitalVerified');
+                window.location.href = '/';
+                closeMenu();
+              }}
+              className="w-full bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}

@@ -1,56 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import FertilityAI from './components/FertilityAI';
-import MobileMenu from './components/MobileMenu';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Footer from '@/components/Footer';
+import FertilityAI from '@/components/FertilityAI';
+import Header from '@/components/Header';
+import RegistrationModal from '@/components/RegistrationModal';
+// import { useAuth } from './contexts/use-auth';
+
 export default function Home() {
-  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userType, setUserType] = useState<'user' | 'hospital'>('user');
-
-  const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    e.preventDefault();
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: offsetTop - 80, // Adjust for header height
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleWalletConnect = () => {
-    // This will be called after successful wallet connection
-    setIsRegistrationModalOpen(true);
-  };
+  // const { isOnboarded } = useAuth();
 
   return (
     <div className="min-h-screen bg-white text-gray-800 relative">
-      {/* Navigation Bar */}
-      <nav className="flex justify-between items-center max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6">
-        <div className="flex items-center gap-4 sm:gap-12">
-          <div className="text-2xl text-blue-600 font-bold flex items-center gap-2">
-            <Image src="/images/logo.svg" alt="LifeSpring Logo" width={32} height={32} className="w-8 h-8" />
-            LifeSpring
-          </div>
-          <div className="hidden lg:flex gap-6 sm:gap-8">
-            <a href="#hero" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'hero')}>Home</a>
-            <a href="#services" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'services')}>Services</a>
-            <a href="#about" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'about')}>About Us</a>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-6">
-          <MobileMenu />
-          <a href="#resources" className="hidden lg:block text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'resources')}>Resources</a>
-          {/* <button className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2">
-            Connect Wallet <span>↗</span>
-            </button> */}
-          <ConnectButton />
-        </div>
-      </nav>
-
+      <Header />
+      
       {/* Hero Section */}
       <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-24 max-xl:px-8 scroll-mt-20">
         <div className="relative mb-12 sm:mb-24 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -77,8 +40,20 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <button className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full hover:opacity-90 flex items-center gap-2">
-              Launch App <span>↗</span>
+            <button 
+              className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full hover:opacity-90 flex items-center gap-2"
+              onClick={() => {
+                const element = document.getElementById('services');
+                if (element) {
+                  const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+                  window.scrollTo({
+                    top: offsetTop - 80,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+            >
+              Explore Services <span>↓</span>
             </button>
           </div>
           <div className="relative h-60 sm:h-80 md:h-auto mt-6 md:mt-0">
@@ -106,28 +81,6 @@ export default function Home() {
           <a href="/services/sperm-donation" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
             <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
               <Image src="/images/sperm-donation.jpg" alt="Sperm Donation" fill className="rounded-xl object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
-                <div className="text-white">
-                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Sperm Donation</h3>
-                  <p className="text-xs sm:text-sm text-white/90">Blockchain-verified donation program with smart contract guarantees.</p>
-                </div>
-              </div>
-            </div>
-          </a>
-          <a href="/services/surrogacy" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
-            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
-              <Image src="/images/surrogacy.jpg" alt="Surrogacy" fill className="rounded-xl object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
-                <div className="text-white">
-                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Surrogacy</h3>
-                  <p className="text-xs sm:text-sm text-white/90">Decentralized surrogacy matching with secure payment escrow.</p>
-                </div>
-              </div>
-            </div>
-          </a>
-          <a href="/services/fertility-treatment" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1 cursor-pointer">
-            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
-              <Image src="/images/fertility-treatment.jpg" alt="Fertility Treatment" fill className="rounded-xl object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
                 <div className="text-white">
                   <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Fertility Treatment</h3>
@@ -224,11 +177,14 @@ export default function Home() {
         </div>
       </section>
 
-         {/* Footer */}
-         <Footer />
+      {/* Footer */}
+      <Footer />
 
       {/* AI Chat Widget */}
       <FertilityAI />
+      
+      {/* Registration Modal - will show automatically when wallet is connected and user is not onboarded */}
+      <RegistrationModal />
     </div>
   );
 }

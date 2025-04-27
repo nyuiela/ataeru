@@ -2,13 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getRecommendations, getCareTypes, UserPreferences, Hospital } from '@/lib/services/fertility-ai';
 import Header from '@/components/Header';
+import { useAuth } from '@/app/contexts/use-auth';
 
 // Define time unit options
 const TIME_UNITS = ['hours', 'days', 'weeks', 'months'];
 
 export default function RecommendationsPage() {
+  const router = useRouter();
+  const { isOnboarded, userType } = useAuth();
+  
   // User preference state
   const [preferences, setPreferences] = useState<UserPreferences>({
     minCompensation: 150,
@@ -24,6 +29,23 @@ export default function RecommendationsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [careTypeOptions, setCareTypeOptions] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  // Check if user is authenticated and has the correct user type
+  useEffect(() => {
+    if (!isOnboarded) {
+      router.push('/'); // Redirect to homepage if not onboarded
+      return;
+    }
+    
+    if (userType !== 'user') {
+      // If the user is a hospital, redirect them to hospital dashboard
+      if (userType === 'hospital') {
+        router.push('/hospital/dashboard');
+      } else {
+        router.push('/'); // Fallback to homepage for any other situation
+      }
+    }
+  }, [isOnboarded, userType, router]);
 
   // Load care type options on page load
   useEffect(() => {
@@ -106,7 +128,12 @@ export default function RecommendationsPage() {
           behavior: 'smooth'
        });
     }
- };
+  };
+
+  // If not authenticated or wrong user type, don't render the main content
+  if (!isOnboarded || userType !== 'user') {
+    return null; // The useEffect will handle the redirect
+  }
 
   return (
     <main className='mb-12'>
