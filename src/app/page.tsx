@@ -4,7 +4,13 @@ import Image from 'next/image';
 import FertilityAI from './components/FertilityAI';
 import MobileMenu from './components/MobileMenu';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import RegistrationModal from './components/RegistrationModal';
+import { useState } from 'react';
+
 export default function Home() {
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  const [userType, setUserType] = useState<'user' | 'hospital'>('user');
+
   const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     const targetElement = document.getElementById(targetId);
@@ -15,6 +21,11 @@ export default function Home() {
         behavior: 'smooth'
       });
     }
+  };
+
+  const handleWalletConnect = () => {
+    // This will be called after successful wallet connection
+    setIsRegistrationModalOpen(true);
   };
 
   return (
@@ -35,12 +46,106 @@ export default function Home() {
         <div className="flex items-center gap-3 sm:gap-6">
           <MobileMenu />
           <a href="#resources" className="hidden lg:block text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'resources')}>Resources</a>
-          {/* <button className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2">
-            Connect Wallet <span>↗</span>
-            </button> */}
-          <ConnectButton />
+          <ConnectButton.Custom>
+            {({
+              account,
+              chain,
+              openAccountModal,
+              openChainModal,
+              openConnectModal,
+              mounted,
+            }) => {
+              const ready = mounted;
+              const connected = ready && account && chain;
+
+              return (
+                <div
+                  {...(!ready && {
+                    'aria-hidden': true,
+                    style: {
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!connected) {
+                      return (
+                        <button
+                          onClick={() => {
+                            openConnectModal();
+                            handleWalletConnect();
+                          }}
+                          className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2"
+                        >
+                          Connect Wallet <span>↗</span>
+                        </button>
+                      );
+                    }
+
+                    if (chain.unsupported) {
+                      return (
+                        <button
+                          onClick={openChainModal}
+                          className="text-sm bg-red-500 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90"
+                        >
+                          Wrong network
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <div className="flex gap-3">
+                        <button
+                          onClick={openChainModal}
+                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200 flex items-center gap-2"
+                        >
+                          {chain.hasIcon && (
+                            <div
+                              style={{
+                                background: chain.iconBackground,
+                                width: 12,
+                                height: 12,
+                                borderRadius: 999,
+                                overflow: 'hidden',
+                              }}
+                            >
+                              {chain.iconUrl && (
+                                <Image
+                                  alt={chain.name ?? 'Chain icon'}
+                                  src={chain.iconUrl}
+                                  width={12}
+                                  height={12}
+                                />
+                              )}
+                            </div>
+                          )}
+                          {chain.name}
+                        </button>
+
+                        <button
+                          onClick={openAccountModal}
+                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200"
+                        >
+                          {account.displayName}
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
         </div>
       </nav>
+
+      {/* Registration Modal */}
+      <RegistrationModal
+        isOpen={isRegistrationModalOpen}
+        onClose={() => setIsRegistrationModalOpen(false)}
+        userType={userType}
+      />
 
       {/* Hero Section */}
       <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-24 max-xl:px-8 scroll-mt-20">
