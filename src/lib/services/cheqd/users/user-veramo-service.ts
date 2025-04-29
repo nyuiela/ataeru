@@ -1,3 +1,4 @@
+"use client"
 import { ethers } from 'ethers';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
@@ -52,11 +53,11 @@ export class VeramoDataService {
         const key = crypto.randomBytes(32);
         const iv = crypto.randomBytes(12);
         const cipher = crypto.createCipheriv(algorithm, key, iv);
-        
+
         let ciphertext = cipher.update(JSON.stringify(data), 'utf8', 'hex');
         ciphertext += cipher.final('hex');
         const tag = cipher.getAuthTag();
-        
+
         return {
           ciphertext,
           iv: iv.toString('hex'),
@@ -90,25 +91,25 @@ export class VeramoDataService {
         const algorithm = 'aes-256-gcm';
         // Assuming encryptedData now has a key property we added during encryption
         const key = encryptedData.key ? Buffer.from(encryptedData.key, 'hex') : null;
-        
+
         if (!key) {
           throw new Error('Decryption key not found');
         }
-        
+
         if (!encryptedData.iv || !encryptedData.tag) {
           throw new Error('Missing IV or authentication tag for decryption');
         }
-        
+
         const decipher = crypto.createDecipheriv(
           algorithm,
           key,
           Buffer.from(encryptedData.iv, 'hex')
         );
         decipher.setAuthTag(Buffer.from(encryptedData.tag, 'hex'));
-        
+
         let decrypted = decipher.update(encryptedData.ciphertext, 'hex', 'utf8');
         decrypted += decipher.final('utf8');
-        
+
         return JSON.parse(decrypted);
       }
     } catch (error) {
@@ -125,7 +126,7 @@ export class VeramoDataService {
    */
   public async storeUserData(data: IUserData, context: IDataContext): Promise<string> {
     const encryptedData = await this.encryptUserData(data, context);
-    
+
     if (context.storageType === 'on-chain') {
       // Store hash on-chain (using Ethereum as example)
       // Updated for ethers v6
@@ -136,12 +137,12 @@ export class VeramoDataService {
         ['function storeData(bytes32 dataHash) public'],
         wallet
       );
-      
+
       // Updated for ethers v6
       const dataHash = ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(encryptedData)));
       const tx = await contract.storeData(dataHash);
       await tx.wait();
-      
+
       return tx.hash;
     } else {
       // Store encrypted data off-chain
@@ -160,11 +161,11 @@ export class VeramoDataService {
         credential: unsignedCredential,
         proofFormat: 'jwt'
       });
-      
+
       const dataRef = await this.agent.dataStoreSaveVerifiableCredential({
         verifiableCredential: credential
       });
-      
+
       return dataRef;
     }
   }
@@ -185,10 +186,10 @@ export class VeramoDataService {
         ['function getData(bytes32 dataHash) public view returns (bool)'],
         provider
       );
-      
+
       const exists = await contract.getData(reference);
       if (!exists) throw new Error('Data not found on-chain');
-      
+
       // In a real implementation, you would need a way to retrieve the encrypted data
       // This might involve IPFS or another off-chain storage referenced by the hash
       throw new Error('On-chain data retrieval not fully implemented in this example');
@@ -197,9 +198,9 @@ export class VeramoDataService {
       const credential = await this.agent.dataStoreGetVerifiableCredential({
         hash: reference,
       });
-      
+
       if (!credential) throw new Error('Credential not found');
-      
+
       const encryptedData = credential.credentialSubject.encryptedData;
       return await this.decryptUserData(encryptedData, context);
     }

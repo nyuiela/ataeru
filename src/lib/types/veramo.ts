@@ -1,14 +1,14 @@
 // Core interfaces
 import {
-    createAgent,
-    IDIDManager,
-    IResolver,
-    IDataStore,
-    IDataStoreORM,
-    IKeyManager,
-    ICredentialPlugin,
-  } from '@veramo/core'
-  
+  createAgent,
+  IDIDManager,
+  IResolver,
+  IDataStore,
+  IDataStoreORM,
+  IKeyManager,
+  ICredentialPlugin,
+} from '@veramo/core'
+
 // Core identity manager plugin
 import { DIDManager } from '@veramo/did-manager'
 
@@ -47,53 +47,53 @@ const secret_key = process.env.KMS_SECRET_KEY
 const KMS_SECRET_KEY = `${secret_key}`
 
 export const dbConnection = new DataSource({
-    type: 'sqlite',
-    database: 'veramo.sqlite',
-    synchronize: true,
-    migrations,
-    logging: ['error', 'info', 'warn'],
-    entities: Entities,
+  type: 'sqlite',
+  database: 'veramo.sqlite',
+  synchronize: true,
+  migrations,
+  logging: ['error', 'info', 'warn'],
+  entities: Entities,
 }).initialize();
 
 export const VeramoAgent = createAgent<IDIDManager & IKeyManager & IDataStore & IDataStoreORM & IResolver & ICredentialPlugin>({
-    plugins: [
-        new KeyManager({
-        store: new KeyStore(dbConnection),
-        kms: {
-            local: new KeyManagementSystem(new PrivateKeyStore(dbConnection, new SecretBox(KMS_SECRET_KEY))),
-        },
+  plugins: [
+    new KeyManager({
+      store: new KeyStore(dbConnection),
+      kms: {
+        local: new KeyManagementSystem(new PrivateKeyStore(dbConnection, new SecretBox(KMS_SECRET_KEY))),
+      },
+    }),
+    new DIDManager({
+      store: new DIDStore(dbConnection),
+      defaultProvider: 'did:ethr:sepolia',
+      providers: {
+        'did:ethr:sepolia': new EthrDIDProvider({
+          defaultKms: 'local',
+          network: 'ethereum',
+          rpcUrl: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
         }),
-        new DIDManager({
-        store: new DIDStore(dbConnection),
-        defaultProvider: 'did:ethr:sepolia',
-        providers: {
-            'did:ethr:sepolia': new EthrDIDProvider({
-            defaultKms: 'local',
-            network: 'ethereum',
-            rpcUrl: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
-            }),
-        },
-        // providers: {
-        //     'did:ethr:sepolia': new EthrDIDProvider({
-        //     defaultKms: 'local',
-        //     network: 'sepolia',
-        //     rpcUrl: 'https://sepolia.infura.io/v3/' + INFURA_PROJECT_ID,
-        //     }),
-        // },
-        }),
-        new DIDResolverPlugin({
-        resolver: new Resolver({
-            ...ethrDidResolver({ infuraProjectId: INFURA_PROJECT_ID }),
-            ...webDidResolver(),
-        }),
-        }),
-        new CredentialPlugin(),
-        new DataStore(dbConnection),
-        new DataStoreORM(dbConnection),
-        new DIDComm(),
-        new MessageHandler({
-          messageHandlers: [new DIDCommMessageHandler()],
-        }),
-        new SelectiveDisclosure(),
-    ],
+      },
+      // providers: {
+      //     'did:ethr:sepolia': new EthrDIDProvider({
+      //     defaultKms: 'local',
+      //     network: 'sepolia',
+      //     rpcUrl: 'https://sepolia.infura.io/v3/' + INFURA_PROJECT_ID,
+      //     }),
+      // },
+    }),
+    new DIDResolverPlugin({
+      resolver: new Resolver({
+        ...ethrDidResolver({ infuraProjectId: INFURA_PROJECT_ID }),
+        ...webDidResolver(),
+      }),
+    }),
+    new CredentialPlugin(),
+    new DataStore(dbConnection),
+    new DataStoreORM(dbConnection),
+    new DIDComm(),
+    new MessageHandler({
+      messageHandlers: [new DIDCommMessageHandler()],
+    }),
+    new SelectiveDisclosure(),
+  ],
 })

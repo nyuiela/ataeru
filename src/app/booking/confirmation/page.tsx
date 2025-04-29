@@ -1,6 +1,7 @@
+"use client"
 import { VeramoDataService } from '@/lib/services/cheqd/users/user-veramo-service';
 import { IBookingDetails } from '@/lib/types/cheqd';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface BookingCredentialSubject {
@@ -14,9 +15,10 @@ export interface ExtendedBooking extends IBookingDetails {
   status: 'pending' | 'accepted' | 'declined';
 }
 
-export const BookingConfirmationPage = () => {
+const BookingConfirmationPage = () => {
   const router = useRouter();
-  const { bookingRef } = router.query;
+  const searchParams = useSearchParams();
+  const bookingRef = searchParams.get('bookingRef');
   const [booking, setBooking] = useState<ExtendedBooking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,21 +29,21 @@ export const BookingConfirmationPage = () => {
     const fetchBooking = async () => {
       try {
         const veramoService = new VeramoDataService();
-        
+
         const credentials = await veramoService.agent.dataStoreORMGetVerifiableCredentials({
           where: [
             { column: 'type', value: ['DonationBooking'] },
             { column: 'id', value: [`${bookingRef}`] },
           ],
         });
-        
+
         if (credentials.length === 0) {
           throw new Error('Booking not found');
         }
-        
+
         const bookingCredential = credentials[0];
         const subject = bookingCredential.verifiableCredential.credentialSubject as BookingCredentialSubject;
-        
+
         setBooking({
           bookingRef: subject.bookingRef,
           date: new Date(subject.appointmentDate).toLocaleString(),
@@ -93,7 +95,7 @@ export const BookingConfirmationPage = () => {
         <h2 className="text-2xl font-bold mb-2">Booking Confirmed</h2>
         <p className="text-gray-600">Your donation appointment is scheduled</p>
       </div>
-      
+
       <div className="space-y-4 mb-6">
         <div>
           <h3 className="font-medium text-gray-500">Reference</h3>
@@ -108,7 +110,7 @@ export const BookingConfirmationPage = () => {
           <p className="capitalize">{booking?.status}</p>
         </div>
       </div>
-      
+
       <div className="flex flex-col space-y-3">
         <button
           onClick={() => router.push('/donations')}
@@ -126,3 +128,5 @@ export const BookingConfirmationPage = () => {
     </div>
   );
 };
+
+export default BookingConfirmationPage;
