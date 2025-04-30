@@ -1,0 +1,32 @@
+// This file centralizes all icon imports for easier maintenance
+
+export {
+  Home,
+  User,
+  Building2,
+  Image as ImageIcon,
+  Clock,
+  Settings,
+  Package,
+  FileText,
+  Menu,
+  X,
+  Calendar, 
+  CreditCard, 
+  Heart, 
+  CheckCircle,
+  Star,
+  BadgeCheck,
+  ChevronRight,
+  Users,
+  Zap,
+  DollarSign,
+  Upload, 
+  UserCheck, 
+  Award,
+  FileSpreadsheet, 
+  File, 
+  Eye,
+  Info,
+  Loader
+} from 'lucide-react';

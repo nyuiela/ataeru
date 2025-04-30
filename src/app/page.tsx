@@ -46,7 +46,6 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-3 sm:gap-6">
           <MobileMenu />
-          <a href="#resources" className="hidden lg:block text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'resources')}>Resources</a>
           <ConnectButton.Custom>
             {({
               account,
