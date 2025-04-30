@@ -1,26 +1,15 @@
 import type { Metadata } from "next";
-import { Open_Sans, Outfit, Lato } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import RainbowProvider from "./contexts/rainbowkit";
 
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  variable: "--font-open-sans",
-  display: "swap",
-});
-
+// Load Outfit font with all necessary weights and styles
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
   display: "swap",
-});
-
-const lato = Lato({
-  subsets: ["latin"],
-  variable: "--font-lato",
-  weight: ["100", "300", "400", "700", "900"],
-  style: ["normal", "italic"],
-  display: "swap",
+  // Include all available weights for Outfit
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -48,7 +37,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${openSans.variable} ${outfit.variable} ${lato.variable} font-sans antialiased`}
+        className={`${outfit.variable} font-outfit antialiased`}
         suppressHydrationWarning
       >
         <RainbowProvider>
