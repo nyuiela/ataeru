@@ -79,13 +79,9 @@ export default function MobileMenu() {
             <a href="#about" onClick={(e) => handleNavClick(e, 'about')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">About</div>
             </a>
-            <div className="border-b border-gray-200 my-1"></div>
-            <a href="#resources" onClick={(e) => handleNavClick(e, 'resources')}>
-              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Resources</div>
-            </a>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}
