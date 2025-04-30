@@ -24,7 +24,7 @@ export default function NotFound() {
           
           <h1 className="text-4xl font-bold text-gray-900 mb-4">404 - Page Not Found</h1>
           <p className="text-gray-600 mb-8">
-            This page is unavaible, try again later.
+            This page is unavaible, try again later..
           </p>
           
           <button 
