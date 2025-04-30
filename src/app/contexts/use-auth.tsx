@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsRegistrationModalOpen(true);
       localStorage.setItem('isRegistrationModalOpen', 'true');
     }
-  }, [isConnected, isOnboarded]);
+  }, [isConnected, isOnboarded, isRegistrationModalOpen]);
 
   // Load auth state from localStorage on component mount
   useEffect(() => {
