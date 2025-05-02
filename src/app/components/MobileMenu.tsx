@@ -70,7 +70,7 @@ export default function MobileMenu() {
             </button>
           </div>
           <div className="flex flex-col space-y-4">
-            <a href="#hero" onClick={(e) => router.push('/dashboard')}>
+            <a href="#hero" onClick={() => router.push('/dashboard')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Dashboard</div>
             </a>
             <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')}>

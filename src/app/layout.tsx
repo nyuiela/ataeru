@@ -8,9 +8,15 @@ const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
   display: "swap",
-  // Include all available weights for Outfit
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
+
+// const lato = Lato({
+//   subsets: ["latin"],
+//   variable: "--font-lato",
+//   style: ["normal"],
+//   display: "swap",
+//   weight: ["100", "300", "400", "700", "900"],
+// });
 
 export const metadata: Metadata = {
   title: "LifeSpring | Decentralized Family Building",
@@ -29,12 +35,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin=""
-        />
+        /> */}
       </head>
       <body
         className={`${outfit.variable} font-outfit antialiased`}

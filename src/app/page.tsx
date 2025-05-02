@@ -1,33 +1,24 @@
 'use client';
 
 import Image from 'next/image';
-import FertilityAI from './components/FertilityAI';
-import MobileMenu from './components/MobileMenu';
+import Footer from '@/components/Footer';
+import FertilityAI from '@/components/FertilityAI';
+import RegistrationModal from '@/components/RegistrationModal';
+import MobileMenu from '@/components/MobileMenu';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import RegistrationModal from './components/RegistrationModal';
-import { useState } from 'react';
+import { MouseEvent } from 'react';
 
 export default function Home() {
-  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userType, setUserType] = useState<'user' | 'hospital'>('user');
-
-  const handleScrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+  // const [userType, setUserType] = useState<string | null>(null);
+  function handleScrollToSection(e: MouseEvent<HTMLAnchorElement>, sectionId: string): void {
     e.preventDefault();
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: offsetTop - 80, // Adjust for header height
-        behavior: 'smooth'
-      });
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
-  };
+  }
 
-  const handleWalletConnect = () => {
-    // This will be called after successful wallet connection
-    setIsRegistrationModalOpen(true);
-  };
+  // const { isOnboarded } = useAuth();
 
   return (
     <div className="min-h-screen bg-white text-gray-800 relative">
@@ -70,6 +61,10 @@ export default function Home() {
                 >
                   {(() => {
                     if (!connected) {
+                      function handleWalletConnect() {
+                        throw new Error('Function not implemented.');
+                      }
+
                       return (
                         <button
                           onClick={() => {
@@ -140,12 +135,12 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Registration Modal */}
+      {/* 
       <RegistrationModal
-        isOpen={isRegistrationModalOpen}
-        onClose={() => setIsRegistrationModalOpen(false)}
-        userType={userType}
-      />
+      isOpen={isRegistrationModalOpen}
+      onClose={() => setIsRegistrationModalOpen(false)}
+      userType={userType}
+      /> */}
 
       {/* Hero Section */}
       <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-24 max-xl:px-8 scroll-mt-20">
@@ -173,8 +168,20 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <button className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full hover:opacity-90 flex items-center gap-2">
-              Launch App <span>↗</span>
+            <button
+              className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2 sm:py-3 rounded-full hover:opacity-90 flex items-center gap-2"
+              onClick={() => {
+                const element = document.getElementById('services');
+                if (element) {
+                  const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+                  window.scrollTo({
+                    top: offsetTop - 80,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+            >
+              Explore Services <span>↓</span>
             </button>
           </div>
           <div className="relative h-60 sm:h-80 md:h-auto mt-6 md:mt-0">
@@ -202,28 +209,6 @@ export default function Home() {
           <a href="/services/sperm-donation" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
             <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
               <Image src="/images/sperm-donation.jpg" alt="Sperm Donation" fill className="rounded-xl object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
-                <div className="text-white">
-                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Sperm Donation</h3>
-                  <p className="text-xs sm:text-sm text-white/90">Blockchain-verified donation program with smart contract guarantees.</p>
-                </div>
-              </div>
-            </div>
-          </a>
-          <a href="/services/surrogacy" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
-            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
-              <Image src="/images/surrogacy.jpg" alt="Surrogacy" fill className="rounded-xl object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
-                <div className="text-white">
-                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Surrogacy</h3>
-                  <p className="text-xs sm:text-sm text-white/90">Decentralized surrogacy matching with secure payment escrow.</p>
-                </div>
-              </div>
-            </div>
-          </a>
-          <a href="/services/fertility-treatment" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1 cursor-pointer">
-            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
-              <Image src="/images/fertility-treatment.jpg" alt="Fertility Treatment" fill className="rounded-xl object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
                 <div className="text-white">
                   <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Fertility Treatment</h3>
@@ -319,27 +304,14 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Footer */}
-      <footer id="about" className="max-w-7xl mx-auto mt-8 py-6 sm:py-8 px-4 sm:px-6 flex flex-col sm:flex-row justify-between text-xs sm:text-sm text-gray-600 border-t border-gray-200 gap-6 sm:gap-0 scroll-mt-20">
-        <div>
-          <p className="font-bold text-gray-800 mb-2">LifeSpring Fertility Center</p>
-          <p>Licensed by the State Medical Board</p>
-          <p>ISO 9001:2015 Certified</p>
-          <p className="mt-2">Smart Contract Audited by CertiK</p>
-        </div>
-        <div className="text-left sm:text-right">
-          <p>Contact: (555) 123-4567</p>
-          <p>info@lifespring.eth</p>
-          <div className="flex gap-2 mt-2 justify-start sm:justify-end">
-            <Image src="/images/ethereum.svg" alt="Ethereum" width={20} height={20} />
-            <Image src="/images/polygon.svg" alt="Polygon" width={20} height={20} />
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* AI Chat Widget */}
       <FertilityAI />
+
+      {/* Registration Modal - will show automatically when wallet is connected and user is not onboarded */}
+      <RegistrationModal />
     </div>
   );
 }
