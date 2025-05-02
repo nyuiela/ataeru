@@ -45,7 +45,6 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-3 sm:gap-6">
-          <MobileMenu />
           <ConnectButton.Custom>
             {({
               account,
@@ -137,6 +136,7 @@ export default function Home() {
               );
             }}
           </ConnectButton.Custom>
+          <MobileMenu />
         </div>
       </nav>
 

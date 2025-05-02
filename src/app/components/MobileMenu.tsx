@@ -1,11 +1,13 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  
+  const router = useRouter();
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -13,7 +15,7 @@ export default function MobileMenu() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     setIsOpen(false);
-    
+
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
       const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
@@ -35,7 +37,7 @@ export default function MobileMenu() {
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -56,7 +58,7 @@ export default function MobileMenu() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div 
+        <div
           className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 z-50 transform transition-transform duration-300"
         >
           <div className="flex justify-between items-center mb-8">
@@ -68,6 +70,9 @@ export default function MobileMenu() {
             </button>
           </div>
           <div className="flex flex-col space-y-4">
+            <a href="#hero" onClick={(e) => router.push('/dashboard')}>
+              <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Dashboard</div>
+            </a>
             <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')}>
               <div className="p-2 hover:bg-gray-100 rounded cursor-pointer">Home</div>
             </a>
