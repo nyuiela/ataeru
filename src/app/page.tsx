@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Footer from '@/components/Footer';
 import FertilityAI from '@/components/FertilityAI';
-import RegistrationModal from '@/components/RegistrationModal';
 import Header from '@/components/Header';
 export default function Home() {
   return (

@@ -6,7 +6,7 @@ import { useAuth } from '@/app/contexts/use-auth';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isOnboarded, userType } = useAuth();
+  const { isOnboarded } = useAuth();
   const router = useRouter();
 
   const toggleMenu = () => {
@@ -17,10 +17,10 @@ export default function MobileMenu() {
     setIsOpen(false);
   };
 
-  const handleNavigation = (path: string) => {
-    router.push(path);
-    closeMenu();
-  };
+  // const handleNavigation = (path: string) => {
+  //   router.push(path);
+  //   closeMenu();
+  // };
 
   const scrollToSection = (sectionId: string) => {
     closeMenu();

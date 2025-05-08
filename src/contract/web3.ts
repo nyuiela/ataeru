@@ -60,106 +60,12 @@ export const contractAddresses = {
   rewardAddress,
 }
 
-function getPrice() {
-  return fixedOraclePriceContract.methods.getPrice().call();
-}
-
-function getAiAgentFactory() {
-  return aiAgentFactoryContract.methods.getAiAgentFactory().call();
-}
-function getEntryPoint() {
-  return entryPointContract.methods.getEntryPoint().call();
-}
-
-function getHealthDataNft() {
-  return healthDataNftContract.methods.getHealthDataNft().call();
-}
-const account = process.env.NEXT_PUBLIC_ACCOUNT;
-function mintHealthDataNft() {
-  return healthDataNftContract.methods.mint().send({ from: account });
-}
-
-
-//  hospital Request contract
-function getHospitalRequestContract(id: number) {
-  return hospitalRequestContract.methods.getRequest(id).call();
-}
-function requestMaxDonor(id: number) {
-  return hospitalRequestContract.methods.requestMaxDonor(id).call();
-}
-function isRequestExpired(id: number) {
-  return hospitalRequestContract.methods.isRequestExpired(id).call();
-}
 enum DonorType {
   SPERMDONOR,
   EGGDONOR,
   SURROGATE
 }
-function makeMultipleDonorRequest(donorType: DonorType[], rules: string[], date: number[], time: number[], maxDonor: number[], minAmount: number[], maxAmount: number[], status: string[], des: string[]) {
-  return hospitalRequestContract.methods.makeMultipleDonorRequest(donorType, rules, date, time, maxDonor, minAmount, maxAmount, status, des).send({ from: account });
-}
 
-function isRequestExists(_id: number) {
-  return hospitalRequestContract.methods.isRequestExists(_id).call();
-}
-function getHospitalRequestFactory() {
-  return hospitalRequestFactoryContract.methods.getHospitalRequestFactory().call();
-}
-function makeADonorRequest(donorType: DonorType, rules: string, date: number, time: number, maxDonor: number, minAmount: number, maxAmount: number, status: string, des: string) {
-  return hospitalRequestFactoryContract.methods.makeADonorRequest(donorType, rules, date, time, maxDonor, minAmount, maxAmount, status, des).send({ from: account });
-}
-
-function getHospitalRequest(id: number) {
-  return hospitalRequestFactoryContract.methods.getHospitalRequest(id).call();
-}
-
-
-// hospital request factory contract
-function registerUser(name: string, email: string, location: string, contact: number, about: string, witnessHash: string, receiverType: string) {
-  return entryPointContract.methods.registerUser(name, email, location, contact, about, witnessHash, receiverType).send({ from: account });
-}
-
-function registerDonor(name: string, email: string, bloodGroup: string, location: string, age: number, weight: number, height: number, contact: number, about: string, witnessHash: string, donorType: string) {
-  return entryPointContract.methods.registerDonor(name, email, bloodGroup, location, age, weight, height, contact, about, witnessHash, donorType).send({ from: account });
-}
-
-function registerHospital(name: string, email: string, location: string, about: string, contact: number, witnessHash: string) {
-  return entryPointContract.methods.registerHospital(name, email, location, about, contact, witnessHash).send({ from: account });
-}
-
-function isRegistered() {
-  return entryPointContract.methods.isRegistered().call();
-}
-
-function getUsernDonorInfo(id: string) {
-  return entryPointContract.methods.getUsernDonorInfo(id).call();
-}
-function updateDonorInfomation(id: string, name: string, email: string, bloodGroup: string, location: string, age: number, weight: number, height: number, contact: number, about: string, donorType: string) {
-  return entryPointContract.methods.updateDonorInfomation(id, name, email, bloodGroup, location, age, weight, height, contact, about, donorType).send({ from: account });
-}
-
-function updateUserInfomation(id: string, name: string, email: string, location: string, contact: number, about: string, receiverType: string) {
-  return entryPointContract.methods.updateUserInfomation(id, name, email, location, contact, about, receiverType).send({ from: account });
-}
-
-function updateHospitalInfomation(id: string, name: string, email: string, location: string, about: string, contact: number) {
-  return entryPointContract.methods.updateHospitalInfomation(id, name, email, location, about, contact).send({ from: account });
-}
-
-function deregisterDonor(id: string) {
-  return entryPointContract.methods.deregisterDonor(id).send({ from: account });
-}
-
-function deregisterUser(id: string) {
-  return entryPointContract.methods.deregisterUser(id).send({ from: account });
-}
-
-function deregisterHospital(id: string) {
-  return entryPointContract.methods.deregisterHospital(id).send({ from: account });
-}
-function getUserDonorInfo(id: string) {
-  return entryPointContract.methods.getUsernDonorInfo(id).call();
-}
 
 export {
   rewardContract,
@@ -176,32 +82,6 @@ export {
   processFactoryContract,
   verificationContract,
   // get
-  getPrice,
-  getAiAgentFactory,
-  getEntryPoint,
-  getHealthDataNft,
-  mintHealthDataNft,
-  getHospitalRequestContract,
-  requestMaxDonor,
-  isRequestExpired,
-  makeMultipleDonorRequest,
-  isRequestExists,
-  getHospitalRequestFactory,
-  makeADonorRequest,
-  getHospitalRequest,
-  // register
-  registerUser,
-  registerDonor,
-  registerHospital,
-  isRegistered,
-  getUsernDonorInfo,
-  updateDonorInfomation,
-  updateUserInfomation,
-  updateHospitalInfomation,
-  deregisterDonor,
-  deregisterUser,
-  deregisterHospital,
-  getUserDonorInfo,
 
   //   import rewardABI from './abi/reward.json';
   // import fixedOraclePriceABI from './abi/fixedOraclePrice.json';

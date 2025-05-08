@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useAccount } from 'wagmi';
 
 type UserType = 'user' | 'hospital' | null;
 
@@ -27,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isHospitalVerified, setIsHospitalVerified] = useState<boolean>(false);
 
   useEffect(() => {
-    const onBoarded = localStorage.getItem('isOnboarded') === 'true';
+    // const onBoarded = localStorage.getItem('isOnboarded') === 'true';
     setIsRegistrationModalOpen(true);
     // }
   }, [isOnboarded]);

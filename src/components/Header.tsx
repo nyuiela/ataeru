@@ -57,7 +57,7 @@ export default function Header({ handleScrollToSection }: HeaderProps) {
             <a href="#services" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection?.(e, 'services')}>Services</a>
             <a href="#about" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection?.(e, 'about')}>About Us</a>
             {isConnected && (
-              <a href="#contact" className="text-sm hover:text-blue-600" onClick={(e) => router.push('/dashboard')}>Dashboard</a>
+              <a href="#contact" className="text-sm hover:text-blue-600" onClick={() => router.push('/dashboard')}>Dashboard</a>
             )}
           </div>
         </div>
@@ -74,85 +74,76 @@ export default function Header({ handleScrollToSection }: HeaderProps) {
               const ready = mounted;
               const connected = ready && account && chain;
 
-              return (
-                <div
-                  {...(!ready && {
-                    'aria-hidden': true,
-                    style: {
+              if (!ready) {
+                return (
+                  <div
+                    aria-hidden="true"
+                    style={{
                       opacity: 0,
                       pointerEvents: 'none',
                       userSelect: 'none',
-                    },
-                  })}
-                >
-                  {(() => {
-                    if (!connected) {
-                      function handleWalletConnect() {
-                        throw new Error('Function not implemented.');
-                      }
+                    }}
+                  />
+                );
+              }
 
-                      return (
-                        <button
-                          onClick={() => {
-                            openConnectModal();
-                            handleWalletConnect();
-                          }}
-                          className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2"
-                        >
-                          Connect Wallet <span>↗</span>
-                        </button>
-                      );
-                    }
+              if (!connected) {
+                return (
+                  <button
+                    onClick={openConnectModal}
+                    className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2"
+                  >
+                    Connect Wallet <span>↗</span>
+                  </button>
+                );
+              }
 
-                    if (chain.unsupported) {
-                      return (
-                        <button
-                          onClick={openChainModal}
-                          className="text-sm bg-red-500 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90"
-                        >
-                          Wrong network
-                        </button>
-                      );
-                    }
+              if (chain.unsupported) {
+                return (
+                  <button
+                    onClick={openChainModal}
+                    className="text-sm bg-red-500 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90"
+                  >
+                    Wrong network
+                  </button>
+                );
+              }
 
-                    return (
-                      <div className="flex gap-3">
-                        <button
-                          onClick={openChainModal}
-                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200 flex items-center gap-2"
-                        >
-                          {chain.hasIcon && (
-                            <div
-                              style={{
-                                background: chain.iconBackground,
-                                width: 12,
-                                height: 12,
-                                borderRadius: 999,
-                                overflow: 'hidden',
-                              }}
-                            >
-                              {chain.iconUrl && (
-                                <Image
-                                  alt={chain.name ?? 'Chain icon'}
-                                  src={chain.iconUrl}
-                                  width={12}
-                                  height={12}
-                                />
-                              )}
-                            </div>
-                          )}
-                          {chain.name}
-                        </button>
-
-                        <button
-                          onClick={openAccountModal}
-                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200"
-                        >
-                          {account.displayName}
-                        </button>
+              return (
+                <div className="flex gap-3">
+                  <button
+                    onClick={openChainModal}
+                    className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200 flex items-center gap-2"
+                  >
+                    {chain.hasIcon && (
+                      <div
+                        style={{
+                          background: chain.iconBackground,
+                          width: 12,
+                          height: 12,
+                          borderRadius: 999,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {chain.iconUrl && (
+                          <Image
+                            alt={chain.name ?? 'Chain icon'}
+                            src={chain.iconUrl}
+                            width={12}
+                            height={12}
+                          />
+                        )}
                       </div>
-                    );
-                  })()}
+                    )}
+                    {chain.name}
+                  </button>
+
+                  <button
+                    onClick={openAccountModal}
+                    className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200"
+                  >
+                    {account.displayName}
+                  </button>
                 </div>
               );
             }}
@@ -162,7 +153,7 @@ export default function Header({ handleScrollToSection }: HeaderProps) {
       </nav>
 
       {/* Registration Modal */}
-      <RegistrationModal /> for testing
+      <RegistrationModal />
 
     </>
   );

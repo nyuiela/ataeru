@@ -1,22 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/contexts/use-auth';
 import ContractButton from './contractButton';
 import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
 import web3 from 'web3';
-import { useTransactionModal } from '@/hooks/useTransactionModal';
-import TransactionModal from '@/components/TransactionModal';
-import { CheckCircle2 } from 'lucide-react';
 
-enum ReceiverType {
-  SPERMRECEIVER,
-  EGGRECEIVER,
-  SURROGATERECEIVER
-}
+// enum ReceiverType {
+//   SPERMRECEIVER,
+//   EGGRECEIVER,
+//   SURROGATERECEIVER
+// }
 
 interface RegistrationFormData {
   name: string;
@@ -30,21 +26,10 @@ interface RegistrationFormData {
   receiverType: number;
   documents: File[];
 }
-function fetchUserInfo(address: `0x${string}`) {
-  const userInfo = useReadContract({
-    abi: entryPointABI,
-    address: entryPointAddress as `0x${string}`,
-    account: address,
-    functionName: 'getUsernDonorInfo',
-    args: [address],
-  })
-  return userInfo;
-}
 
 export default function RegistrationModal() {
-  const { isRegistrationModalOpen, closeRegistrationModal, completeOnboarding } = useAuth();
+  const { isRegistrationModalOpen, closeRegistrationModal } = useAuth();
   const [selectedType, setSelectedType] = useState<'user' | 'hospital' | null>(null);
-  const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
@@ -58,7 +43,6 @@ export default function RegistrationModal() {
     documents: [] as File[],
   });
   const account = useAccount();
-  const router = useRouter();
   // const {
   //   openModal,
   //   modalProps,
@@ -89,11 +73,18 @@ export default function RegistrationModal() {
     address: entryPointAddress as `0x${string}`,
     account: account.address,
     functionName: 'isregistered',
-  })
-  const userInfo = fetchUserInfo(account.address as `0x${string}`);
+  });
+
+  const userInfo = useReadContract({
+    abi: entryPointABI,
+    address: entryPointAddress as `0x${string}`,
+    account: account.address,
+    functionName: 'getUserInfo',
+    args: [],
+  });
+
   console.log(userInfo.data);
   console.log(isRegistered.data);
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -107,54 +98,54 @@ export default function RegistrationModal() {
   const userArgs = [formData.name, formData.email, formData.address, web3.utils.padRight(`${formData.phone}`, 16), formData.about, web3.utils.padRight(`${formData.witnessHash}`, 32)]
   const hospitalArgs = [account.address, formData.name, formData.email, formData.address, formData.about, formData.phone, web3.utils.padRight(`${formData.witnessHash}`, 32)]
 
-  const handleRegister = async (formData: RegistrationFormData) => {
-    try {
-      // Validate phone number
-      if (!/^\d{16}$/.test(formData.phone)) {
-        throw new Error('Phone number must be exactly 16 digits');
-      }
+  // const handleRegister = async (formData: RegistrationFormData) => {
+  //   try {
+  //     // Validate phone number
+  //     if (!/^\d{16}$/.test(formData.phone)) {
+  //       throw new Error('Phone number must be exactly 16 digits');
+  //     }
 
-      // Validate witness hash
-      const witnessHash = formData.witnessHash.startsWith('0x')
-        ? formData.witnessHash
-        : `0x${formData.witnessHash}`;
+  //     // Validate witness hash
+  //     const witnessHash = formData.witnessHash.startsWith('0x')
+  //       ? formData.witnessHash
+  //       : `0x${formData.witnessHash}`;
 
-      if (witnessHash.length !== 66) {
-        throw new Error('Witness hash must be 32 bytes (64 hex characters)');
-      }
+  //     if (witnessHash.length !== 66) {
+  //       throw new Error('Witness hash must be 32 bytes (64 hex characters)');
+  //     }
 
-      // Prepare arguments based on registration type
-      const args = selectedType === 'user'
-        ? [
-          formData.name,
-          formData.email,
-          formData.address,
-          web3.utils.padRight(formData.phone, 16),
-          formData.about,
-          web3.utils.padRight(witnessHash, 32),
-          formData.receiverType
-        ]
-        : [
-          account.address, // _ha: address
-          formData.name, // _name: string
-          formData.email, // _email: string
-          formData.address, // _location: string
-          formData.about, // _about: string
-          BigInt(formData.phone), // _contact: uint256
-          witnessHash // _witnessHash: bytes32
-        ];
+  //     // Prepare arguments based on registration type
+  //     // const args = selectedType === 'user'
+  //     //   ? [
+  //     //     formData.name,
+  //     //     formData.email,
+  //     //     formData.address,
+  //     //     web3.utils.padRight(formData.phone, 16),
+  //     //     formData.about,
+  //     //     web3.utils.padRight(witnessHash, 32),
+  //     //     formData.receiverType
+  //     //   ]
+  //     //   : [
+  //     //     account.address, // _ha: address
+  //     //     formData.name, // _name: string
+  //     //     formData.email, // _email: string
+  //     //     formData.address, // _location: string
+  //     //     formData.about, // _about: string
+  //     //     BigInt(formData.phone), // _contact: uint256
+  //     //     witnessHash // _witnessHash: bytes32
+  //     //   ];
 
-      // Open transaction modal with appropriate function name
-      // openModal({
-      //   title: selectedType === 'user' ? 'Registering User' : 'Registering Hospital',
-      //   functionName: selectedType === 'user' ? 'registerUser' : 'registerHospital',
-      //   args,
-      // });
-    } catch (error) {
-      console.error('Registration error:', error);
-      // You might want to show an error message to the user here
-    }
-  };
+  //     // Open transaction modal with appropriate function name
+  //     // openModal({
+  //     //   title: selectedType === 'user' ? 'Registering User' : 'Registering Hospital',
+  //     //   functionName: selectedType === 'user' ? 'registerUser' : 'registerHospital',
+  //     //   args,
+  //     // });
+  //   } catch (error) {
+  //     console.error('Registration error:', error);
+  //     // You might want to show an error message to the user here
+  //   }
+  // };
 
   if (!isRegistrationModalOpen) return null;
 

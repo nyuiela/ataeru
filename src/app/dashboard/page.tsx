@@ -124,7 +124,7 @@ export default function Dashboard() {
         setCurrentId(prev => prev + 1);
       }
     }
-  }, [userType, currentRequest, totalId]);
+  }, [userType, currentRequest, totalId, currentId]);
 
   // Helper function to format timestamp
   const formatDate = (timestamp: bigint) => {

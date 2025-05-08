@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
 import { useTransactionModal } from '@/hooks/useTransactionModal';
 import TransactionModal from '@/components/TransactionModal';
-import { contractAddresses, hospitalRequestABI } from '@/contract/web3';
+import { contractAddresses, entryPointABI, entryPointAddress, hospitalRequestABI } from '@/contract/web3';
+import { useAccount, useReadContract } from 'wagmi';
 
 enum DonorType {
   SPERM,
@@ -30,6 +30,17 @@ interface DonorRequestFormData {
   description: string;
 }
 
+
+interface HospitalInfo {
+  about: string;
+  contact: string;
+  email: string;
+  hospitalAddress: string;
+  location: string;
+  witnessHash: string;
+  requests: string;
+  name: string;
+}
 export default function DonorRequestModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [formData, setFormData] = useState<DonorRequestFormData>({
     donorType: DonorType.SPERM,
@@ -41,13 +52,21 @@ export default function DonorRequestModal({ isOpen, onClose }: { isOpen: boolean
     maxAmount: 0,
     description: ''
   });
+  const { address } = useAccount();
+  const { data: hospitalInfo } = useReadContract({
+    abi: entryPointABI,
+    address: entryPointAddress as `0x${string}`,
+    account: address,
+    functionName: 'gethospitalinfo',
+    args: [address],
+  })
+  console.log(hospitalInfo);
 
-  const account = useAccount();
   const {
     openModal,
     modalProps,
   } = useTransactionModal({
-    contractAddress: contractAddresses.hospitalRequestContractAddress,
+    contractAddress: (hospitalInfo as HospitalInfo)?.requests as string,
     abi: hospitalRequestABI,
     onSuccess: (receipt) => {
       console.log('Donor request submitted successfully:', receipt);

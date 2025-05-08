@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
-import { Info, CheckCircle } from 'lucide-react';
 import { entryPointABI } from '@/contract/web3';
 import { entryPointAddress } from '@/contract/web3';
 
@@ -71,7 +70,7 @@ export default function ProfilePage() {
       // medicalInfo: userInfo.medicalInfo,
       // dataSharing: userInfo.dataSharing,
     });
-  }, [userInfo]);
+  }, [userInfo, address]);
 
   // useEffect(() => {
   //   // In a real app, you would fetch user profile from the backend
@@ -120,21 +119,21 @@ export default function ProfilePage() {
     }
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    const [section, field] = name.split('.');
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, checked } = e.target;
+  //   const [section, field] = name.split('.');
 
-    setProfile(prev => {
-      const sectionKey = section as keyof typeof prev;
-      return {
-        ...prev,
-        [section]: {
-          ...(prev[sectionKey] as Record<string, unknown>),
-          [field]: checked,
-        },
-      };
-    });
-  };
+  //   setProfile(prev => {
+  //     const sectionKey = section as keyof typeof prev;
+  //     return {
+  //       ...prev,
+  //       [section]: {
+  //         ...(prev[sectionKey] as Record<string, unknown>),
+  //         [field]: checked,
+  //       },
+  //     };
+  //   });
+  // };
 
   const handleSaveProfile = async () => {
     setIsSaving(true);

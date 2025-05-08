@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { useAuth } from '@/app/contexts/use-auth';
 import DonorRequestModal from '@/components/DonorRequestModal';
 import { useAccount, useReadContract } from 'wagmi';
-import { contractAddresses } from '@/contract/web3';
+import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
 import { hospitalRequestABI } from '@/contract/web3';
 
 // Add interfaces for donor request data
@@ -25,93 +23,110 @@ interface DonorRequest {
   isActive: boolean;
 }
 
-// This component is shown when hospital is not verified
-function VerificationRequired() {
-  const { setIsHospitalVerified } = useAuth();
-  const { address: account } = useAccount();
-  const { data: hospitalRequest } = useReadContract({
-    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
-    account: account as `0x${string}`,
-    abi: hospitalRequestABI,
-    functionName: 'getRequest',
-    args: ["1"],
-  });
-  console.log(hospitalRequest);
-
-
-
-  const handleVerifyNow = () => {
-    // This would normally be an API call or verification process
-    // For demo purposes, we'll just set the verification status to true
-    setIsHospitalVerified(true);
-    localStorage.setItem('isHospitalVerified', 'true');
-  };
-
-  return (
-    <div className="max-w-3xl mx-auto text-center py-16 px-4">
-      <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
-        </svg>
-      </div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-3">Verification Required</h2>
-      <p className="text-gray-600 mb-6">
-        {`Your hospital account is currently pending verification. Once verified, 
-        you'll be able to access all features and services.`}
-      </p>
-      <div className="bg-blue-50 rounded-xl p-6 mb-8 max-w-lg mx-auto">
-        <h3 className="font-medium text-gray-900 mb-2">Verification Process:</h3>
-        <ol className="text-left text-gray-600 space-y-2">
-          <li className="flex items-start gap-2">
-            <span className="text-blue-600 font-bold">1.</span>
-            <span>Our team is reviewing your submitted documents</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-blue-600 font-bold">2.</span>
-            <span>We may contact you for additional information</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-blue-600 font-bold">3.</span>
-            <span>{`Once approved, you'll receive a confirmation email`}</span>
-          </li>
-        </ol>
-      </div>
-      <div className="flex gap-4 justify-center">
-        <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-          Contact Support
-        </button>
-        <button
-          onClick={handleVerifyNow}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
-        >
-          Verify Now (Demo)
-        </button>
-      </div>
-    </div>
-  );
+interface HospitalInfo {
+  about: string;
+  contact: string;
+  email: string;
+  hospitalAddress: string;
+  location: string;
+  witnessHash: string;
+  requests: string;
+  name: string;
 }
+// This component is shown when hospital is not verified
+// function VerificationRequired() {
+//   const { setIsHospitalVerified } = useAuth();
+//   const { address: account } = useAccount();
+//   const { data: hospitalRequest } = useReadContract({
+//     address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+//     account: account as `0x${string}`,
+//     abi: hospitalRequestABI,
+//     functionName: 'getRequest',
+//     args: ["1"],
+//   });
+//   console.log(hospitalRequest);
+
+
+
+//   const handleVerifyNow = () => {
+//     // This would normally be an API call or verification process
+//     // For demo purposes, we'll just set the verification status to true
+//     setIsHospitalVerified(true);
+//     localStorage.setItem('isHospitalVerified', 'true');
+//   };
+
+//   return (
+//     <div className="max-w-3xl mx-auto text-center py-16 px-4">
+//       <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100">
+//         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600">
+//           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+//           <line x1="12" y1="9" x2="12" y2="13"></line>
+//           <line x1="12" y1="17" x2="12.01" y2="17"></line>
+//         </svg>
+//       </div>
+//       <h2 className="text-2xl font-bold text-gray-900 mb-3">Verification Required</h2>
+//       <p className="text-gray-600 mb-6">
+//         {`Your hospital account is currently pending verification. Once verified, 
+//         you'll be able to access all features and services.`}
+//       </p>
+//       <div className="bg-blue-50 rounded-xl p-6 mb-8 max-w-lg mx-auto">
+//         <h3 className="font-medium text-gray-900 mb-2">Verification Process:</h3>
+//         <ol className="text-left text-gray-600 space-y-2">
+//           <li className="flex items-start gap-2">
+//             <span className="text-blue-600 font-bold">1.</span>
+//             <span>Our team is reviewing your submitted documents</span>
+//           </li>
+//           <li className="flex items-start gap-2">
+//             <span className="text-blue-600 font-bold">2.</span>
+//             <span>We may contact you for additional information</span>
+//           </li>
+//           <li className="flex items-start gap-2">
+//             <span className="text-blue-600 font-bold">3.</span>
+//             <span>{`Once approved, you'll receive a confirmation email`}</span>
+//           </li>
+//         </ol>
+//       </div>
+//       <div className="flex gap-4 justify-center">
+//         <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+//           Contact Support
+//         </button>
+//         <button
+//           onClick={handleVerifyNow}
+//           className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+//         >
+//           Verify Now (Demo)
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
 
 export default function HospitalDashboard() {
-  const { isOnboarded, userType, isHospitalVerified, setIsHospitalVerified } = useAuth();
-  const router = useRouter();
+  // const { isOnboarded, userType, isHospitalVerified, setIsHospitalVerified } = useAuth();
+  // const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isDonorRequestModalOpen, setIsDonorRequestModalOpen] = useState(false);
   const [donorRequests, setDonorRequests] = useState<DonorRequest[]>([]);
-  const [currentId, setCurrentId] = useState<number>(1);
   const { address: account } = useAccount();
 
+  const { data: hospitalInfo } = useReadContract({
+    abi: entryPointABI,
+    address: entryPointAddress as `0x${string}`,
+    account: account as `0x${string}`,
+    functionName: 'gethospitalinfo',
+    args: [account],
+  })
+  console.log(hospitalInfo);
   // Fetch donor requests
   const { data: totalId } = useReadContract({
-    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    address: (hospitalInfo as HospitalInfo)?.requests as `0x${string}`,
     account: account as `0x${string}`,
     abi: hospitalRequestABI,
     functionName: 'id',
   });
   console.log(totalId);
   const { data: currentRequest } = useReadContract({
-    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    address: (hospitalInfo as HospitalInfo)?.requests as `0x${string}`,
     account: account as `0x${string}`,
     abi: hospitalRequestABI,
     functionName: 'getRequest',
@@ -205,7 +220,7 @@ export default function HospitalDashboard() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
-      <Header />
+      {/* <Header /> */}
 
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">

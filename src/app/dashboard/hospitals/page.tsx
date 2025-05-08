@@ -116,7 +116,7 @@ export default function HospitalsPage() {
     //     verified: true
     //   },
     // ]);
-  }, []);
+  }, [hospitalList]);
 
   const toggleFavorite = (id: string) => {
     setHospitals(hospitals.map(hospital =>

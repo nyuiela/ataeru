@@ -16,7 +16,6 @@ import {
   Package,
   FileText,
   Menu,
-  X
 } from 'lucide-react';
 
 export default function DashboardLayout({

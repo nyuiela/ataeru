@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ImageIcon } from 'lucide-react';
+import MintNFTModal from '@/components/MintNFTModal';
+import { useAccount, useReadContract } from 'wagmi';
+import { contractAddresses } from '@/contract/web3';
+import { healthDataNftABI } from '@/contract/web3';
 
 interface NFTAsset {
   id: string;
@@ -25,6 +29,15 @@ export default function NFTsPage() {
   const [nfts, setNfts] = useState<NFTAsset[]>([]);
   const [activeTab, setActiveTab] = useState<'all' | 'treatment' | 'donation' | 'surrogacy'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [showMintModal, setShowMintModal] = useState(false);
+
+  const { address } = useAccount();
+  const { data: NftData } = useReadContract({
+    address: contractAddresses.healthDataNftAddress as `0x${string}`,
+    abi: healthDataNftABI,
+    functionName: 'getNftsByOwner',
+    args: [address],
+  });
 
   useEffect(() => {
     // In a real app, you would fetch the NFTs from your backend or blockchain
@@ -119,6 +132,12 @@ export default function NFTsPage() {
       <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold text-gray-900">My NFTs</h1>
         <div className="mt-3 flex sm:mt-0 sm:ml-4">
+          <button
+            onClick={() => setShowMintModal(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          >
+            Create NFT
+          </button>
           <Link href="/dashboard/nfts/marketplace" className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Browse Marketplace
           </Link>
@@ -257,6 +276,9 @@ export default function NFTsPage() {
           </Link>
         </div>
       )}
+
+      {/* Mint NFT Modal */}
+      <MintNFTModal isOpen={showMintModal} onClose={() => setShowMintModal(false)} />
     </div>
   );
 }

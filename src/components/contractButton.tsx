@@ -1,58 +1,71 @@
 import { useTransactionModal } from '@/hooks/useTransactionModal';
 import TransactionModal from '@/components/TransactionModal';
+import { useState } from 'react';
 
-export default function ContractButton({ contractAddress, abi, functionName, args, buttonText, title, description }: { contractAddress: string, abi: any, functionName: string, args: any[], buttonText: string, title: string, description: string }) {
-  const {
-    openModal,
-    modalProps,
-  } = useTransactionModal({
-    contractAddress: contractAddress,
-    abi: abi,
-    onSuccess: async (receipt) => {
-      console.log('Transaction successful:', await receipt);
+interface ContractButtonProps {
+  contractAddress: string;
+  abi: any;
+  functionName: string;
+  args: any[];
+  buttonText: string;
+  title: string;
+  description: string;
+  onBeforeMint?: () => Promise<any>;
+  disabled?: boolean;
+}
 
-      // Add a delay to allow the transaction to be processed
-      await new Promise(resolve => setTimeout(resolve, 2000));
+export default function ContractButton({
+  contractAddress,
+  abi,
+  functionName,
+  args,
+  buttonText,
+  title,
+  description,
+  onBeforeMint,
+  disabled = false
+}: ContractButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-      try {
-        const event = await receipt.logs[0];
-        if (event) {
-          const id = event.data; // This will be the bytes32 ID
-          console.log("ID: ", id);
-          console.log('Registration ID:', id);
+  const handleClick = async () => {
+    try {
+      setIsLoading(true);
+      if (onBeforeMint) {
+        const result = await onBeforeMint();
+        // Update args with the result if needed
+        if (result) {
+          args = [result.name, result.description, result.type, result.attributes];
         }
-      } catch (error) {
-        console.error('Error processing transaction receipt:', error);
-        // You might want to show a notification to the user here
       }
-
-      // Handle success (e.g., show notification, update UI)
-    },
-    onError: async (error) => {
-      console.error('Transaction failed:', error);
-      // Handle error (e.g., show error notification)
-    },
-  });
-
-  const handleSetPrice = () => {
-    openModal({
-      title,
-      description,
-      functionName,
-      args,
-    });
+      setIsOpen(true);
+    } catch (error) {
+      console.error('Error in before mint:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div>
+    <>
       <button
-        onClick={handleSetPrice}
-        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        onClick={handleClick}
+        disabled={disabled || isLoading}
+        className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {buttonText}
+        {isLoading ? 'Processing...' : buttonText}
       </button>
 
-      <TransactionModal {...modalProps} />
-    </div>
+      <TransactionModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        contractAddress={contractAddress}
+        abi={abi}
+        functionName={functionName}
+        args={args}
+        title={title}
+        description={description}
+      />
+    </>
   );
 } 
