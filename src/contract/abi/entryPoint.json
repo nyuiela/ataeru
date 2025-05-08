@@ -1,0 +1,937 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_requestFactory",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "agents",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "nameOfAgent", "type": "string", "internalType": "string" },
+      { "name": "description", "type": "string", "internalType": "string" },
+      { "name": "nftId", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "activity",
+        "type": "uint8",
+        "internalType": "enum Structs.ActivityConfinment"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum Structs.AgentStatus"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "deregisterDonor",
+    "inputs": [
+      { "name": "_diD", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deregisterHospital",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deregisterUser",
+    "inputs": [
+      { "name": "_uID", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "donorSets",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "hospital", "type": "address", "internalType": "address" },
+      { "name": "donor", "type": "address", "internalType": "address" },
+      { "name": "isregisterset", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "donors",
+    "inputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "bloodGroup", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "age", "type": "uint256", "internalType": "uint256" },
+      { "name": "weight", "type": "uint256", "internalType": "uint256" },
+      { "name": "height", "type": "uint256", "internalType": "uint256" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "donor", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDonorInfo",
+    "inputs": [{ "name": "_id", "type": "bytes32", "internalType": "bytes32" }],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Structs.DonorInfo",
+        "components": [
+          { "name": "name", "type": "string", "internalType": "string" },
+          { "name": "email", "type": "string", "internalType": "string" },
+          {
+            "name": "bloodGroup",
+            "type": "string",
+            "internalType": "string"
+          },
+          { "name": "location", "type": "string", "internalType": "string" },
+          { "name": "age", "type": "uint256", "internalType": "uint256" },
+          { "name": "weight", "type": "uint256", "internalType": "uint256" },
+          { "name": "height", "type": "uint256", "internalType": "uint256" },
+          { "name": "contact", "type": "uint256", "internalType": "uint256" },
+          { "name": "about", "type": "string", "internalType": "string" },
+          {
+            "name": "witnessHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "donorType",
+            "type": "uint8",
+            "internalType": "enum Structs.DonorType"
+          },
+          { "name": "donor", "type": "address", "internalType": "address" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getHospitalList",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct Structs.HospitalInfo[]",
+        "components": [
+          { "name": "name", "type": "string", "internalType": "string" },
+          { "name": "email", "type": "string", "internalType": "string" },
+          { "name": "location", "type": "string", "internalType": "string" },
+          { "name": "contact", "type": "uint256", "internalType": "uint256" },
+          { "name": "about", "type": "string", "internalType": "string" },
+          {
+            "name": "witnessHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "hospitalAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          { "name": "requests", "type": "address", "internalType": "address" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getHospitalToRequest",
+    "inputs": [
+      { "name": "_hId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getRequestAddress",
+    "inputs": [],
+    "outputs": [
+      { "name": "", "type": "address[]", "internalType": "address[]" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserInfo",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Structs.UserInfo",
+        "components": [
+          { "name": "name", "type": "string", "internalType": "string" },
+          { "name": "email", "type": "string", "internalType": "string" },
+          { "name": "location", "type": "string", "internalType": "string" },
+          { "name": "contact", "type": "uint256", "internalType": "uint256" },
+          { "name": "about", "type": "string", "internalType": "string" },
+          {
+            "name": "witnessHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          { "name": "user", "type": "address", "internalType": "address" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "gethospitalinfo",
+    "inputs": [
+      { "name": "_owner", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Structs.HospitalInfo",
+        "components": [
+          { "name": "name", "type": "string", "internalType": "string" },
+          { "name": "email", "type": "string", "internalType": "string" },
+          { "name": "location", "type": "string", "internalType": "string" },
+          { "name": "contact", "type": "uint256", "internalType": "uint256" },
+          { "name": "about", "type": "string", "internalType": "string" },
+          {
+            "name": "witnessHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "hospitalAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          { "name": "requests", "type": "address", "internalType": "address" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalAddressTorequestAddress",
+    "inputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalList",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "hospitalAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "requests", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalRequests",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitals",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "hospitalAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "requests", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isDonor",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isHospital",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isUser",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isregistered",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registerDonor",
+    "inputs": [
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_bloodGroup", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_age", "type": "uint256", "internalType": "uint256" },
+      { "name": "_weight", "type": "uint256", "internalType": "uint256" },
+      { "name": "_height", "type": "uint256", "internalType": "uint256" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      {
+        "name": "_witnessHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      }
+    ],
+    "outputs": [
+      { "name": "_dId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "registerHospital",
+    "inputs": [
+      { "name": "_ha", "type": "address", "internalType": "address" },
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "_witnessHash", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      { "name": "_hID", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "registerUser",
+    "inputs": [
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      { "name": "_witnessHash", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      { "name": "_uId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "registeredDonor",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "", "type": "bool", "internalType": "bool" }
+    ],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "bloodGroup", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "age", "type": "uint256", "internalType": "uint256" },
+      { "name": "weight", "type": "uint256", "internalType": "uint256" },
+      { "name": "height", "type": "uint256", "internalType": "uint256" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "donor", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registeredHospital",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "hospitalAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "requests", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registeredUser",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "user", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "requestFactory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract HospitalRequestFactoryContract"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "updateDonorInfomation",
+    "inputs": [
+      { "name": "_diD", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_bloodGroup", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_age", "type": "uint256", "internalType": "uint256" },
+      { "name": "_weight", "type": "uint256", "internalType": "uint256" },
+      { "name": "_height", "type": "uint256", "internalType": "uint256" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      {
+        "name": "_donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "add__", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateHospitalInfomation",
+    "inputs": [
+      { "name": "_add", "type": "address", "internalType": "address" },
+      { "name": "_hID", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateUserInfomation",
+    "inputs": [
+      { "name": "_uID", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "_name", "type": "string", "internalType": "string" },
+      { "name": "_email", "type": "string", "internalType": "string" },
+      { "name": "_location", "type": "string", "internalType": "string" },
+      { "name": "_contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "_about", "type": "string", "internalType": "string" },
+      { "name": "add__", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "userSets",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "hospital", "type": "address", "internalType": "address" },
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "isregisterset", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "users",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "email", "type": "string", "internalType": "string" },
+      { "name": "location", "type": "string", "internalType": "string" },
+      { "name": "contact", "type": "uint256", "internalType": "uint256" },
+      { "name": "about", "type": "string", "internalType": "string" },
+      { "name": "witnessHash", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "user", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "DonorDeregistered",
+    "inputs": [
+      {
+        "name": "_donor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "dId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DonorRegistered",
+    "inputs": [
+      {
+        "name": "_donor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_email",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_bloodGroup",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_location",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_age",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_weight",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_height",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_contact",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_about",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_witnessHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_donorType",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum Structs.DonorType"
+      },
+      {
+        "name": "dId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DonorUpdated",
+    "inputs": [
+      {
+        "name": "_donor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_email",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_bloodGroup",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_location",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_age",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_weight",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_height",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_contact",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_about",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_donorType",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "enum Structs.DonorType"
+      },
+      {
+        "name": "dId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HospitalDeregistered",
+    "inputs": [
+      {
+        "name": "_hospital",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "hId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HospitalRegistered",
+    "inputs": [
+      {
+        "name": "_hospital",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "hId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HospitalUpdated",
+    "inputs": [
+      {
+        "name": "_name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_email",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_location",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_contact",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_about",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_hID",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserDeregistered",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "uId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserRegistered",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_email",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_location",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_contact",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_about",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_witnessHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "uId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "UserUpdated",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_email",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_location",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "_contact",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "_about",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "uId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  }
+]

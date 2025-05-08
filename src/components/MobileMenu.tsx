@@ -67,7 +67,7 @@ export default function MobileMenu() {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex flex-col bg-white">
           <div className="flex justify-between items-center p-4 border-b">
-            <div className="text-xl font-bold text-blue-600">LifeSpring</div>
+            <div className="text-xl font-bold text-blue-600">Ataeru</div>
             <button
               onClick={closeMenu}
               className="flex items-center justify-center h-10 w-10 rounded-md text-gray-600 hover:text-gray-900 focus:outline-none"
@@ -124,55 +124,9 @@ export default function MobileMenu() {
                       Resources
                     </button>
                   </li>
-                </>
-              ) : userType === 'user' ? (
-                <>
                   <li>
                     <button
-                      onClick={() => handleNavigation('/ai/recommendations')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Recommendations
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/donors')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Donors
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/surrogates')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Surrogates
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/treatments')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Treatments
-                    </button>
-                  </li>
-                </>
-              ) : userType === 'hospital' ? (
-                <>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/hospital/dashboard')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Dashboard
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/dashboard')}
+                      onClick={() => router.push('/dashboard')}
                       className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
                     >
                       User Dashboard
@@ -180,26 +134,10 @@ export default function MobileMenu() {
                   </li>
                   <li>
                     <button
-                      onClick={() => handleNavigation('/hospital/dashboard?tab=donors')}
+                      onClick={() => router.push('/hospital/dashboard')}
                       className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
                     >
-                      Donors
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/hospital/dashboard?tab=customers')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Customers
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleNavigation('/hospital/dashboard?tab=treatments')}
-                      className="w-full text-left px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg"
-                    >
-                      Treatments
+                      Hospital Dashboard
                     </button>
                   </li>
                 </>

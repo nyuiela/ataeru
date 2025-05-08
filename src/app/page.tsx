@@ -4,144 +4,11 @@ import Image from 'next/image';
 import Footer from '@/components/Footer';
 import FertilityAI from '@/components/FertilityAI';
 import RegistrationModal from '@/components/RegistrationModal';
-import MobileMenu from '@/components/MobileMenu';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { MouseEvent } from 'react';
-
+import Header from '@/components/Header';
 export default function Home() {
-  // const [userType, setUserType] = useState<string | null>(null);
-  function handleScrollToSection(e: MouseEvent<HTMLAnchorElement>, sectionId: string): void {
-    e.preventDefault();
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  // const { isOnboarded } = useAuth();
-
   return (
     <div className="min-h-screen bg-white text-gray-800 relative">
-      {/* Navigation Bar */}
-      <nav className="flex justify-between items-center max-w-7xl mx-auto py-4 sm:py-6 px-4 sm:px-6">
-        <div className="flex items-center gap-4 sm:gap-12">
-          <div className="text-2xl text-blue-600 font-bold flex items-center gap-2">
-            <Image src="/images/logo.svg" alt="LifeSpring Logo" width={32} height={32} className="w-8 h-8" />
-            LifeSpring
-          </div>
-          <div className="hidden lg:flex gap-6 sm:gap-8">
-            <a href="#hero" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'hero')}>Home</a>
-            <a href="#services" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'services')}>Services</a>
-            <a href="#about" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection(e, 'about')}>About Us</a>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 sm:gap-6">
-          <ConnectButton.Custom>
-            {({
-              account,
-              chain,
-              openAccountModal,
-              openChainModal,
-              openConnectModal,
-              mounted,
-            }) => {
-              const ready = mounted;
-              const connected = ready && account && chain;
-
-              return (
-                <div
-                  {...(!ready && {
-                    'aria-hidden': true,
-                    style: {
-                      opacity: 0,
-                      pointerEvents: 'none',
-                      userSelect: 'none',
-                    },
-                  })}
-                >
-                  {(() => {
-                    if (!connected) {
-                      function handleWalletConnect() {
-                        throw new Error('Function not implemented.');
-                      }
-
-                      return (
-                        <button
-                          onClick={() => {
-                            openConnectModal();
-                            handleWalletConnect();
-                          }}
-                          className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2"
-                        >
-                          Connect Wallet <span>↗</span>
-                        </button>
-                      );
-                    }
-
-                    if (chain.unsupported) {
-                      return (
-                        <button
-                          onClick={openChainModal}
-                          className="text-sm bg-red-500 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90"
-                        >
-                          Wrong network
-                        </button>
-                      );
-                    }
-
-                    return (
-                      <div className="flex gap-3">
-                        <button
-                          onClick={openChainModal}
-                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200 flex items-center gap-2"
-                        >
-                          {chain.hasIcon && (
-                            <div
-                              style={{
-                                background: chain.iconBackground,
-                                width: 12,
-                                height: 12,
-                                borderRadius: 999,
-                                overflow: 'hidden',
-                              }}
-                            >
-                              {chain.iconUrl && (
-                                <Image
-                                  alt={chain.name ?? 'Chain icon'}
-                                  src={chain.iconUrl}
-                                  width={12}
-                                  height={12}
-                                />
-                              )}
-                            </div>
-                          )}
-                          {chain.name}
-                        </button>
-
-                        <button
-                          onClick={openAccountModal}
-                          className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200"
-                        >
-                          {account.displayName}
-                        </button>
-                      </div>
-                    );
-                  })()}
-                </div>
-              );
-            }}
-          </ConnectButton.Custom>
-          <MobileMenu />
-        </div>
-      </nav>
-
-      {/* 
-      <RegistrationModal
-      isOpen={isRegistrationModalOpen}
-      onClose={() => setIsRegistrationModalOpen(false)}
-      userType={userType}
-      /> */}
-
+      <Header />
       {/* Hero Section */}
       <section id="hero" className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 sm:mb-24 max-xl:px-8 scroll-mt-20">
         <div className="relative mb-12 sm:mb-24 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -299,7 +166,7 @@ export default function Home() {
             </p>
             <p className="mt-4 sm:mt-6 text-gray-600 text-sm sm:text-base">
               Dr. Sarah Johnson<br />
-              Medical Director & Blockchain Advisor, LifeSpring
+              Medical Director & Blockchain Advisor, Ataeru
             </p>
           </div>
         </div>
@@ -311,7 +178,7 @@ export default function Home() {
       <FertilityAI />
 
       {/* Registration Modal - will show automatically when wallet is connected and user is not onboarded */}
-      <RegistrationModal />
+      {/* <RegistrationModal /> */} for testing
     </div>
   );
 }

@@ -30,7 +30,7 @@ export default function SurrogacyForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : undefined;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -54,7 +54,7 @@ export default function SurrogacyForm() {
     // In a real app, you would handle form submission here
     // For demo, we'll simulate a submission
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setIsSubmitting(false);
     setIsSubmitted(true);
   };
@@ -71,8 +71,8 @@ export default function SurrogacyForm() {
             Back to Home
           </Link>
           <div className="flex items-center gap-2">
-            <Image src="/images/logo.svg" alt="LifeSpring Logo" width={32} height={32} className="w-8 h-8" />
-            <span className="text-xl font-bold text-blue-600">LifeSpring</span>
+            <Image src="/images/logo.svg" alt="Ataeru Logo" width={32} height={32} className="w-8 h-8" />
+            <span className="text-xl font-bold text-blue-600">Ataeru</span>
           </div>
         </div>
 
@@ -80,12 +80,12 @@ export default function SurrogacyForm() {
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {/* Progress Bar */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 h-2">
-            <div 
+            <div
               className="h-full bg-green-400 transition-all duration-500"
               style={{ width: `${step * 33.33}%` }}
             ></div>
           </div>
-          
+
           {/* Form Title */}
           <div className="py-6 px-6 sm:px-10 border-b">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Surrogate Application</h1>
@@ -107,16 +107,16 @@ export default function SurrogacyForm() {
               </p>
               <div className="bg-gray-50 p-4 rounded-lg mb-6 max-w-md mx-auto text-left">
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">Application ID:</span> 
+                  <span className="font-semibold">Application ID:</span>
                   <span className="ml-2 font-mono text-blue-600">SUR-{Math.random().toString(36).substring(2, 10).toUpperCase()}</span>
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-semibold">Submitted on:</span> 
+                  <span className="font-semibold">Submitted on:</span>
                   <span className="ml-2">{new Date().toLocaleDateString()}</span>
                 </p>
               </div>
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="inline-block bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition-colors"
               >
                 Return to Homepage
@@ -128,7 +128,7 @@ export default function SurrogacyForm() {
                 {step === 1 && (
                   <div className="space-y-5">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Personal Information</h2>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -144,7 +144,7 @@ export default function SurrogacyForm() {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                           Email Address *
@@ -159,7 +159,7 @@ export default function SurrogacyForm() {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                           Phone Number *
@@ -174,7 +174,7 @@ export default function SurrogacyForm() {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
                           Age (21-40) *
@@ -192,7 +192,7 @@ export default function SurrogacyForm() {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="height" className="block text-sm font-medium text-gray-700 mb-1">
@@ -208,7 +208,7 @@ export default function SurrogacyForm() {
                           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                       </div>
-                      
+
                       <div>
                         <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
                           Weight (kg) *
@@ -224,7 +224,7 @@ export default function SurrogacyForm() {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="flex justify-end">
                       <button
                         type="button"
@@ -240,7 +240,7 @@ export default function SurrogacyForm() {
                 {step === 2 && (
                   <div className="space-y-5">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Medical & Background Information</h2>
-                    
+
                     <div>
                       <label htmlFor="previousPregnancies" className="block text-sm font-medium text-gray-700 mb-1">
                         Previous Pregnancy Experience *
@@ -256,7 +256,7 @@ export default function SurrogacyForm() {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label htmlFor="healthStatus" className="block text-sm font-medium text-gray-700 mb-1">
                         Current Health Status *
@@ -272,7 +272,7 @@ export default function SurrogacyForm() {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label htmlFor="lifestyle" className="block text-sm font-medium text-gray-700 mb-1">
                         Lifestyle Information *
@@ -288,7 +288,7 @@ export default function SurrogacyForm() {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       ></textarea>
                     </div>
-                    
+
                     <div className="flex justify-between">
                       <button
                         type="button"
@@ -311,7 +311,7 @@ export default function SurrogacyForm() {
                 {step === 3 && (
                   <div className="space-y-5">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Additional Information & Consent</h2>
-                    
+
                     <div>
                       <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-1">
                         Motivation for Becoming a Surrogate *
@@ -327,7 +327,7 @@ export default function SurrogacyForm() {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label htmlFor="expectation" className="block text-sm font-medium text-gray-700 mb-1">
                         Expectations from the Program *
@@ -343,7 +343,7 @@ export default function SurrogacyForm() {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       ></textarea>
                     </div>
-                    
+
                     <div>
                       <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-1">
                         Availability *
@@ -363,14 +363,14 @@ export default function SurrogacyForm() {
                         <option value="6+ months">6+ months</option>
                       </select>
                     </div>
-                    
+
                     <div className="bg-blue-50 p-4 rounded-lg mb-6">
                       <h3 className="font-bold text-blue-800 mb-2">Smart Contract Information</h3>
                       <p className="text-sm text-blue-700">
-                        LifeSpring uses smart contracts to ensure secure and transparent agreements between surrogates and intended parents. Your compensation and medical expenses will be stored in an escrow account with milestone-based releases.
+                        Ataeru uses smart contracts to ensure secure and transparent agreements between surrogates and intended parents. Your compensation and medical expenses will be stored in an escrow account with milestone-based releases.
                       </p>
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div className="flex items-start">
                         <input
@@ -386,7 +386,7 @@ export default function SurrogacyForm() {
                           I agree to the <a href="#" className="text-blue-600 hover:underline">Terms and Conditions</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> *
                         </label>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <input
                           type="checkbox"
@@ -401,7 +401,7 @@ export default function SurrogacyForm() {
                           I consent to undergo medical screening, psychological evaluation, and background verification *
                         </label>
                       </div>
-                      
+
                       <div className="flex items-start">
                         <input
                           type="checkbox"
@@ -417,7 +417,7 @@ export default function SurrogacyForm() {
                         </label>
                       </div>
                     </div>
-                    
+
                     <div className="pt-4 flex justify-between">
                       <button
                         type="button"
@@ -447,7 +447,7 @@ export default function SurrogacyForm() {
               </div>
             </form>
           )}
-          
+
           {/* Information Section */}
           {!isSubmitted && (
             <div className="py-6 px-6 sm:px-10 bg-gray-50 border-t">
@@ -463,7 +463,7 @@ export default function SurrogacyForm() {
                     <p>• Surrogates must be between 21-40 years old with at least one healthy pregnancy</p>
                     <p>• Compensation starts at $25,000 USD (paid in crypto-equivalent) plus expenses</p>
                     <p>• Smart contract escrow ensures payment security and milestone-based releases</p>
-                    <p>• Questions? Contact us at surrogacy@lifespring.eth</p>
+                    <p>• Questions? Contact us at surrogacy@Ataeru.eth</p>
                   </div>
                 </div>
               </div>

@@ -1,0 +1,25 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_contract", "type": "address", "internalType": "address" },
+      { "name": "_nftReceipt", "type": "address", "internalType": "address" },
+      { "name": "_HRS", "type": "address", "internalType": "address" },
+      {
+        "name": "_steptsToComplete",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  { "type": "error", "name": "FailedDeployment", "inputs": [] },
+  {
+    "type": "error",
+    "name": "InsufficientBalance",
+    "inputs": [
+      { "name": "balance", "type": "uint256", "internalType": "uint256" },
+      { "name": "needed", "type": "uint256", "internalType": "uint256" }
+    ]
+  }
+]

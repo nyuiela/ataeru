@@ -19,7 +19,7 @@ const outfit = Outfit({
 // });
 
 export const metadata: Metadata = {
-  title: "LifeSpring | Decentralized Family Building",
+  title: "Ataeru | Decentralized Family Building",
   description: "Web3-powered fertility solutions with smart contracts and blockchain verification",
   icons: {
     icon: '/images/logo.svg',

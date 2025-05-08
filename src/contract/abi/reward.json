@@ -1,0 +1,151 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_HRS", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "HRS",
+    "inputs": [],
+    "outputs": [
+      { "name": "", "type": "address", "internalType": "contract HRC" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "addReward",
+    "inputs": [
+      {
+        "name": "rewardData",
+        "type": "tuple",
+        "internalType": "struct RewardDataType.RewardData",
+        "components": [
+          {
+            "name": "totalReward",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastTimeUpdated",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "rewardPerShare",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "_tokenAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "startTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "endTime", "type": "uint256", "internalType": "uint256" }
+        ]
+      }
+    ],
+    "outputs": [
+      { "name": "_epochNumber", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "addRewardMultiple",
+    "inputs": [
+      {
+        "name": "rewardDatas",
+        "type": "tuple[]",
+        "internalType": "struct RewardDataType.RewardData[]",
+        "components": [
+          {
+            "name": "totalReward",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastTimeUpdated",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "rewardPerShare",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "_tokenAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "startTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "endTime", "type": "uint256", "internalType": "uint256" }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "_epochNumbers",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "claim",
+    "inputs": [
+      { "name": "_epoch", "type": "uint256", "internalType": "uint256" },
+      { "name": "_token", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "earned",
+    "inputs": [
+      { "name": "_epoch", "type": "uint256", "internalType": "uint256" },
+      { "name": "_token", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getRewardAddress",
+    "inputs": [],
+    "outputs": [
+      { "name": "", "type": "address[]", "internalType": "address[]" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasBeenUsedBefore",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "error",
+    "name": "SafeERC20FailedOperation",
+    "inputs": [
+      { "name": "token", "type": "address", "internalType": "address" }
+    ]
+  }
+]

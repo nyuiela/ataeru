@@ -1,0 +1,20 @@
+[
+  {
+    "type": "function",
+    "name": "verifyAiAgent",
+    "inputs": [
+      { "name": "agent", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "verifyParty",
+    "inputs": [
+      { "name": "party", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

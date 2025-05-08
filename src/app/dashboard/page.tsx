@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAccount } from 'wagmi';
-import { 
-  Calendar, 
-  CreditCard, 
-  Heart, 
-  Image as ImageIcon, 
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import {
+  Calendar,
+  CreditCard,
+  Heart,
+  Image as ImageIcon,
   Clock,
-  Package
+  Package,
+  CheckCircle
 } from 'lucide-react';
+import { contractAddresses } from '@/contract/web3';
+import { hospitalRequestABI } from '@/contract/web3';
 
 interface DashboardStats {
   consultations: number;
@@ -30,6 +33,19 @@ interface ActivityItem {
   status: 'Completed' | 'Active' | 'Upcoming';
 }
 
+interface DonorRequest {
+  donorType: number;
+  rules: string;
+  date: bigint;
+  time: bigint;
+  maxDonors: bigint;
+  minAmontpayment: bigint;
+  maxAmountPayment: bigint;
+  status: number;
+  requestDescription: string;
+  isActive: boolean;
+}
+
 export default function Dashboard() {
   const { address } = useAccount();
   const [userType, setUserType] = useState<'user' | 'hospital' | null>(null);
@@ -40,6 +56,25 @@ export default function Dashboard() {
     nftsOwned: 0
   });
   const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
+  const [donorRequests, setDonorRequests] = useState<DonorRequest[]>([]);
+  const [currentId, setCurrentId] = useState<number>(1);
+
+  // Fetch donor requests
+  const { data: totalId } = useReadContract({
+    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    abi: hospitalRequestABI,
+    functionName: 'id',
+  });
+
+  const { data: currentRequest } = useReadContract({
+    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    account: address as `0x${string}`,
+    abi: hospitalRequestABI,
+    functionName: 'getRequest',
+    args: [currentId],
+  });
+
+  const { writeContract } = useWriteContract();
 
   useEffect(() => {
     // In a real app, you would fetch this data from your backend
@@ -62,7 +97,7 @@ export default function Dashboard() {
         type: 'appointment',
         title: 'Fertility Consultation',
         date: '2023-11-15',
-        hospital: 'LifeSpring Main Center',
+        hospital: 'Ataeru Main Center',
         status: 'Completed'
       },
       {
@@ -82,7 +117,45 @@ export default function Dashboard() {
         status: 'Active'
       }
     ]);
-  }, [userType]);
+
+    if (currentRequest) {
+      setDonorRequests(prev => [...prev, currentRequest as DonorRequest]);
+      if (currentId < Number(totalId)) {
+        setCurrentId(prev => prev + 1);
+      }
+    }
+  }, [userType, currentRequest, totalId]);
+
+  // Helper function to format timestamp
+  const formatDate = (timestamp: bigint) => {
+    return new Date(Number(timestamp) * 1000).toLocaleDateString();
+  };
+
+  // Helper function to get donor type label
+  const getDonorTypeLabel = (type: number) => {
+    switch (type) {
+      case 0: return 'Sperm Donor';
+      case 1: return 'Egg Donor';
+      case 2: return 'Surrogate';
+      default: return 'Unknown';
+    }
+  };
+
+  const handleAcceptRequest = async (requestId: number) => {
+    try {
+      await writeContract({
+        address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+        abi: hospitalRequestABI,
+        functionName: 'acceptRequest',
+        args: [requestId],
+      });
+      // Refresh the requests list after accepting
+      setDonorRequests([]);
+      setCurrentId(1);
+    } catch (error) {
+      console.error('Error accepting request:', error);
+    }
+  };
 
   return (
     <div>
@@ -113,7 +186,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-  
+
       {/* Stats */}
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* Consultations */}
@@ -139,7 +212,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* Donations/Services */}
         <div className="bg-white overflow-hidden shadow rounded-lg">
           <div className="p-5">
@@ -167,7 +240,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* Favorite Hospitals */}
         <div className="bg-white overflow-hidden shadow rounded-lg">
           <div className="p-5">
@@ -191,7 +264,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        
+
         {/* NFTs */}
         <div className="bg-white overflow-hidden shadow rounded-lg">
           <div className="p-5">
@@ -216,7 +289,66 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      
+
+      {/* Donor Requests Section */}
+      {userType === 'user' && (
+        <div className="mt-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Available Donor Requests</h2>
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <ul className="divide-y divide-gray-200">
+              {donorRequests
+                .filter(request => request.isActive && request.status === 0) // Only show active and pending requests
+                .map((request, index) => (
+                  <li key={index} className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-blue-600 truncate">
+                            {getDonorTypeLabel(request.donorType)}
+                          </p>
+                          <div className="ml-2 flex-shrink-0 flex">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                              Pending
+                            </span>
+                          </div>
+                        </div>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-500">{request.requestDescription}</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              Max Donors: {request.maxDonors.toString()}
+                            </span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              Amount: {request.minAmontpayment.toString()} - {request.maxAmountPayment.toString()} ETH
+                            </span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              Date: {formatDate(request.date)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <button
+                          onClick={() => handleAcceptRequest(index + 1)}
+                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Accept
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              {donorRequests.filter(request => request.isActive && request.status === 0).length === 0 && (
+                <li className="px-4 py-4 sm:px-6 text-center text-gray-500">
+                  No active donor requests available at the moment.
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* Recent activity */}
       <div className="mt-6">
         <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
@@ -228,9 +360,8 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-blue-600 truncate">{activity.title}</p>
                     <div className="ml-2 flex-shrink-0 flex">
-                      <p className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        activity.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
+                      <p className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${activity.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                        }`}>
                         {activity.status}
                       </p>
                     </div>

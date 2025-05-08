@@ -31,10 +31,10 @@ export default function NFTsPage() {
     // For now, we'll use mock data
     const fetchNfts = async () => {
       setIsLoading(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setNfts([
         {
           id: '1',
@@ -56,7 +56,7 @@ export default function NFTsPage() {
         {
           id: '2',
           name: 'Sperm Donation Certificate',
-          description: 'This NFT certifies your participation in the LifeSpring sperm donation program.',
+          description: 'This NFT certifies your participation in the Ataeru sperm donation program.',
           image: 'https://images.unsplash.com/photo-1567427013953-88102117053a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
           type: 'donation',
           status: 'active',
@@ -64,7 +64,7 @@ export default function NFTsPage() {
           tokenId: '17',
           attributes: [
             { name: 'Donation Date', value: '2023-09-15' },
-            { name: 'Donation Center', value: 'LifeSpring Main Center' },
+            { name: 'Donation Center', value: 'Ataeru Main Center' },
             { name: 'Donor ID', value: 'SPD-2023-0721' },
             { name: 'Quality Rating', value: 'Premium' }
           ]
@@ -110,8 +110,8 @@ export default function NFTsPage() {
     fetchNfts();
   }, []);
 
-  const filteredNfts = activeTab === 'all' 
-    ? nfts 
+  const filteredNfts = activeTab === 'all'
+    ? nfts
     : nfts.filter(nft => nft.type === activeTab);
 
   return (
@@ -130,41 +130,37 @@ export default function NFTsPage() {
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           <button
             onClick={() => setActiveTab('all')}
-            className={`${
-              activeTab === 'all'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            className={`${activeTab === 'all'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             All NFTs
           </button>
           <button
             onClick={() => setActiveTab('treatment')}
-            className={`${
-              activeTab === 'treatment'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            className={`${activeTab === 'treatment'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Treatment Packages
           </button>
           <button
             onClick={() => setActiveTab('donation')}
-            className={`${
-              activeTab === 'donation'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            className={`${activeTab === 'donation'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Donation Certificates
           </button>
           <button
             onClick={() => setActiveTab('surrogacy')}
-            className={`${
-              activeTab === 'surrogacy'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+            className={`${activeTab === 'surrogacy'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Surrogacy Contracts
           </button>
@@ -188,26 +184,26 @@ export default function NFTsPage() {
                   className="object-cover"
                 />
                 <div className="absolute top-2 right-2">
-                  <span 
+                  <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                      ${nft.status === 'active' ? 'bg-green-100 text-green-800' : 
+                      ${nft.status === 'active' ? 'bg-green-100 text-green-800' :
                         nft.status === 'expired' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}
                   >
-                    {nft.status === 'active' ? 'Active' : 
-                     nft.status === 'expired' ? 'Expired' : 'Redeemed'}
+                    {nft.status === 'active' ? 'Active' :
+                      nft.status === 'expired' ? 'Expired' : 'Redeemed'}
                   </span>
                 </div>
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-medium text-gray-900">{nft.name}</h3>
                 <p className="mt-1 text-sm text-gray-500">{nft.description}</p>
-                
+
                 {nft.expiryDate && (
                   <p className="mt-3 text-sm text-gray-500">
                     <span className="font-medium">Expires:</span> {new Date(nft.expiryDate).toLocaleDateString()}
                   </p>
                 )}
-                
+
                 <div className="mt-3">
                   <p className="text-xs text-gray-500">
                     Contract: {nft.contractAddress.substring(0, 6)}...{nft.contractAddress.substring(nft.contractAddress.length - 4)}
@@ -216,19 +212,19 @@ export default function NFTsPage() {
                     Token ID: {nft.tokenId}
                   </p>
                 </div>
-                
+
                 <div className="mt-4 bg-gray-50 p-3 rounded-md">
                   <h4 className="text-sm font-medium text-gray-900 mb-2">Properties</h4>
                   <div className="grid grid-cols-2 gap-2">
                     {nft.attributes.map((attr, index) => (
                       <div key={index} className="bg-white border border-gray-200 rounded p-2">
                         <p className="text-xs text-blue-600 truncate">{attr.name}</p>
-                        <p className="text-sm font-medium truncate">{attr.value}</p>
+                        <p className="text-sm text-gray-500 font-medium truncate">{attr.value}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="mt-4 flex space-x-2">
                   <Link
                     href={`/dashboard/nfts/${nft.id}`}

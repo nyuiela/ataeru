@@ -1,0 +1,260 @@
+[
+  {
+    "type": "function",
+    "name": "getRequest",
+    "inputs": [{ "name": "_id", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Structs.HospitalRequest",
+        "components": [
+          {
+            "name": "donorType",
+            "type": "uint8",
+            "internalType": "enum Structs.DonorType"
+          },
+          { "name": "rules", "type": "string", "internalType": "string" },
+          { "name": "date", "type": "uint256", "internalType": "uint256" },
+          { "name": "time", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "maxDonors",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "minAmontpayment",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "maxAmountPayment",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum Structs.RequestStatus"
+          },
+          {
+            "name": "requestDescription",
+            "type": "string",
+            "internalType": "string"
+          },
+          { "name": "isActive", "type": "bool", "internalType": "bool" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalAddress",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalRequest",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "rules", "type": "string", "internalType": "string" },
+      { "name": "date", "type": "uint256", "internalType": "uint256" },
+      { "name": "time", "type": "uint256", "internalType": "uint256" },
+      { "name": "maxDonors", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "minAmontpayment",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxAmountPayment",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum Structs.RequestStatus"
+      },
+      {
+        "name": "requestDescription",
+        "type": "string",
+        "internalType": "string"
+      },
+      { "name": "isActive", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hospitalRequests",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [
+      {
+        "name": "donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "rules", "type": "string", "internalType": "string" },
+      { "name": "date", "type": "uint256", "internalType": "uint256" },
+      { "name": "time", "type": "uint256", "internalType": "uint256" },
+      { "name": "maxDonors", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "minAmontpayment",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "maxAmountPayment",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "status",
+        "type": "uint8",
+        "internalType": "enum Structs.RequestStatus"
+      },
+      {
+        "name": "requestDescription",
+        "type": "string",
+        "internalType": "string"
+      },
+      { "name": "isActive", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "id",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [
+      {
+        "name": "_hospitalAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "_maxDonor", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isRequestExist",
+    "inputs": [{ "name": "_id", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isRequestExpired",
+    "inputs": [{ "name": "_id", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "makeADonorRequest",
+    "inputs": [
+      {
+        "name": "_donorType",
+        "type": "uint8",
+        "internalType": "enum Structs.DonorType"
+      },
+      { "name": "_rules", "type": "string", "internalType": "string" },
+      { "name": "_date", "type": "uint256", "internalType": "uint256" },
+      { "name": "_time", "type": "uint256", "internalType": "uint256" },
+      { "name": "_maxDonor", "type": "uint256", "internalType": "uint256" },
+      { "name": "_minAmount", "type": "uint256", "internalType": "uint256" },
+      { "name": "_maxAmount", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "_status",
+        "type": "uint8",
+        "internalType": "enum Structs.RequestStatus"
+      },
+      { "name": "_des", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [
+      { "name": "_id", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "makeMultipleDonorRequest",
+    "inputs": [
+      {
+        "name": "_donorType",
+        "type": "uint8[]",
+        "internalType": "enum Structs.DonorType[]"
+      },
+      { "name": "_rules", "type": "string[]", "internalType": "string[]" },
+      { "name": "_date", "type": "uint256[]", "internalType": "uint256[]" },
+      { "name": "_time", "type": "uint256[]", "internalType": "uint256[]" },
+      {
+        "name": "_maxDonor",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "_minAmount",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "_maxAmount",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      },
+      {
+        "name": "_status",
+        "type": "uint8[]",
+        "internalType": "enum Structs.RequestStatus[]"
+      },
+      { "name": "_des", "type": "string[]", "internalType": "string[]" }
+    ],
+    "outputs": [
+      { "name": "_id", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "requestMaxDonor",
+    "inputs": [{ "name": "_id", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  { "type": "error", "name": "InvalidInitialization", "inputs": [] },
+  { "type": "error", "name": "NotInitializing", "inputs": [] }
+]

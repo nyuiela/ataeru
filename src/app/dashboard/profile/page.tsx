@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { Info, CheckCircle } from 'lucide-react';
+import { entryPointABI } from '@/contract/web3';
+import { entryPointAddress } from '@/contract/web3';
 
 interface UserProfile {
   name: string;
@@ -48,34 +50,56 @@ export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState<'personal' | 'medical' | 'sharing'>('personal');
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { data: userInfo } = useReadContract({
+    address: entryPointAddress as `0x${string}`,
+    account: address,
+    abi: entryPointABI,
+    functionName: 'getUserInfo',
+    args: [],
+  });
 
   useEffect(() => {
-    // In a real app, you would fetch user profile from the backend
-    // For now, we'll use mock data
+    console.log(userInfo);
     setProfile({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      phone: '+1 555-123-4567',
-      dateOfBirth: '1985-06-15',
-      address: '123 Blockchain Street',
-      city: 'Cryptoville',
-      country: 'United States',
-      medicalInfo: {
-        bloodType: 'O+',
-        allergies: 'None',
-        medicalConditions: 'None',
-      },
-      dataSharing: {
-        shareWithAI: true,
-        shareWithHospitals: true,
-        shareForResearch: false,
-      },
+      name: userInfo?.name as string,
+      email: userInfo?.email as string,
+      phone: userInfo?.contact as string,
+      // dateOfBirth: userInfo.dateOfBirth,
+      address: address as string,
+      city: userInfo?.location as string,
+      about: userInfo?.about as string,
+      // medicalInfo: userInfo.medicalInfo,
+      // dataSharing: userInfo.dataSharing,
     });
-  }, []);
+  }, [userInfo]);
+
+  // useEffect(() => {
+  //   // In a real app, you would fetch user profile from the backend
+  //   // For now, we'll use mock data
+  //   setProfile({
+  //     name: 'John Doe',
+  //     email: 'john.doe@example.com',
+  //     phone: '+1 555-123-4567',
+  //     dateOfBirth: '1985-06-15',
+  //     address: '123 Blockchain Street',
+  //     city: 'Cryptoville',
+  //     country: 'United States',
+  //     medicalInfo: {
+  //       bloodType: 'O+',
+  //       allergies: 'None',
+  //       medicalConditions: 'None',
+  //     },
+  //     dataSharing: {
+  //       shareWithAI: true,
+  //       shareWithHospitals: true,
+  //       shareForResearch: false,
+  //     },
+  //   });
+  // }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     if (name.includes('.')) {
       const [section, field] = name.split('.');
       setProfile(prev => {
@@ -99,7 +123,7 @@ export default function ProfilePage() {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     const [section, field] = name.split('.');
-    
+
     setProfile(prev => {
       const sectionKey = section as keyof typeof prev;
       return {
@@ -114,11 +138,11 @@ export default function ProfilePage() {
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    
+
     // In a real app, you would send the data to your backend
     // Simulating API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     setIsEditing(false);
     setIsSaving(false);
   };
@@ -168,7 +192,7 @@ export default function ProfilePage() {
             <div className="flex items-center">
               <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                 <span className="text-blue-800 font-semibold text-lg">
-                  {profile.name.split(' ').map(n => n[0]).join('')}
+                  {profile?.name?.split(' ').map(n => n[0]).join('')}
                 </span>
               </div>
             </div>
@@ -209,7 +233,7 @@ export default function ProfilePage() {
                   value={profile.name}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div>
@@ -221,7 +245,7 @@ export default function ProfilePage() {
                   value={profile.email}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div>
@@ -233,21 +257,10 @@ export default function ProfilePage() {
                   value={profile.phone}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
-              <div>
-                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  id="dateOfBirth"
-                  value={profile.dateOfBirth}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                />
-              </div>
+
               <div className="sm:col-span-2">
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
                 <input
@@ -257,7 +270,7 @@ export default function ProfilePage() {
                   value={profile.address}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div>
@@ -269,19 +282,18 @@ export default function ProfilePage() {
                   value={profile.city}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div>
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-                <input
-                  type="text"
-                  name="country"
-                  id="country"
-                  value={profile.country}
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700">About</label>
+                <textarea
+                  name="about"
+                  id="about"
+                  value={profile?.about}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div className="sm:col-span-2 pt-4 mt-2 border-t border-gray-200">
@@ -295,7 +307,7 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {activeSection === 'medical' && (
+          {/* {activeSection === 'medical' && (
             <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
               <div>
                 <label htmlFor="medicalInfo.bloodType" className="block text-sm font-medium text-gray-700">Blood Type</label>
@@ -305,7 +317,7 @@ export default function ProfilePage() {
                   value={profile.medicalInfo.bloodType}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 >
                   <option value="">Select Blood Type</option>
                   <option value="A+">A+</option>
@@ -328,7 +340,7 @@ export default function ProfilePage() {
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   placeholder={isEditing ? "List any allergies you have" : ""}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div className="sm:col-span-2">
@@ -341,7 +353,7 @@ export default function ProfilePage() {
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   placeholder={isEditing ? "List any medical conditions you have" : ""}
-                  className={`mt-1 block w-full border ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                 />
               </div>
               <div className="sm:col-span-2">
@@ -365,9 +377,9 @@ export default function ProfilePage() {
           {activeSection === 'sharing' && (
             <div>
               <p className="text-sm text-gray-500 mb-4">
-                Manage how your data is shared within the LifeSpring ecosystem. Sharing your data can improve your experience and may provide compensation through our data sharing program.
+                Manage how your data is shared within the Ataeru ecosystem. Sharing your data can improve your experience and may provide compensation through our data sharing program.
               </p>
-              
+
               <div className="mt-4 space-y-4">
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
@@ -392,7 +404,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -416,7 +428,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -441,7 +453,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6 bg-gray-50 p-4 rounded-md border border-gray-200">
                 <h3 className="text-sm font-medium text-gray-900">Data Compensation Program</h3>
                 <p className="mt-1 text-sm text-gray-500">
@@ -455,7 +467,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

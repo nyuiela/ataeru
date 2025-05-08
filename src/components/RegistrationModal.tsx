@@ -1,37 +1,99 @@
 'use client';
 
-import { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useEffect, useState } from 'react';
+import { useAccount, useReadContract } from 'wagmi';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/contexts/use-auth';
+import ContractButton from './contractButton';
+import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
+import web3 from 'web3';
+import { useTransactionModal } from '@/hooks/useTransactionModal';
+import TransactionModal from '@/components/TransactionModal';
+import { CheckCircle2 } from 'lucide-react';
+
+enum ReceiverType {
+  SPERMRECEIVER,
+  EGGRECEIVER,
+  SURROGATERECEIVER
+}
+
+interface RegistrationFormData {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  location: string;
+  contact: string;
+  about: string;
+  witnessHash: string;
+  receiverType: number;
+  documents: File[];
+}
+function fetchUserInfo(address: `0x${string}`) {
+  const userInfo = useReadContract({
+    abi: entryPointABI,
+    address: entryPointAddress as `0x${string}`,
+    account: address,
+    functionName: 'getUsernDonorInfo',
+    args: [address],
+  })
+  return userInfo;
+}
 
 export default function RegistrationModal() {
   const { isRegistrationModalOpen, closeRegistrationModal, completeOnboarding } = useAuth();
   const [selectedType, setSelectedType] = useState<'user' | 'hospital' | null>(null);
-  const [formData, setFormData] = useState({
+  const [registrationId, setRegistrationId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
     phone: '',
     address: '',
+    location: '',
+    contact: '',
+    about: '',
+    receiverType: 0,
+    witnessHash: '',
     documents: [] as File[],
   });
   const account = useAccount();
   const router = useRouter();
+  // const {
+  //   openModal,
+  //   modalProps,
+  // } = useTransactionModal({
+  //   contractAddress: process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS || '',
+  //   abi: entryPointABI,
+  //   onSuccess: (receipt) => {
+  //     console.log('Registration successful:', receipt);
+  //     // The bytes32 ID will be in the logs of the transaction receipt
+  //     const event = receipt.logs[0];
+  //     console.log("Event: ", event);
+  //     if (event) {
+  //       const id = event.data; // This will be the bytes32 ID
+  //       setRegistrationId(id);
+  //       console.log('Registration ID:', id);
+  //     }
+  //     setSelectedType(selectedType);
+  //   },
+  //   onError: (error) => {
+  //     console.error('Registration failed:', error);
+  //     // Handle error (e.g., show error notification)
+  //   },
+  // });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    // Complete onboarding process
-    completeOnboarding(selectedType as 'user' | 'hospital');
+  const isRegistered = useReadContract({
+    abi: entryPointABI,
+    address: entryPointAddress as `0x${string}`,
+    account: account.address,
+    functionName: 'isregistered',
+  })
+  const userInfo = fetchUserInfo(account.address as `0x${string}`);
+  console.log(userInfo.data);
+  console.log(isRegistered.data);
 
-    // Redirect to appropriate dashboard
-    if (selectedType === 'user') {
-      router.push('/ai/recommendations');
-    } else if (selectedType === 'hospital') {
-      router.push('/hospital/dashboard');
-    }
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -39,6 +101,58 @@ export default function RegistrationModal() {
         ...prev,
         documents: [...prev.documents, ...Array.from(e.target.files || [])]
       }));
+    }
+  };
+
+  const userArgs = [formData.name, formData.email, formData.address, web3.utils.padRight(`${formData.phone}`, 16), formData.about, web3.utils.padRight(`${formData.witnessHash}`, 32)]
+  const hospitalArgs = [account.address, formData.name, formData.email, formData.address, formData.about, formData.phone, web3.utils.padRight(`${formData.witnessHash}`, 32)]
+
+  const handleRegister = async (formData: RegistrationFormData) => {
+    try {
+      // Validate phone number
+      if (!/^\d{16}$/.test(formData.phone)) {
+        throw new Error('Phone number must be exactly 16 digits');
+      }
+
+      // Validate witness hash
+      const witnessHash = formData.witnessHash.startsWith('0x')
+        ? formData.witnessHash
+        : `0x${formData.witnessHash}`;
+
+      if (witnessHash.length !== 66) {
+        throw new Error('Witness hash must be 32 bytes (64 hex characters)');
+      }
+
+      // Prepare arguments based on registration type
+      const args = selectedType === 'user'
+        ? [
+          formData.name,
+          formData.email,
+          formData.address,
+          web3.utils.padRight(formData.phone, 16),
+          formData.about,
+          web3.utils.padRight(witnessHash, 32),
+          formData.receiverType
+        ]
+        : [
+          account.address, // _ha: address
+          formData.name, // _name: string
+          formData.email, // _email: string
+          formData.address, // _location: string
+          formData.about, // _about: string
+          BigInt(formData.phone), // _contact: uint256
+          witnessHash // _witnessHash: bytes32
+        ];
+
+      // Open transaction modal with appropriate function name
+      // openModal({
+      //   title: selectedType === 'user' ? 'Registering User' : 'Registering Hospital',
+      //   functionName: selectedType === 'user' ? 'registerUser' : 'registerHospital',
+      //   args,
+      // });
+    } catch (error) {
+      console.error('Registration error:', error);
+      // You might want to show an error message to the user here
     }
   };
 
@@ -124,7 +238,7 @@ export default function RegistrationModal() {
     );
   }
 
-  if (isRegistrationModalOpen && selectedType) {
+  if (isRegistrationModalOpen) {
     return (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
@@ -139,7 +253,10 @@ export default function RegistrationModal() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            // handleRegister(formData);
+          }} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {selectedType === 'user' ? 'Full Name' : 'Facility Name'}
@@ -167,6 +284,18 @@ export default function RegistrationModal() {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Witness Hash</label>
+              <input
+                type="text"
+                value={formData.witnessHash}
+                placeholder="witnesshash"
+                onChange={(e) => setFormData(prev => ({ ...prev, witnessHash: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
               <input
                 type="tel"
@@ -177,6 +306,20 @@ export default function RegistrationModal() {
                 required
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Type</label>
+              <select
+                value={String(formData.receiverType)}
+                onChange={(e) => setFormData(prev => ({ ...prev, receiverType: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value={0}>Sperm Receiver</option>
+                <option value={1}>Egg Receiver</option>
+                <option value={2}>Surrogate Receiver</option>
+              </select>
+            </div>
+
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
@@ -189,30 +332,44 @@ export default function RegistrationModal() {
                 required
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {selectedType === 'user' ? 'Identity Documents' : 'Hospital Documents'}
-              </label>
-              <input
-                type="file"
-                multiple
-                onChange={handleFileChange}
+              <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
+              <textarea
+                value={formData.about}
+                onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value }))}
+                placeholder={selectedType === 'user' ? "A short desc about yourself" : "Enter facility address"}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                accept=".pdf,.jpg,.jpeg,.png"
+                rows={3}
+                required
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Upload {selectedType === 'user' ? 'ID proof, medical records' : 'license, certifications, permits'}
-              </p>
             </div>
 
+            {selectedType === 'hospital' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {selectedType === 'hospital' ? 'Identity Documents' : 'Hospital Documents'}
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Upload {selectedType === 'hospital' ? 'license, certifications, permits' : 'ID proof, medical records'}
+                </p>
+              </div>
+            )}
+
             <div className="flex gap-4">
-              <button
-                type="submit"
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg hover:opacity-90"
-              >
-                Register
-              </button>
+              <ContractButton
+                contractAddress={contractAddresses.entryPointAddress as string}
+                abi={entryPointABI}
+                functionName={selectedType === 'user' ? 'registerUser' : 'registerHospital'}
+                // args={[formData.name, formData.email, formData.address, web3.utils.padRight(`${formData.phone}`, 16), formData.about, web3.utils.padRight(`${formData.witnessHash}`, 32), formData.receiverType]}
+                args={selectedType === 'user' ? userArgs : hospitalArgs}
+                buttonText="Register" title={''} description={''} />
               <button
                 type="button"
                 onClick={() => setSelectedType(null)}
@@ -222,7 +379,30 @@ export default function RegistrationModal() {
               </button>
             </div>
           </form>
+
+          {/* {status === 'success' && (
+            <div className="py-4">
+              <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto" />
+              <p className="mt-2 text-sm text-gray-900">Transaction successful!</p>
+              <p className="mt-1 text-xs text-gray-500">
+                Transaction hash: {hash?.slice(0, 6)}...{hash?.slice(-4)}
+              </p>
+              {registrationId && (
+                <p className="mt-2 text-sm text-gray-900">
+                  Registration ID: {registrationId.slice(0, 6)}...{registrationId.slice(-4)}
+                </p>
+              )}
+              <button
+                onClick={closeRegistrationModal}
+                className="mt-4 inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+              >
+                Close
+              </button>
+            </div>
+          )} */}
         </div>
+
+        {/* <TransactionModal {...modalProps} /> */}
       </div>
     );
   }

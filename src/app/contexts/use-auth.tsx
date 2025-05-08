@@ -25,36 +25,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userType, setUserType] = useState<UserType>(null);
   const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState<boolean>(false);
   const [isHospitalVerified, setIsHospitalVerified] = useState<boolean>(false);
-  const { isConnected } = useAccount();
 
-  // Check if wallet just connected and user is not onboarded
   useEffect(() => {
-    const shouldOpenModal = isConnected && !isOnboarded && !isRegistrationModalOpen;
-    if (shouldOpenModal) {
-      setIsRegistrationModalOpen(true);
-      localStorage.setItem('isRegistrationModalOpen', 'true');
-    }
-  }, [isConnected, isOnboarded, isRegistrationModalOpen]);
+    const onBoarded = localStorage.getItem('isOnboarded') === 'true';
+    setIsRegistrationModalOpen(true);
+    // }
+  }, [isOnboarded]);
 
-  // Load auth state from localStorage on component mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedUserType = localStorage.getItem('userType');
-      const savedOnboardingStatus = localStorage.getItem('isOnboarded');
-      const savedVerificationStatus = localStorage.getItem('isHospitalVerified');
-      const savedRegistrationModalStatus = localStorage.getItem('isRegistrationModalOpen');
-
-      if (savedUserType) setUserType(savedUserType as UserType);
-      if (savedOnboardingStatus) setIsOnboarded(savedOnboardingStatus === 'true');
-      if (savedVerificationStatus) setIsHospitalVerified(savedVerificationStatus === 'true');
-      if (savedRegistrationModalStatus) setIsRegistrationModalOpen(savedRegistrationModalStatus === 'true');
-    }
-  }, []);
 
   const openRegistrationModal = () => setIsRegistrationModalOpen(true);
   const closeRegistrationModal = () => {
+    // localStorage.setItem('isRegistrationModalOpen', 'false');
     setIsRegistrationModalOpen(false);
-    localStorage.setItem('isRegistrationModalOpen', 'false');
   };
 
   const completeOnboarding = (type: 'user' | 'hospital') => {

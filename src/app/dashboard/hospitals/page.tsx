@@ -4,12 +4,20 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, Star, BadgeCheck, ChevronRight, Building2 } from 'lucide-react';
+import { entryPointAddress } from '@/contract/web3';
+import { entryPointABI } from '@/contract/web3';
+import { useAccount, useReadContract } from 'wagmi';
 
 interface Hospital {
-  id: string;
+  // id: string;
   name: string;
   location: string;
-  rating: number;
+  hospitalAddress: string;
+  email: string;
+  contact: string;
+  about: string;
+  witnessHash: string;
+  // rating: number;
   specialties: string[];
   imageUrl: string;
   isFavorite: boolean;
@@ -22,73 +30,98 @@ export default function HospitalsPage() {
   const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [specialty, setSpecialty] = useState<string>('');
+  const { address } = useAccount();
+
+  const { data: hospitalList } = useReadContract({
+    address: entryPointAddress as `0x${string}`,
+    account: address,
+    abi: entryPointABI,
+    functionName: 'getHospitalList',
+    args: [],
+  });
+
+  console.log(hospitalList);
 
   useEffect(() => {
     // In a real app, you would fetch the list of hospitals from your backend
     // For now, we'll use mock data
-    setHospitals([
-      {
-        id: '1',
-        name: 'LifeSpring Main Center',
-        location: 'New York, NY',
-        rating: 4.8,
-        specialties: ['IVF', 'Egg Freezing', 'Surrogacy'],
-        imageUrl: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        isFavorite: true,
-        reviews: 128,
-        verified: true
-      },
-      {
-        id: '2',
-        name: 'CryoBank Facilities',
-        location: 'Los Angeles, CA',
-        rating: 4.5,
-        specialties: ['Sperm Donation', 'Egg Donation', 'Cryopreservation'],
-        imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        isFavorite: true,
-        reviews: 94,
-        verified: true
-      },
-      {
-        id: '3',
-        name: 'Fertility Plus Clinic',
-        location: 'Chicago, IL',
-        rating: 4.3,
-        specialties: ['IVF', 'Genetic Testing', 'Fertility Preservation'],
-        imageUrl: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        isFavorite: true,
-        reviews: 76,
-        verified: false
-      },
-      {
-        id: '4',
-        name: 'NextGen Reproductive Center',
-        location: 'Seattle, WA',
-        rating: 4.6,
-        specialties: ['Surrogacy', 'IUI', 'Fertility Testing'],
-        imageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    if (hospitalList) {
+      setHospitals((hospitalList as any).map((hospital: Hospital) => ({
+        ...hospital,
+        id: hospital.hospitalAddress,
+        reviews: 0,
+        rating: 0,
+        verified: false,
         isFavorite: false,
-        reviews: 62,
-        verified: true
-      },
-      {
-        id: '5',
-        name: 'Genesis Fertility Institute',
-        location: 'Boston, MA',
-        rating: 4.7,
-        specialties: ['IVF', 'ICSI', 'Egg Donation'],
-        imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        isFavorite: false,
-        reviews: 84,
-        verified: true
-      },
-    ]);
+        imageUrl: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        specialties: [],
+
+
+      })));
+    }
+    // setHospitals([
+    //   {
+    //     id: '1',
+    //     name: 'Ataeru Main Center',
+    //     location: 'New York, NY',
+    //     rating: 4.8,
+    //     specialties: ['IVF', 'Egg Freezing', 'Surrogacy'],
+    //     imageUrl: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    //     isFavorite: true,
+    //     reviews: 128,
+    //     verified: true
+    //   },
+    //   {
+    //     id: '2',
+    //     name: 'CryoBank Facilities',
+    //     location: 'Los Angeles, CA',
+    //     rating: 4.5,
+    //     specialties: ['Sperm Donation', 'Egg Donation', 'Cryopreservation'],
+    //     imageUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    //     isFavorite: true,
+    //     reviews: 94,
+    //     verified: true
+    //   },
+    //   {
+    //     id: '3',
+    //     name: 'Fertility Plus Clinic',
+    //     location: 'Chicago, IL',
+    //     rating: 4.3,
+    //     specialties: ['IVF', 'Genetic Testing', 'Fertility Preservation'],
+    //     imageUrl: 'https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    //     isFavorite: true,
+    //     reviews: 76,
+    //     verified: false
+    //   },
+    //   {
+    //     id: '4',
+    //     name: 'NextGen Reproductive Center',
+    //     location: 'Seattle, WA',
+    //     rating: 4.6,
+    //     specialties: ['Surrogacy', 'IUI', 'Fertility Testing'],
+    //     imageUrl: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    //     isFavorite: false,
+    //     reviews: 62,
+    //     verified: true
+    //   },
+    //   {
+    //     id: '5',
+    //     name: 'Genesis Fertility Institute',
+    //     location: 'Boston, MA',
+    //     rating: 4.7,
+    //     specialties: ['IVF', 'ICSI', 'Egg Donation'],
+    //     imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    //     isFavorite: false,
+    //     reviews: 84,
+    //     verified: true
+    //   },
+    // ]);
   }, []);
 
   const toggleFavorite = (id: string) => {
-    setHospitals(hospitals.map(hospital => 
-      hospital.id === id 
-        ? { ...hospital, isFavorite: !hospital.isFavorite } 
+    setHospitals(hospitals.map(hospital =>
+      hospital.id === id
+        ? { ...hospital, isFavorite: !hospital.isFavorite }
         : hospital
     ));
   };
@@ -96,18 +129,18 @@ export default function HospitalsPage() {
   const filteredHospitals = hospitals.filter(hospital => {
     // Filter by favorites if needed
     if (favoriteOnly && !hospital.isFavorite) return false;
-    
+
     // Filter by search term
-    if (searchTerm && !hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-        !hospital.location.toLowerCase().includes(searchTerm.toLowerCase())) {
+    if (searchTerm && !hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !hospital.location.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-    
+
     // Filter by specialty
     if (specialty && !hospital.specialties.some(s => s.toLowerCase() === specialty.toLowerCase())) {
       return false;
     }
-    
+
     return true;
   });
 
@@ -140,7 +173,7 @@ export default function HospitalsPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by name or location"
-              className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
             />
           </div>
           <div>
@@ -151,7 +184,7 @@ export default function HospitalsPage() {
               id="specialty"
               value={specialty}
               onChange={(e) => setSpecialty(e.target.value)}
-              className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-500"
             >
               <option value="">All Specialties</option>
               {allSpecialties.map((specialty) => (
@@ -188,7 +221,7 @@ export default function HospitalsPage() {
                   fill
                   className="object-cover"
                 />
-                <button 
+                <button
                   onClick={() => toggleFavorite(hospital.id)}
                   className="absolute top-2 right-2 h-8 w-8 bg-white bg-opacity-75 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all"
                 >
@@ -211,7 +244,7 @@ export default function HospitalsPage() {
                     <span className="ml-1 text-sm text-gray-500">({hospital.reviews})</span>
                   </div>
                 </div>
-                
+
                 <div className="mt-4">
                   <div className="flex flex-wrap gap-2">
                     {hospital.specialties.map((specialty) => (

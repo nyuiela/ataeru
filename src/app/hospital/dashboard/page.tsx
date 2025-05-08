@@ -6,10 +6,39 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/app/contexts/use-auth';
+import DonorRequestModal from '@/components/DonorRequestModal';
+import { useAccount, useReadContract } from 'wagmi';
+import { contractAddresses } from '@/contract/web3';
+import { hospitalRequestABI } from '@/contract/web3';
+
+// Add interfaces for donor request data
+interface DonorRequest {
+  donorType: number;
+  rules: string;
+  date: bigint;
+  time: bigint;
+  maxDonors: bigint;
+  minAmontpayment: bigint;
+  maxAmountPayment: bigint;
+  status: number;
+  requestDescription: string;
+  isActive: boolean;
+}
 
 // This component is shown when hospital is not verified
 function VerificationRequired() {
   const { setIsHospitalVerified } = useAuth();
+  const { address: account } = useAccount();
+  const { data: hospitalRequest } = useReadContract({
+    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    account: account as `0x${string}`,
+    abi: hospitalRequestABI,
+    functionName: 'getRequest',
+    args: ["1"],
+  });
+  console.log(hospitalRequest);
+
+
 
   const handleVerifyNow = () => {
     // This would normally be an API call or verification process
@@ -68,16 +97,66 @@ export default function HospitalDashboard() {
   const { isOnboarded, userType, isHospitalVerified, setIsHospitalVerified } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isDonorRequestModalOpen, setIsDonorRequestModalOpen] = useState(false);
+  const [donorRequests, setDonorRequests] = useState<DonorRequest[]>([]);
+  const [currentId, setCurrentId] = useState<number>(1);
+  const { address: account } = useAccount();
 
-  // Redirect if not onboarded or not a hospital
+  // Fetch donor requests
+  const { data: totalId } = useReadContract({
+    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    account: account as `0x${string}`,
+    abi: hospitalRequestABI,
+    functionName: 'id',
+  });
+  console.log(totalId);
+  const { data: currentRequest } = useReadContract({
+    address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+    account: account as `0x${string}`,
+    abi: hospitalRequestABI,
+    functionName: 'getRequest',
+    args: [totalId],
+  });
+
   useEffect(() => {
-    if (!isOnboarded || userType !== 'hospital') {
-      router.push('/');
+    setDonorRequests((prev) => [...prev, currentRequest as DonorRequest]);
+  }, [currentRequest]);
+
+  console.log(currentRequest);
+  // const { data: currentRequest } = useReadContract({
+  //   address: contractAddresses.hospitalRequestContractAddress as `0x${string}`,
+  //   account: account as `0x${string}`,
+  //   abi: hospitalRequestABI,
+  //   functionName: 'getRequest',
+  //   args: [currentId],
+  // });
+
+  // console.log(donorRequests);
+
+  const formatDate = (timestamp: bigint) => {
+    return new Date(Number(timestamp) * 1000).toLocaleDateString();
+  };
+
+  // Helper function to get donor type label
+  const getDonorTypeLabel = (type: number) => {
+    switch (type) {
+      case 0: return 'Sperm Donor';
+      case 1: return 'Egg Donor';
+      case 2: return 'Surrogate';
+      default: return 'Unknown';
     }
-    else {
-      setIsHospitalVerified(true)
+  };
+
+  // Helper function to get status label
+  const getStatusLabel = (status: number) => {
+    switch (status) {
+      case 0: return 'Pending';
+      case 1: return 'Accepted';
+      case 2: return 'Rejected';
+      case 3: return 'Completed';
+      default: return 'Unknown';
     }
-  }, [isOnboarded, userType, router, setIsHospitalVerified]);
+  };
 
   // For demonstration purposes - this would normally come from a database
   const donorStats = {
@@ -109,20 +188,20 @@ export default function HospitalDashboard() {
 
   // This would normally be a real function to add a new donor to the database
   const handleAddDonor = () => {
-    alert('Open donor registration form');
+    setIsDonorRequestModalOpen(true);
   };
 
-  if (!isHospitalVerified) {
-    return (
-      <div className="min-h-screen bg-white text-gray-800 flex flex-col">
-        <Header />
-        <main className="flex-grow">
-          <VerificationRequired />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  // if (!isHospitalVerified) {
+  //   return (
+  //     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
+  //       <Header />
+  //       <main className="flex-grow">
+  //         <VerificationRequired />
+  //       </main>
+  //       <Footer />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
@@ -236,8 +315,8 @@ export default function HospitalDashboard() {
                         </div>
                         <div className="flex items-center gap-3">
                           <span className={`text-xs px-2 py-1 rounded-full ${donation.status === 'Completed'
-                              ? 'bg-green-100 text-green-600'
-                              : 'bg-yellow-100 text-yellow-600'
+                            ? 'bg-green-100 text-green-600'
+                            : 'bg-yellow-100 text-yellow-600'
                             }`}>
                             {donation.status}
                           </span>
@@ -308,6 +387,102 @@ export default function HospitalDashboard() {
             </div>
           )}
 
+          {activeTab === 'donors' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-900">Donor Requests</h2>
+                <button
+                  onClick={() => setIsDonorRequestModalOpen(true)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  New Request
+                </button>
+              </div>
+
+              {/* Active Requests */}
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <h3 className="font-medium text-gray-900">Active Requests</h3>
+                </div>
+                <div className="divide-y divide-gray-200">
+                  {donorRequests && donorRequests
+                    .filter(request => request?.isActive)
+                    .map((request, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-gray-900">{getDonorTypeLabel(request.donorType)}</h4>
+                            <p className="text-sm text-gray-500 mt-1">{request.requestDescription}</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-600">
+                                Max Donors: {request.maxDonors.toString()}
+                              </span>
+                              <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600">
+                                Amount: {request.minAmontpayment.toString()} - {request.maxAmountPayment.toString()} ETH
+                              </span>
+                              <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-600">
+                                Date: {formatDate(request.date)}
+                              </span>
+                            </div>
+                          </div>
+                          <span className={`text-xs px-2 py-1 rounded-full ${request.status === 0 ? 'bg-yellow-100 text-yellow-600' :
+                            request.status === 1 ? 'bg-green-100 text-green-600' :
+                              request.status === 2 ? 'bg-red-100 text-red-600' :
+                                'bg-blue-100 text-blue-600'
+                            }`}>
+                            {getStatusLabel(request.status)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Inactive Requests */}
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <h3 className="font-medium text-gray-900">Inactive Requests</h3>
+                </div>
+                <div className="divide-y divide-gray-200">
+                  {donorRequests
+                    .filter(request => request?.isActive)
+                    .map((request, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-gray-900">{getDonorTypeLabel(request.donorType)}</h4>
+                            <p className="text-sm text-gray-500 mt-1">{request.requestDescription}</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-600">
+                                Max Donors: {request.maxDonors.toString()}
+                              </span>
+                              <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600">
+                                Amount: {request.minAmontpayment.toString()} - {request.maxAmountPayment.toString()} ETH
+                              </span>
+                              <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-600">
+                                Date: {formatDate(request.date)}
+                              </span>
+                            </div>
+                          </div>
+                          <span className={`text-xs px-2 py-1 rounded-full ${request.status === 0 ? 'bg-yellow-100 text-yellow-600' :
+                            request.status === 1 ? 'bg-green-100 text-green-600' :
+                              request.status === 2 ? 'bg-red-100 text-red-600' :
+                                'bg-blue-100 text-blue-600'
+                            }`}>
+                            {getStatusLabel(request.status)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab !== 'dashboard' && (
             <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Coming Soon</h3>
@@ -323,6 +498,12 @@ export default function HospitalDashboard() {
             </div>
           )}
         </div>
+
+        {/* Add the DonorRequestModal */}
+        <DonorRequestModal
+          isOpen={isDonorRequestModalOpen}
+          onClose={() => setIsDonorRequestModalOpen(false)}
+        />
       </main>
 
       <Footer />

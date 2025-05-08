@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  Upload, 
-  UserCheck, 
-  Award, 
-  FileText, 
-  FileSpreadsheet, 
-  File, 
-  Eye, 
+import {
+  Upload,
+  UserCheck,
+  Award,
+  FileText,
+  FileSpreadsheet,
+  File,
+  Eye,
   Zap,
   Info
 } from 'lucide-react';
@@ -40,10 +40,10 @@ export default function DocumentsPage() {
     // For now, we'll use mock data
     const fetchDocuments = async () => {
       setIsLoading(true);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setDocuments([
         {
           id: '1',
@@ -103,7 +103,7 @@ export default function DocumentsPage() {
           fileSize: '5.4 MB',
           fileUrl: '/documents/staff.pdf',
           verificationDetails: {
-            verifiedBy: 'LifeSpring Verification Team',
+            verifiedBy: 'Ataeru Verification Team',
             verifiedDate: '2023-07-28',
             transactionHash: '0x7e6f5d4c3b2a1c0b9a8b7c6d5e4f3a2b1c0d',
           },
@@ -115,20 +115,20 @@ export default function DocumentsPage() {
     fetchDocuments();
   }, []);
 
-  const filteredDocuments = activeTab === 'all' 
-    ? documents 
+  const filteredDocuments = activeTab === 'all'
+    ? documents
     : documents.filter(doc => doc.status === activeTab);
 
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
+
     const file = e.target.files[0];
     setIsUploading(true);
-    
+
     // In a real app, you would upload the file to your backend
     // For now, we'll simulate the upload
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Create a new document object
     const newDocument: Document = {
       id: Math.random().toString(36).substring(2, 11),
@@ -139,10 +139,10 @@ export default function DocumentsPage() {
       fileSize: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
       fileUrl: URL.createObjectURL(file),
     };
-    
+
     setDocuments([newDocument, ...documents]);
     setIsUploading(false);
-    
+
     // Reset file input
     e.target.value = '';
   };
@@ -169,9 +169,8 @@ export default function DocumentsPage() {
         <div className="mt-3 flex sm:mt-0 sm:ml-4">
           <label
             htmlFor="file-upload"
-            className={`ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-              isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
-            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            className={`ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${isUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
           >
             {isUploading ? (
               <>
@@ -205,11 +204,10 @@ export default function DocumentsPage() {
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           <button
             onClick={() => setActiveTab('all')}
-            className={`${
-              activeTab === 'all'
+            className={`${activeTab === 'all'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             All Documents
             <span className="ml-2 py-0.5 px-2.5 text-xs font-medium rounded-full bg-gray-100 text-gray-900">
@@ -218,11 +216,10 @@ export default function DocumentsPage() {
           </button>
           <button
             onClick={() => setActiveTab('verified')}
-            className={`${
-              activeTab === 'verified'
+            className={`${activeTab === 'verified'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Verified
             <span className="ml-2 py-0.5 px-2.5 text-xs font-medium rounded-full bg-green-100 text-green-900">
@@ -231,11 +228,10 @@ export default function DocumentsPage() {
           </button>
           <button
             onClick={() => setActiveTab('pending')}
-            className={`${
-              activeTab === 'pending'
+            className={`${activeTab === 'pending'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
             Pending Verification
             <span className="ml-2 py-0.5 px-2.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-900">
@@ -266,14 +262,14 @@ export default function DocumentsPage() {
                     </p>
                   </div>
                   <div className="ml-2 flex-shrink-0 flex">
-                    <span 
+                    <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${doc.status === 'verified' ? 'bg-green-100 text-green-800' : 
+                        ${doc.status === 'verified' ? 'bg-green-100 text-green-800' :
                           doc.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'}`}
+                            'bg-red-100 text-red-800'}`}
                     >
-                      {doc.status === 'verified' ? 'Verified' : 
-                       doc.status === 'pending' ? 'Pending' : 'Rejected'}
+                      {doc.status === 'verified' ? 'Verified' :
+                        doc.status === 'pending' ? 'Pending' : 'Rejected'}
                     </span>
                   </div>
                 </div>
@@ -281,12 +277,11 @@ export default function DocumentsPage() {
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-500">{doc.fileSize}</span>
                     {doc.expiryDate && (
-                      <span 
-                        className={`${
-                          new Date(doc.expiryDate) < new Date() 
-                            ? 'text-red-600' 
+                      <span
+                        className={`${new Date(doc.expiryDate) < new Date()
+                            ? 'text-red-600'
                             : 'text-gray-500'
-                        }`}
+                          }`}
                       >
                         Expires: {new Date(doc.expiryDate).toLocaleDateString()}
                       </span>
@@ -308,7 +303,7 @@ export default function DocumentsPage() {
                   </div>
                 )}
                 <div className="mt-4 flex space-x-3">
-                  <a 
+                  <a
                     href={doc.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"

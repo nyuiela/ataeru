@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -66,8 +65,8 @@ export default function DashboardLayout({
   ];
 
   // Combine navigation items based on user type
-  const combinedNavItems = userType === 'hospital' 
-    ? navigationItems 
+  const combinedNavItems = userType === 'hospital'
+    ? navigationItems
     : [...navigationItems, ...userItems];
 
   return (
@@ -79,8 +78,8 @@ export default function DashboardLayout({
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
                 <Link href="/" className="flex items-center gap-2">
-                  <Image src="/images/logo.svg" alt="LifeSpring Logo" width={32} height={32} className="h-8 w-8" />
-                  <span className="text-white text-xl font-semibold">LifeSpring</span>
+                  <Image src="/images/logo.svg" alt="Ataeru Logo" width={32} height={32} className="h-8 w-8" />
+                  <span className="text-white text-xl font-semibold">Ataeru</span>
                 </Link>
               </div>
               <nav className="mt-8 flex-1 px-2 space-y-1">
@@ -90,17 +89,15 @@ export default function DashboardLayout({
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                        isActive
-                          ? 'bg-blue-800 text-white'
-                          : 'text-blue-100 hover:bg-blue-600'
-                      }`}
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive
+                        ? 'bg-blue-800 text-white'
+                        : 'text-blue-100 hover:bg-blue-600'
+                        }`}
                     >
                       {item.icon && (
                         <item.icon
-                          className={`mr-3 h-5 w-5 ${
-                            isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
-                          }`}
+                          className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
+                            }`}
                         />
                       )}
                       {item.name}
@@ -121,17 +118,15 @@ export default function DashboardLayout({
                         <Link
                           key={item.name}
                           href={item.href}
-                          className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                            isActive
-                              ? 'bg-blue-800 text-white'
-                              : 'text-blue-100 hover:bg-blue-600'
-                          }`}
+                          className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive
+                            ? 'bg-blue-800 text-white'
+                            : 'text-blue-100 hover:bg-blue-600'
+                            }`}
                         >
                           {item.icon && (
                             <item.icon
-                              className={`mr-3 h-5 w-5 ${
-                                isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
-                              }`}
+                              className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
+                                }`}
                             />
                           )}
                           {item.name}
@@ -145,7 +140,104 @@ export default function DashboardLayout({
             <div className="flex-shrink-0 flex bg-blue-800 p-4">
               <div className="flex items-center w-full">
                 <div className="w-full">
-                  <ConnectButton showBalance={false} />
+                  <div className="flex items-center gap-3 sm:gap-6">
+                    <ConnectButton.Custom>
+                      {({
+                        account,
+                        chain,
+                        openAccountModal,
+                        openChainModal,
+                        openConnectModal,
+                        mounted,
+                      }) => {
+                        const ready = mounted;
+                        const connected = ready && account && chain;
+
+                        return (
+                          <div
+                            {...(!ready && {
+                              'aria-hidden': true,
+                              style: {
+                                opacity: 0,
+                                pointerEvents: 'none',
+                                userSelect: 'none',
+                              },
+                            })}
+                          >
+                            {(() => {
+                              if (!connected) {
+                                function handleWalletConnect() {
+                                  throw new Error('Function not implemented.');
+                                }
+
+                                return (
+                                  <button
+                                    onClick={() => {
+                                      openConnectModal();
+                                      handleWalletConnect();
+                                    }}
+                                    className="text-sm bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90 flex items-center gap-2"
+                                  >
+                                    Connect Wallet <span>↗</span>
+                                  </button>
+                                );
+                              }
+
+                              if (chain.unsupported) {
+                                return (
+                                  <button
+                                    onClick={openChainModal}
+                                    className="text-sm bg-red-500 text-white px-4 sm:px-5 py-2 rounded-full hover:opacity-90"
+                                  >
+                                    Wrong network
+                                  </button>
+                                );
+                              }
+
+                              return (
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={openChainModal}
+                                    className="text-sm bg-gray-100 text-gray-800 px-2 sm:px-5 py-2 rounded-full hover:bg-gray-200 flex items-center gap-2"
+                                  >
+                                    {chain.hasIcon && (
+                                      <div
+                                        style={{
+                                          background: chain.iconBackground,
+                                          width: 10,
+                                          height: 10,
+                                          borderRadius: 999,
+                                          overflow: 'hidden',
+                                        }}
+                                      >
+                                        {chain.iconUrl && (
+                                          <Image
+                                            alt={chain.name ?? 'Chain icon'}
+                                            src={chain.iconUrl}
+                                            width={12}
+                                            height={12}
+                                          />
+                                        )}
+                                      </div>
+                                    )}
+                                    {/* {chain.name} */}
+                                  </button>
+
+                                  <button
+                                    onClick={openAccountModal}
+                                    className="text-sm bg-gray-100 text-gray-800 px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200"
+                                  >
+                                    {account.displayName}
+                                  </button>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        );
+                      }}
+                    </ConnectButton.Custom>
+                  </div>
+                  {/* <ConnectButton showBalance={false} /> */}
                 </div>
               </div>
             </div>
@@ -159,11 +251,10 @@ export default function DashboardLayout({
       </div>
 
       <div
-        className={`fixed inset-y-0 left-0 flex flex-col z-40 w-72 transition duration-300 transform bg-blue-700 md:hidden ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 flex flex-col z-40 w-72 transition duration-300 transform bg-blue-700 md:hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
-        <div className="absolute top-0 right-0 -mr-12 pt-2">
+        {/* <div className="absolute top-0 right-0 -mr-12 pt-2">
           <button
             className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             onClick={() => setIsSidebarOpen(false)}
@@ -171,12 +262,12 @@ export default function DashboardLayout({
             <span className="sr-only">Close sidebar</span>
             <X className="h-6 w-6 text-white" />
           </button>
-        </div>
+        </div> */}
         <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
           <div className="flex-shrink-0 flex items-center px-4">
             <Link href="/" className="flex items-center gap-2">
-              <Image src="/images/logo.svg" alt="LifeSpring Logo" width={32} height={32} className="h-8 w-8" />
-              <span className="text-white text-xl font-semibold">LifeSpring</span>
+              <Image src="/images/logo.svg" alt="Ataeru Logo" width={32} height={32} className="h-8 w-8" />
+              <span className="text-white text-xl font-semibold">Ataeru</span>
             </Link>
           </div>
           <nav className="mt-5 px-2 space-y-1">
@@ -186,16 +277,14 @@ export default function DashboardLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                    isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
-                  }`}
+                  className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
+                    }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   {item.icon && (
                     <item.icon
-                      className={`mr-3 h-5 w-5 ${
-                        isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
-                      }`}
+                      className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
+                        }`}
                     />
                   )}
                   {item.name}
@@ -216,16 +305,14 @@ export default function DashboardLayout({
                     <Link
                       key={item.name}
                       href={item.href}
-                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                        isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
-                      }`}
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${isActive ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-600'
+                        }`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
                       {item.icon && (
                         <item.icon
-                          className={`mr-3 h-5 w-5 ${
-                            isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
-                          }`}
+                          className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-blue-300 group-hover:text-white'
+                            }`}
                         />
                       )}
                       {item.name}

@@ -1,0 +1,37 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_contract", "type": "address", "internalType": "address" },
+      {
+        "name": "_hospitalAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "_maxDonor", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "requestContract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract HospitalRequestContract"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  { "type": "error", "name": "FailedDeployment", "inputs": [] },
+  {
+    "type": "error",
+    "name": "InsufficientBalance",
+    "inputs": [
+      { "name": "balance", "type": "uint256", "internalType": "uint256" },
+      { "name": "needed", "type": "uint256", "internalType": "uint256" }
+    ]
+  }
+]
