@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'via.placeholder.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'kjkhospital.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'geneticclinic.com.au',
+      },
     ],
   },
 };

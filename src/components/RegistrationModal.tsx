@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import Image from 'next/image';
 import { useAuth } from '@/app/contexts/use-auth';
-import ContractButton from './contractButton';
 import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
 import web3 from 'web3';
 
@@ -28,7 +28,7 @@ interface RegistrationFormData {
 }
 
 export default function RegistrationModal() {
-  const { isRegistrationModalOpen, closeRegistrationModal } = useAuth();
+  const { isRegistrationModalOpen, closeRegistrationModal, completeOnboarding } = useAuth();
   const [selectedType, setSelectedType] = useState<'user' | 'hospital' | null>(null);
   const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
@@ -147,11 +147,25 @@ export default function RegistrationModal() {
   //   }
   // };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Store registration data in localStorage
+    localStorage.setItem('userRegistration', JSON.stringify({
+      type: selectedType,
+      ...formData,
+      timestamp: new Date().toISOString()
+    }));
+
+    // Complete onboarding through context
+    completeOnboarding(selectedType as 'user' | 'hospital');
+    closeRegistrationModal();
+  };
+
   if (!isRegistrationModalOpen) return null;
 
   if (isRegistrationModalOpen && !account.isConnected) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Please Connect Your Wallet</h2>
           <p className="text-gray-600 mb-6">You need to connect your wallet to proceed with registration.</p>
@@ -168,7 +182,7 @@ export default function RegistrationModal() {
 
   if (!selectedType) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">Select Account Type</h2>
@@ -231,136 +245,142 @@ export default function RegistrationModal() {
 
   if (isRegistrationModalOpen) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-        <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">
-              {selectedType === 'user' ? 'User Registration' : 'Hospital Registration'}
-            </h2>
-            <button onClick={closeRegistrationModal} className="text-gray-500 hover:text-gray-700">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
+        <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl max-h-[90vh] flex flex-col">
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900">
+                {selectedType === 'user' ? 'User Registration' : 'Hospital Registration'}
+              </h2>
+              <button onClick={closeRegistrationModal} className="text-gray-500 hover:text-gray-700">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            // handleRegister(formData);
-          }} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {selectedType === 'user' ? 'Full Name' : 'Facility Name'}
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                placeholder={selectedType === 'user' ? "Enter your full name" : "Enter facility name"}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                placeholder="Enter email address"
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Witness Hash</label>
-              <input
-                type="text"
-                value={formData.witnessHash}
-                placeholder="witnesshash"
-                onChange={(e) => setFormData(prev => ({ ...prev, witnessHash: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                placeholder="Enter phone number"
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Type</label>
-              <select
-                value={String(formData.receiverType)}
-                onChange={(e) => setFormData(prev => ({ ...prev, receiverType: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              >
-                <option value={0}>Sperm Receiver</option>
-                <option value={1}>Egg Receiver</option>
-                <option value={2}>Surrogate Receiver</option>
-              </select>
-            </div>
-
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <textarea
-                value={formData.address}
-                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                placeholder={selectedType === 'user' ? "Enter your address" : "Enter facility address"}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows={3}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
-              <textarea
-                value={formData.about}
-                onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value }))}
-                placeholder={selectedType === 'user' ? "A short desc about yourself" : "Enter facility address"}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows={3}
-                required
-              />
-            </div>
-
-            {selectedType === 'hospital' && (
+          <div className="overflow-y-auto flex-1 p-6">
+            <form id="registrationForm" onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {selectedType === 'hospital' ? 'Identity Documents' : 'Hospital Documents'}
+                  {selectedType === 'user' ? 'Full Name' : 'Facility Name'}
                 </label>
                 <input
-                  type="file"
-                  multiple
-                  onChange={handleFileChange}
+                  type="text"
+                  value={formData.name}
+                  placeholder={selectedType === 'user' ? "Enter your full name" : "Enter facility name"}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  accept=".pdf,.jpg,.jpeg,.png"
+                  required
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Upload {selectedType === 'hospital' ? 'license, certifications, permits' : 'ID proof, medical records'}
-                </p>
               </div>
-            )}
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  placeholder="Enter email address"
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Witness Hash</label>
+                <input
+                  type="text"
+                  value={formData.witnessHash}
+                  placeholder="witnesshash"
+                  onChange={(e) => setFormData(prev => ({ ...prev, witnessHash: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  placeholder="Enter phone number"
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                  maxLength={10}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Type</label>
+                <select
+                  value={String(formData.receiverType)}
+                  onChange={(e) => setFormData(prev => ({ ...prev, receiverType: parseInt(e.target.value) }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value={0}>Sperm Receiver</option>
+                  <option value={1}>Egg Receiver</option>
+                  <option value={2}>Surrogate Receiver</option>
+                  <option value={3}>Does Not Apply</option>
+                </select>
+              </div>
+
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <textarea
+                  value={formData.address}
+                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder={selectedType === 'user' ? "Enter your address" : "Enter facility address"}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
+                <textarea
+                  value={formData.about}
+                  onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value }))}
+                  placeholder={selectedType === 'user' ? "A short desc about yourself" : "Enter facility address"}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows={3}
+                  required
+                />
+              </div>
+
+              {selectedType === 'hospital' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {selectedType === 'hospital' ? 'Identity Documents' : 'Hospital Documents'}
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Upload {selectedType === 'hospital' ? 'license, certifications, permits' : 'ID proof, medical records'}
+                  </p>
+                </div>
+              )}
+            </form>
+          </div>
+
+          <div className="border-t border-gray-200 p-6">
             <div className="flex gap-4">
-              <ContractButton
-                contractAddress={contractAddresses.entryPointAddress as string}
-                abi={entryPointABI}
-                functionName={selectedType === 'user' ? 'registerUser' : 'registerHospital'}
-                // args={[formData.name, formData.email, formData.address, web3.utils.padRight(`${formData.phone}`, 16), formData.about, web3.utils.padRight(`${formData.witnessHash}`, 32), formData.receiverType]}
-                args={selectedType === 'user' ? userArgs : hospitalArgs}
-                buttonText="Register" title={''} description={''} />
+              <button
+                type="submit"
+                form="registrationForm" // This tells the button which form to submit
+                onClick={handleSubmit}  // Add this onClick handler
+                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Register
+              </button>
               <button
                 type="button"
                 onClick={() => setSelectedType(null)}
@@ -369,31 +389,8 @@ export default function RegistrationModal() {
                 Back
               </button>
             </div>
-          </form>
-
-          {/* {status === 'success' && (
-            <div className="py-4">
-              <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto" />
-              <p className="mt-2 text-sm text-gray-900">Transaction successful!</p>
-              <p className="mt-1 text-xs text-gray-500">
-                Transaction hash: {hash?.slice(0, 6)}...{hash?.slice(-4)}
-              </p>
-              {registrationId && (
-                <p className="mt-2 text-sm text-gray-900">
-                  Registration ID: {registrationId.slice(0, 6)}...{registrationId.slice(-4)}
-                </p>
-              )}
-              <button
-                onClick={closeRegistrationModal}
-                className="mt-4 inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-              >
-                Close
-              </button>
-            </div>
-          )} */}
+          </div>
         </div>
-
-        {/* <TransactionModal {...modalProps} /> */}
       </div>
     );
   }

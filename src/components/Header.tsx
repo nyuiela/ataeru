@@ -3,15 +3,16 @@ import Image from 'next/image';
 import MobileMenu from '@/components/MobileMenu';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import RegistrationModal from './RegistrationModal';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
+import Link from 'next/link';
 
 interface HeaderProps {
   handleScrollToSection?: (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => void;
 }
 
 export default function Header({ handleScrollToSection }: HeaderProps) {
-  const router = useRouter();
+  // const router = useRouter();
   const { isConnected } = useAccount();
 
   // const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
@@ -57,7 +58,14 @@ export default function Header({ handleScrollToSection }: HeaderProps) {
             <a href="#services" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection?.(e, 'services')}>Services</a>
             <a href="#about" className="text-sm hover:text-blue-600" onClick={(e) => handleScrollToSection?.(e, 'about')}>About Us</a>
             {isConnected && (
-              <a href="#contact" className="text-sm hover:text-blue-600" onClick={() => router.push('/dashboard')}>Dashboard</a>
+              <Link href='/dashboard' prefetch className="text-sm hover:text-blue-600">
+                Dashboard
+              </Link>
+            )}
+            {isConnected && (
+              <Link href='/booking' prefetch className="text-sm hover:text-blue-600">
+                Booking
+              </Link>
             )}
           </div>
         </div>

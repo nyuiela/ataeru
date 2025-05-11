@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DonorRequestModal from '@/components/DonorRequestModal';
 import { useAccount, useReadContract } from 'wagmi';
-import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
+import { entryPointABI, entryPointAddress } from '@/contract/web3';
 import { hospitalRequestABI } from '@/contract/web3';
 
 // Add interfaces for donor request data
@@ -220,7 +219,6 @@ export default function HospitalDashboard() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
-      {/* <Header /> */}
 
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">

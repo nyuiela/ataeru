@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import RainbowProvider from "./contexts/rainbowkit";
+import { Toaster } from "sonner";
 
 // Load Outfit font with all necessary weights and styles
 const outfit = Outfit({
@@ -47,6 +48,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <RainbowProvider>
+          <Toaster />
           {children}
         </RainbowProvider>
       </body>

@@ -50,6 +50,7 @@ export default function DashboardLayout({
     { name: 'NFTs', href: '/dashboard/nfts', icon: ImageIcon },
     { name: 'History', href: '/dashboard/history', icon: Clock },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+    { name: 'Booking', href: '/dashboard/booking', icon: Settings },
   ];
 
   // User-specific navigation items

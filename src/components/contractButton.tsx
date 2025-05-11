@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTransactionModal } from '@/hooks/useTransactionModal';
 import TransactionModal from '@/components/TransactionModal';
 import { useState } from 'react';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -103,7 +104,7 @@ export default function NFTsPage() {
           id: '4',
           name: 'Egg Freezing Package',
           description: 'This NFT represents your purchased egg freezing treatment and storage.',
-          image: 'https://images.unsplash.com/photo-1614252369475-531eba7d4076?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          image: 'https://kjkhospital.com/wp-content/uploads/2019/02/Egg_Freezing-960x648-1-768x518.jpg',
           type: 'treatment',
           status: 'active',
           expiryDate: '2025-10-15',

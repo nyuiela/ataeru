@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import Image from 'next/image';
+// import Image from 'next/image';
 import ContractButton from './contractButton';
 import { contractAddresses, healthDataNftABI } from '@/contract/web3';
 
