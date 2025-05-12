@@ -44,6 +44,38 @@
   },
   {
     "type": "function",
+    "name": "getNftDetails",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct MarketPlace.NFTSellDetails[]",
+        "components": [
+          {
+            "name": "nftOwner",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "setTimeStamp",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "price", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "saleEpoch",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "sold", "type": "bool", "internalType": "bool" }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getOnSale",
     "inputs": [],
     "outputs": [
