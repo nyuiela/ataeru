@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ImageIcon } from 'lucide-react';
@@ -28,6 +28,15 @@ interface NFTAsset {
   }[];
 }
 
+interface NFTAssetWithURI {
+  nftOwner: string;
+  price: bigint;
+  saleEpoch: bigint;
+  setTimeStamp: bigint;
+  sold: boolean;
+  uri: string;
+}
+
 export default function NFTsPage() {
   const [nfts, setNfts] = useState<NFTAsset[]>([]);
   const [activeTab, setActiveTab] = useState<'all' | 'treatment' | 'donation' | 'surrogacy'>('all');
@@ -41,80 +50,50 @@ export default function NFTsPage() {
   const { data: NftData } = useReadContract({
     address: contractAddresses.marketplaceAddress as `0x${string}`,
     abi: marketplaceABI,
+    account: address as `0x${string}`,
     functionName: 'getNftDetails',
     args: [],
   });
+  console.log(NftData);
 
+  // const fetchNftDetails = useCallback(async (uri: string) => {
+  //   const cid = uri.split('/').pop();
+  //   console.log(cid);
+  //   const nftDetails = await fetch(`/api/file?cid=${cid}`);
+  //   console.log(await nftDetails.json());
+  // }, []);
   useEffect(() => {
-    // In a real app, you would fetch the NFTs from your backend or blockchain
-    // For now, we'll use mock data
-    const fetchNfts = async () => {
-      setIsLoading(true);
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setNfts([
-        {
-          id: '1',
-          name: 'Premium IVF Treatment Package',
-          description: 'This NFT represents your purchased IVF treatment package with 3 cycles included.',
-          image: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-          type: 'treatment',
-          status: 'listed',
-          price: '0.5',
-          seller: '0x1234...5678',
-          contractAddress: '0x1234...5678',
-          tokenId: '42',
-          attributes: [
-            { name: 'Treatment Type', value: 'IVF' },
-            { name: 'Cycles', value: '3' },
-            { name: 'Includes Medication', value: 'Yes' },
-            { name: 'Genetic Testing', value: 'Included' }
-          ]
-        },
-        {
-          id: '2',
-          name: 'Sperm Donation Certificate',
-          description: 'This NFT certifies your participation in the Ataeru sperm donation program.',
-          image: 'https://images.unsplash.com/photo-1567427013953-88102117053a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-          type: 'donation',
-          status: 'active',
-          contractAddress: '0x8765...4321',
-          tokenId: '17',
-          attributes: [
-            { name: 'Donation Date', value: '2023-09-15' },
-            { name: 'Donation Center', value: 'Ataeru Main Center' },
-            { name: 'Donor ID', value: 'SPD-2023-0721' },
-            { name: 'Quality Rating', value: 'Premium' }
-          ]
-        },
-        {
-          id: '3',
-          name: 'Surrogacy Smart Contract',
-          description: 'This NFT represents your surrogacy agreement with milestone-based payment releases.',
-          image: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-          type: 'surrogacy',
-          status: 'listed',
-          price: '1.2',
-          seller: '0x5678...9012',
-          contractAddress: '0x5678...9012',
-          tokenId: '89',
-          attributes: [
-            { name: 'Agreement Date', value: '2023-08-01' },
-            { name: 'Intended Parents', value: 'Anonymous' },
-            { name: 'Surrogate ID', value: 'SUR-2023-0458' },
-            { name: 'Compensation', value: '50,000 USD (in ETH)' }
-          ]
-        }
-      ]);
-      console.log(NftData);
-      setNfts(NftData as NFTAsset[]);
-      setIsLoading(false);
+    setIsLoading(true);
+    const fetchNftDetails = async (uri: string) => {
+      const json = await fetch(uri);
+      const data = await json.json();
+      console.log(data);
+      return data;
     };
-
-    fetchNfts();
-  }, []);
+    if (NftData && (NftData as NFTAssetWithURI[]).length > 0) {
+      for (const nft of NftData as NFTAssetWithURI[]) {
+        async function getDetails(uri: string) {
+          const data: any = await fetchNftDetails(uri);
+          setNfts((prevNfts) => [{
+            ...nft,
+            id: "0",
+            name: data.name,
+            description: data.description,
+            image: data.healthRecords[0],
+            type: data.type,
+            status: nft.sold ? "active" : "redeemed",
+            price: nft.price.toString(),
+            seller: nft.nftOwner,
+            contractAddress: "0x0000000000000000000000000000000000000000",
+            tokenId: "0",
+            attributes: data.attributes,
+          }]);
+          setIsLoading(false);
+        }
+        getDetails(nft.uri);
+      }
+    }
+  }, [NftData]);
 
   const filteredNfts = activeTab === 'all'
     ? nfts
@@ -244,7 +223,7 @@ export default function NFTsPage() {
 
                 <div className="mt-3">
                   <p className="text-xs text-gray-500">
-                    Contract: {nft.contractAddress.substring(0, 6)}...{nft.contractAddress.substring(nft.contractAddress.length - 4)}
+                    {/* Contract: {nft.contractAddress.substring(0, 6)}...{nft.contractAddress.substring(nft.contractAddress.length - 4)} */}
                   </p>
                   <p className="text-xs text-gray-500">
                     Token ID: {nft.tokenId}

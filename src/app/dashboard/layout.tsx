@@ -31,10 +31,10 @@ export default function DashboardLayout({
 
   useEffect(() => {
     // Check if user is connected
-    if (!isConnected) {
-      router.push('/');
-      return;
-    }
+    // if (!isConnected) {
+    //   router.push('/');
+    //   return;
+    // }
 
     // In a real app, you would fetch the user type from your backend
     // For now, we'll check localStorage or default to 'user'

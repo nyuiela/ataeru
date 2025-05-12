@@ -77,7 +77,7 @@ export default function BuyNFTModal({ isOpen, onClose, nftId, price, nftDetails 
         <div className="mt-4">
           <ContractButton
             contractAddress={contractAddresses.marketplaceAddress}
-            abi={marketplaceABI}
+            abi={marketplaceABI} d
             functionName="buy"
             args={[nftId]}
             buttonText="Purchase NFT"

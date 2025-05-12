@@ -25,6 +25,7 @@ export default function SellNFTModal({ isOpen, onClose, nftId, nftDetails }: Sel
   const [price, setPrice] = useState('');
   const [id, setNftId] = useState(nftId);
   const [isLoading, setIsLoading] = useState(false);
+  console.log(id)
 
   if (!isOpen) return null;
 
@@ -118,6 +119,17 @@ export default function SellNFTModal({ isOpen, onClose, nftId, nftDetails }: Sel
               buttonText="List for Sale"
               title="List NFT for Sale"
               description="List your NFT on the marketplace"
+              onBeforeMint={handleSell}
+              disabled={!price || parseFloat(price) <= 0}
+            />
+            <ContractButton
+              contractAddress={contractAddresses.healthDataNftAddress}
+              abi={healthDataNftABI}
+              functionName="approve"
+              args={[contractAddresses.marketplaceAddress, id]}
+              buttonText="Approve NFT"
+              title="Approve NFT"
+              description="Approve the marketplace to transfer your NFT"
               onBeforeMint={handleSell}
               disabled={!price || parseFloat(price) <= 0}
             />

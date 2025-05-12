@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'via.placeholder.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'coral-worrying-turtle-782.mypinata.cloud',
+      },
     ],
   },
 };

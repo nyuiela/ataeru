@@ -16,3 +16,17 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const cid = searchParams.get("cid");
+  if (!cid) {
+    return NextResponse.json({ error: "CID is required" }, { status: 400 });
+  }
+  const url = await pinata.gateways.public.convert(cid as string);
+
+  const json = await fetch(url);
+  const data = await json.json();
+  return NextResponse.json(data, { status: 200 });
+}

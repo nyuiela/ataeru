@@ -38,6 +38,7 @@
       },
       { "name": "price", "type": "uint256", "internalType": "uint256" },
       { "name": "saleEpoch", "type": "uint256", "internalType": "uint256" },
+      { "name": "uri", "type": "string", "internalType": "string" },
       { "name": "sold", "type": "bool", "internalType": "bool" }
     ],
     "stateMutability": "view"
@@ -68,6 +69,7 @@
             "type": "uint256",
             "internalType": "uint256"
           },
+          { "name": "uri", "type": "string", "internalType": "string" },
           { "name": "sold", "type": "bool", "internalType": "bool" }
         ]
       }
@@ -102,6 +104,18 @@
     "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
     "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "onERC721Received",
+    "inputs": [
+      { "name": "operator", "type": "address", "internalType": "address" },
+      { "name": "from", "type": "address", "internalType": "address" },
+      { "name": "tokenId", "type": "uint256", "internalType": "uint256" },
+      { "name": "data", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
