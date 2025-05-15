@@ -511,7 +511,7 @@ const Dashboard: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function getServerSideProps({ req }) {
+export const getBookingServerSideProps = withSessionSsr(async function getBookingServerSideProps({ req }) {
   const user = req.session.user;
   
   if (!user) {

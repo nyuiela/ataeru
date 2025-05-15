@@ -69,21 +69,24 @@ export class VeridaService {
   async init() {
     if (this.authToken) return;
 
-    // Try to get token from localStorage first
-    const savedToken = localStorage.getItem('veridaToken');
-    if (savedToken) {
-      this.authToken = savedToken;
-      return;
-    }
-
-    // If no token in localStorage, try to get from session API
     try {
+      // First check localStorage
+      const savedToken = localStorage.getItem('veridaToken');
+      if (savedToken) {
+        this.authToken = savedToken;
+        return;
+      }
+
+      // Then check session API
       const response = await fetch('/api/fertility-ai/auth/verida/token');
       const data = await response.json();
       
-      if (data.token) {
+      if (data.success && data.token) {
         this.authToken = data.token;
+        // Also store in localStorage
         localStorage.setItem('veridaToken', data.token);
+      } else {
+        throw new Error('No auth token available');
       }
     } catch (error) {
       console.error('Error initializing Verida service:', error);
@@ -195,7 +198,7 @@ export class VeridaService {
     try {
       const response = await axios({
         method: 'POST',
-        url: `${this.baseUrl}/ds/create/${schemaUrlEncoded}`,
+        url: `${this.baseUrl}/ds/save/${schemaUrlEncoded}`,
         data: {
           document: {
             ...eventData,

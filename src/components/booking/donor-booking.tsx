@@ -264,6 +264,22 @@ const DonorBookingForm: React.FC<DonorBookingFormProps> = ({
                     date.getDay() === 0 || date.getDay() === 6 
                   }
                   className="mx-auto"
+                  classNames={{
+                    day_selected: "bg-blue-800 text-white hover:bg-blue-900 hover:text-white focus:bg-blue-800 focus:text-white",
+                    day_today: "bg-gray-100 text-gray-900 font-bold",
+                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-100 rounded-md",
+                    day_disabled: "text-gray-300 opacity-50 hover:bg-transparent",
+                    day_range_middle: "aria-selected:bg-blue-50",
+                    day_hidden: "invisible",
+                    caption: "flex justify-center py-2 mb-4 relative items-center",
+                    caption_label: "text-base font-medium",
+                    nav: "space-x-1 flex items-center",
+                    nav_button: "h-8 w-8 bg-blue-50 hover:bg-blue-100 p-0 rounded-md",
+                    table: "w-full border-collapse space-y-1",
+                    head_row: "flex justify-between mb-2",
+                    head_cell: "text-gray-500 rounded-md w-9 font-medium text-xs",
+                    row: "flex w-full justify-between mt-2",
+                  }}
                 />
                 {aiRecommendation && (
                   <div className="p-3 bg-blue-50 border border-blue-200 rounded-md text-sm">
@@ -313,7 +329,7 @@ const DonorBookingForm: React.FC<DonorBookingFormProps> = ({
                 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="purpose">Purpose of Donation</Label>
+                    <Label htmlFor="purpose" className='mb-4'>Purpose of Donation</Label>
                     <Select value={purpose} onValueChange={setPurpose} required>
                       <SelectTrigger>
                         <SelectValue placeholder="Select purpose" />
@@ -334,7 +350,7 @@ const DonorBookingForm: React.FC<DonorBookingFormProps> = ({
                       placeholder="Any special requirements or information we should know"
                       value={additionalNotes}
                       onChange={(e) => setAdditionalNotes(e.target.value)}
-                      className="min-h-[100px] resize-none"
+                      className="min-h-[100px] resize-none mt-4"
                     />
                   </div>
                 </div>

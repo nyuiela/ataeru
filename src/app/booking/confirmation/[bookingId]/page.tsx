@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -307,7 +309,7 @@ const BookingConfirmation: NextPage<BookingConfirmationProps> = ({ bookingId: in
   );
 };
 
-export const getServerSideProps = withSessionSsr(async function ({ req, params }) {
+export const getBookingServerSideProps = withSessionSsr(async function ({ req, params }) {
   const user = req.session.user;
   const { bookingId } = params || {};
   

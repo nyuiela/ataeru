@@ -4,7 +4,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { withSessionRoute } from '@/lib/verida-session';
 import { RequestWithSession } from '@/lib/utils';
-
+import { NextRequest } from 'next/server';
+import { checkAvailabilityHandler } from '@/lib/handlers/check-availability-handler';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const sessionRequest = req as RequestWithSession;
@@ -140,4 +141,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withSessionRoute(handler);
+withSessionRoute(handler);
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const startDate = searchParams.get('startDate') || undefined;
+  const endDate = searchParams.get('endDate') || undefined;
+
+  return checkAvailabilityHandler(startDate, endDate);
+}

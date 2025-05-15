@@ -1,11 +1,6 @@
-import { NextResponse } from 'next/server';
-import { IronSession } from 'iron-session';
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import VeridaService from '@/lib/services/verida/verida-service';
-import { NextApiRequest } from 'next';
-
-interface SessionData {
-  veridaToken?: string;
-}
 
 interface BookingRequest {
   startDate: string;
@@ -15,37 +10,35 @@ interface BookingRequest {
   purpose: string;
 }
 
-interface RequestWithSession extends NextApiRequest {
-  json(): unknown;
-  session: IronSession<SessionData>;
-}
+export const dynamic = 'force-dynamic';
 
-
-export async function POST(req: RequestWithSession) {
+export async function POST(request: NextRequest) {
   try {
-    if (!req.session.veridaToken) {
+    const veridaToken = (await cookies()).get('verida_token')?.value;
+    
+    if (!veridaToken) {
       return NextResponse.json(
         { error: 'Not authenticated with Verida' },
         { status: 401 }
       );
     }
 
-    const body = await req.json() as BookingRequest;
+    const body = await request.json() as BookingRequest;
     const { startDate, endDate, hospitalId, donorId, purpose } = body;
 
-    const veridaService = new VeridaService(req.session.veridaToken);
+    const veridaService = new VeridaService(veridaToken);
 
     // Create calendar event for the booking
     const event = await veridaService.createEvent({
-        title: `Donation Appointment - ${purpose}`,
-        startDate: startDate,
-        endDate: endDate,
-        description: `Donation appointment with hospital ${hospitalId}`,
-        attendees: [
-            { id: donorId, role: 'user' },
-            { id: hospitalId, role: 'hospital' }
-        ],
-        id: ''
+      title: `Donation Appointment - ${purpose}`,
+      startDate: startDate,
+      endDate: endDate,
+      description: `Donation appointment with hospital ${hospitalId}`,
+      attendees: [
+        { id: donorId, role: 'user' },
+        { id: hospitalId, role: 'hospital' }
+      ],
+      id: ''
     });
 
     return NextResponse.json({
@@ -61,33 +54,33 @@ export async function POST(req: RequestWithSession) {
   }
 }
 
-export async function GET(req: RequestWithSession) {
-  try {    
-    if (!req.session.veridaToken) {
+export async function GET(request: NextRequest) {
+  try {
+    const veridaToken = (await cookies()).get('verida_token')?.value;
+    
+    if (!veridaToken) {
       return NextResponse.json(
         { error: 'Not authenticated with Verida' },
         { status: 401 }
       );
     }
 
-    if (!req.url) {
-      return NextResponse.json(
-        { error: 'Invalid request URL' },
-        { status: 400 }
-      );
-    }
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
 
-    const veridaService = new VeridaService(req.session.veridaToken);
+    if (!startDate || !endDate) {
+      return NextResponse.json(
+        { error: 'Missing required date parameters' },
+        { status: 400 }
+      );
+    }
 
-    const startDates = { $gte: startDate }
-    const endDates = { $lte: endDate }
-
+    const veridaService = new VeridaService(veridaToken);
+    
     const events = await veridaService.getEvents({
-        startDate: `${startDates}`,
-        endDate: `${endDates}`
+      startDate: startDate,
+      endDate: endDate
     });
 
     return NextResponse.json({

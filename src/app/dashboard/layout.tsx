@@ -16,6 +16,7 @@ import {
   Package,
   FileText,
   Menu,
+  Calendar,
 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -50,7 +51,7 @@ export default function DashboardLayout({
     { name: 'NFTs', href: '/dashboard/nfts', icon: ImageIcon },
     { name: 'History', href: '/dashboard/history', icon: Clock },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
-    { name: 'Booking', href: '/dashboard/booking', icon: Settings },
+    { name: 'Booking', href: '/dashboard/booking', icon: Calendar },
   ];
 
   // User-specific navigation items

@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
-  request: Request,
-  { params }: { params: { hash: string } }
+  request: NextRequest,
+  context: { params: { hash: string } }
 ) {
   try {
     const client = createPublicClient({
@@ -13,7 +15,7 @@ export async function GET(
     });
 
     const receipt = await client.getTransactionReceipt({
-      hash: params.hash as `0x${string}`
+      hash: context.params.hash as `0x${string}`
     });
 
     return NextResponse.json(receipt);
@@ -24,4 +26,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}
