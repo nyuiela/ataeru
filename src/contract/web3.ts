@@ -60,7 +60,7 @@ export const contractAddresses = {
   rewardAddress,
 }
 
-enum DonorType {
+export enum DonorType {
   SPERMDONOR,
   EGGDONOR,
   SURROGATE

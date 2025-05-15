@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import Image from 'next/image';
 import ContractButton from './contractButton';
 import { contractAddresses, healthDataNftABI } from '@/contract/web3';
 
@@ -34,8 +33,8 @@ export default function MintNFTModal({ isOpen, onClose }: MintNFTModalProps) {
       { name: 'Owner', value: address || '' }
     ]
   });
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [, setUploadedFiles] = useState<string[]>([]);
+  const [, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [metadataUrl, setMetadataUrl] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

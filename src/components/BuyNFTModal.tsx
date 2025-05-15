@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
 import ContractButton from './contractButton';
-import { contractAddresses, healthDataNftABI, marketplaceABI } from '@/contract/web3';
+import { contractAddresses, marketplaceABI } from '@/contract/web3';
 import Image from 'next/image';
 
 interface BuyNFTModalProps {
@@ -22,8 +21,7 @@ interface BuyNFTModalProps {
 }
 
 export default function BuyNFTModal({ isOpen, onClose, nftId, price, nftDetails }: BuyNFTModalProps) {
-  const { address } = useAccount();
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 

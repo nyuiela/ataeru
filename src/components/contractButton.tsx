@@ -1,4 +1,3 @@
-import { useTransactionModal } from '@/hooks/useTransactionModal';
 import TransactionModal from '@/components/TransactionModal';
 import { useState } from 'react';
 

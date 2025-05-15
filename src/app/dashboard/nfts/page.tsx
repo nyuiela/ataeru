@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ImageIcon } from 'lucide-react';
@@ -73,8 +73,8 @@ export default function NFTsPage() {
     if (NftData && (NftData as NFTAssetWithURI[]).length > 0) {
       for (const nft of NftData as NFTAssetWithURI[]) {
         async function getDetails(uri: string) {
-          const data: any = await fetchNftDetails(uri);
-          setNfts((prevNfts) => [{
+          const data = await fetchNftDetails(uri);
+          setNfts(() => [{
             ...nft,
             id: "0",
             name: data.name,

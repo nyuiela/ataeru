@@ -9,9 +9,9 @@ interface TransactionModalProps {
   title: string;
   description?: string;
   contractAddress: string;
-  abi: any[];
+  abi: [];
   functionName: string;
-  args?: any[];
+  args?: [];
   onSuccess?: (receipt: any) => void;
   onError?: (error: Error) => void;
 }

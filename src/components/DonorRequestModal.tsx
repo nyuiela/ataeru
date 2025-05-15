@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTransactionModal } from '@/hooks/useTransactionModal';
 import TransactionModal from '@/components/TransactionModal';
-import { contractAddresses, entryPointABI, entryPointAddress, hospitalRequestABI } from '@/contract/web3';
+import { entryPointABI, entryPointAddress, hospitalRequestABI } from '@/contract/web3';
 import { useAccount, useReadContract } from 'wagmi';
 
 enum DonorType {
