@@ -13,6 +13,7 @@ import {
   arbitrum,
   base,
   sepolia,
+  baseSepolia,
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -78,7 +79,7 @@ const RAINVOW_KIT_PROJECT_ID = `${projectId}`
 const config = getDefaultConfig({
   appName: 'Ataeru',
   projectId: `${RAINVOW_KIT_PROJECT_ID}`,
-  chains: [mainnet, polygon, optimism, arbitrum, base, sepolia, localhost],
+  chains: [baseSepolia],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 
