@@ -77,6 +77,28 @@ export default function Home() {
               <Image src="/images/sperm-donation.jpg" alt="Sperm Donation" fill className="rounded-xl object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
                 <div className="text-white">
+                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Sperm Donation</h3>
+                  <p className="text-xs sm:text-sm text-white/90">Blockchain-verified donation program with smart contract guarantees.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="/services/surrogacy" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer">
+            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
+              <Image src="/images/surrogacy.jpg" alt="Surrogacy" fill className="rounded-xl object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
+                <div className="text-white">
+                  <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Surrogacy</h3>
+                  <p className="text-xs sm:text-sm text-white/90">Decentralized surrogacy matching with secure payment escrow.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a href="/services/fertility-treatment" className="bg-gradient-to-br from-gray-50 to-blue-50 p-4 sm:p-6 rounded-2xl shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1 cursor-pointer">
+            <div className="aspect-[4/3] rounded-xl bg-white relative overflow-hidden">
+              <Image src="/images/fertility-treatment.jpg" alt="Fertility Treatment" fill className="rounded-xl object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 sm:p-6">
+                <div className="text-white">
                   <h3 className="font-bold text-lg sm:text-xl mb-1 sm:mb-2">Fertility Treatment</h3>
                   <p className="text-xs sm:text-sm text-white/90">Tokenized fertility treatments with transparent pricing.</p>
                 </div>
