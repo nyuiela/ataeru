@@ -5,6 +5,17 @@ import { Config, useAccount, useReadContract } from 'wagmi';
 import { entryPointABI } from '@/contract/web3';
 import { entryPointAddress } from '@/contract/web3';
 
+interface UserInfoResponse {
+  name: string;
+  email: string;
+  location: string;
+  contact: string;
+  about: string;
+  userType: number;
+  witnessHash: string;
+  isRegistered: boolean;
+}
+
 interface UserProfile {
   name: string;
   email: string;
@@ -46,9 +57,9 @@ export default function ProfilePage() {
       shareWithAI: false,
       shareWithHospitals: false,
       shareForResearch: false,
-    },
+    }
   });
-  const [activeSection, setActiveSection] = useState<'personal' | 'medical' | 'sharing'>('personal');
+
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { data: userInfo } = useReadContract<typeof entryPointABI, 'getUserInfo', [], Config, { name: string; email: string; contact: string; location: string; about: string }>({
@@ -57,7 +68,7 @@ export default function ProfilePage() {
     abi: entryPointABI,
     functionName: 'getUserInfo',
     args: [],
-  });
+  }) as { data: UserInfoResponse | undefined };
 
   useEffect(() => {
     console.log(userInfo);
@@ -72,30 +83,6 @@ export default function ProfilePage() {
 
     });
   }, [userInfo, address]);
-
-  // useEffect(() => {
-  //   // In a real app, you would fetch user profile from the backend
-  //   // For now, we'll use mock data
-  //   setProfile({
-  //     name: 'John Doe',
-  //     email: 'john.doe@example.com',
-  //     phone: '+1 555-123-4567',
-  //     dateOfBirth: '1985-06-15',
-  //     address: '123 Blockchain Street',
-  //     city: 'Cryptoville',
-  //     country: 'United States',
-  //     medicalInfo: {
-  //       bloodType: 'O+',
-  //       allergies: 'None',
-  //       medicalConditions: 'None',
-  //     },
-  //     dataSharing: {
-  //       shareWithAI: true,
-  //       shareWithHospitals: true,
-  //       shareForResearch: false,
-  //     },
-  //   });
-  // }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -119,22 +106,6 @@ export default function ProfilePage() {
       }));
     }
   };
-
-  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, checked } = e.target;
-  //   const [section, field] = name.split('.');
-
-  //   setProfile(prev => {
-  //     const sectionKey = section as keyof typeof prev;
-  //     return {
-  //       ...prev,
-  //       [section]: {
-  //         ...(prev[sectionKey] as Record<string, unknown>),
-  //         [field]: checked,
-  //       },
-  //     };
-  //   });
-  // };
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
@@ -306,168 +277,6 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
-
-          {/* {activeSection === 'medical' && (
-            <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
-              <div>
-                <label htmlFor="medicalInfo.bloodType" className="block text-sm font-medium text-gray-700">Blood Type</label>
-                <select
-                  name="medicalInfo.bloodType"
-                  id="medicalInfo.bloodType"
-                  value={profile.medicalInfo.bloodType}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                >
-                  <option value="">Select Blood Type</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-              </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="medicalInfo.allergies" className="block text-sm font-medium text-gray-700">Allergies</label>
-                <textarea
-                  name="medicalInfo.allergies"
-                  id="medicalInfo.allergies"
-                  rows={3}
-                  value={profile.medicalInfo.allergies}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  placeholder={isEditing ? "List any allergies you have" : ""}
-                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label htmlFor="medicalInfo.medicalConditions" className="block text-sm font-medium text-gray-700">Medical Conditions</label>
-                <textarea
-                  name="medicalInfo.medicalConditions"
-                  id="medicalInfo.medicalConditions"
-                  rows={3}
-                  value={profile.medicalInfo.medicalConditions}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  placeholder={isEditing ? "List any medical conditions you have" : ""}
-                  className={`mt-1 block w-full border text-black ${isEditing ? 'border-gray-300' : 'border-transparent bg-gray-50'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <div className="bg-blue-50 p-4 rounded-md">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <Info className="h-5 w-5 text-blue-400" />
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="text-sm font-medium text-blue-800">Medical Data Security</h3>
-                      <div className="mt-2 text-sm text-blue-700">
-                        <p>Your medical information is encrypted and stored on a secure blockchain for privacy. You control who has access to this information.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeSection === 'sharing' && (
-            <div>
-              <p className="text-sm text-gray-500 mb-4">
-                Manage how your data is shared within the Ataeru ecosystem. Sharing your data can improve your experience and may provide compensation through our data sharing program.
-              </p>
-
-              <div className="mt-4 space-y-4">
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="dataSharing.shareWithAI"
-                      name="dataSharing.shareWithAI"
-                      type="checkbox"
-                      checked={profile.dataSharing.shareWithAI}
-                      onChange={handleCheckboxChange}
-                      disabled={!isEditing}
-                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="dataSharing.shareWithAI" className="font-medium text-gray-700">Share with FertilityAI Assistant</label>
-                    <p className="text-gray-500">Allow our AI assistant to access your data to provide personalized recommendations and support.</p>
-                    {profile.dataSharing.shareWithAI && (
-                      <div className="mt-1 text-xs text-green-600 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Earn 50 DATA tokens per month
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="dataSharing.shareWithHospitals"
-                      name="dataSharing.shareWithHospitals"
-                      type="checkbox"
-                      checked={profile.dataSharing.shareWithHospitals}
-                      onChange={handleCheckboxChange}
-                      disabled={!isEditing}
-                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="dataSharing.shareWithHospitals" className="font-medium text-gray-700">Share with Partner Hospitals</label>
-                    <p className="text-gray-500">Allow partner hospitals to access your data for improved consultation and treatment planning.</p>
-                    {profile.dataSharing.shareWithHospitals && (
-                      <div className="mt-1 text-xs text-green-600 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Priority appointments and 10% discount on services
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="dataSharing.shareForResearch"
-                      name="dataSharing.shareForResearch"
-                      type="checkbox"
-                      checked={profile.dataSharing.shareForResearch}
-                      onChange={handleCheckboxChange}
-                      disabled={!isEditing}
-                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="dataSharing.shareForResearch" className="font-medium text-gray-700">Share for Research</label>
-                    <p className="text-gray-500">Allow anonymized data to be used for fertility research and technological advancements.</p>
-                    {profile.dataSharing.shareForResearch && (
-                      <div className="mt-1 text-xs text-green-600 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Earn 100 DATA tokens per month
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 bg-gray-50 p-4 rounded-md border border-gray-200">
-                <h3 className="text-sm font-medium text-gray-900">Data Compensation Program</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  By participating in our data sharing program, you can earn DATA tokens that can be used for discounts on services or exchanged for cryptocurrency.
-                </p>
-                <div className="mt-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-gray-900">Your DATA token balance:</span>
-                    <span className="font-bold text-blue-600">275 DATA</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </div>

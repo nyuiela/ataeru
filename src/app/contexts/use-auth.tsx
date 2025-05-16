@@ -26,11 +26,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isHospitalVerified, setIsHospitalVerified] = useState<boolean>(false);
 
   useEffect(() => {
-    // const onBoarded = localStorage.getItem('isOnboarded') === 'true';
-    setIsRegistrationModalOpen(true);
-    // }
-  }, [isOnboarded]);
-
+    // Check if user is already registered
+    const registration = localStorage.getItem('userRegistration');
+    if (registration) {
+      const { type } = JSON.parse(registration);
+      setUserType(type as UserType);
+      setIsOnboarded(true);
+      setIsRegistrationModalOpen(false);
+    } else {
+      setIsRegistrationModalOpen(true);
+    }
+  }, []);
 
   const openRegistrationModal = () => setIsRegistrationModalOpen(true);
   const closeRegistrationModal = () => {

@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'kjkhospital.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'geneticclinic.com.au',
+      },
+      {
+        protocol: 'https',
         hostname: 'coral-worrying-turtle-782.mypinata.cloud',
       },
     ],

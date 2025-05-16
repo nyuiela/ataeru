@@ -219,7 +219,6 @@ export default function HospitalDashboard() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800 flex flex-col">
-      {/* <Header /> */}
 
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">

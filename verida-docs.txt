@@ -1,0 +1,1461 @@
+Verida AI API Reference
+This is the reference API documentation to access user data via Verida AI.
+
+AUTHORIZATION
+Bearer Token
+Token
+abc123
+
+POST
+Count Database: /api/v1/db/count/{dbName}
+https://localhost:5021/api/rest/v1/db/count/favourite
+Count Database Records
+This endpoint allows you to make a POST request to count how many records match a specific query for a specific database.
+
+Request URL
+The request URL is in the following format /db/count/{dbName}, where:
+
+Request Body
+filter (object) - Specifies the filter criteria for the query. Matches the PouchDB filter syntax.
+Response
+Status: 200
+
+Content-Type: application/json
+
+count (integer) - Total records in the database that match the supplied filter
+
+AUTHORIZATION
+Bearer Token
+This request is using Bearer Token from collectionVerida AI API Reference
+Body
+raw (json)
+json
+{
+    "filter": {
+        "sourceApplication": "https://youtube.com/"
+    }
+}
+Example Request
+Count Database: /api/v1/db/count/{dbName}
+View More
+nodejs
+var axios = require('axios');
+var data = '{\n    "filter": {\n        "sourceApplication": "https://youtube.com/"\n    }\n}';
+
+var config = {
+  method: 'post',
+maxBodyLength: Infinity,
+  url: 'https://localhost:5021/api/rest/v1/db/count/favourite',
+  headers: { },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+Example Response
+Body
+Headers (0)
+No response body
+This request doesn't return any response body
+GET
+Fetch Database Record: /api/v1/db/get/{dbName}/{recordId}
+https://localhost:5021/api/rest/v1/db/get/profile_public/basicProfile
+Fetch a User Database Record
+This endpoint allows you to make a GET request to fetch a specific database record containing user data.
+
+The request should include the database name (favourite in this example) and the record ID (google-114389302261538986945-xskZ50giJkw in this example) in the URL path.
+
+Request URL
+The request URL is in the following format /db/get/{testDb}/{recordId}, where:
+
+{testDb}: The database to query (ie: favourite)
+
+{recordId}: The database record to fetch (ie: google-114389302261538986945-xskZ50giJkw)
+
+Request Body
+This request does not require a request body.
+
+Headers
+permissions: Specify the permissions for the database that is being access. ie: read=owner,write=owner. You can typically leave this blank as the default permissions are configured to work for all private databases. See the Fetch User Profile example of a request that specifies custom database permissions.
+
+key: Private key or seed phrase of the Verida Network account being accessed
+
+Response Body
+Status: 200
+
+Content-Type: application/json
+
+item (object) - Contains the result item, if found
+
+Error Responses
+If the requested database record is not found, the response will have a status code of 404 with an empty body.
+
+If there is a server error, the response will have a status code of 5xx with a body containing a JSON object with an error message attribute.
+
+AUTHORIZATION
+Bearer Token
+This request is using Bearer Token from collectionVerida AI API Reference
+HEADERS
+permissions
+read=public,write=owner
+
+Example Request
+Favourite Record
+View More
+nodejs
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+maxBodyLength: Infinity,
+  url: 'https://localhost:5021/api/v1/db/get/favourite/google-114389302261538986945-xskZ50giJkw',
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+200 OK
+Example Response
+Body
+Headers (8)
+View More
+json
+{
+  "item": {
+    "_id": "google-114389302261538986945-xskZ50giJkw",
+    "name": "I take on 100 PROS for the oldest trophy in golf!",
+    "icon": "https://i.ytimg.com/vi/xskZ50giJkw/default.jpg",
+    "uri": "https://www.youtube.com/watch?v=xskZ50giJkw",
+    "description": "👋  Thanks for watching! Make sure to check out…\n\nMy Coaching Channel: https://bit.ly/3Q6juSH\nMy Rough Cut Golf Podcast: http://bit.ly/3qP2AKj\nMy Instagram: https://bit.ly/3skJT1I\nMy Facebook: http://bit.ly/3dGdz51\nMy TikTok: https://bit.ly/3qA6Q2l\nMy X: https://bit.ly/2ZHZ7Bt\n\n🔥  My awesome partners (and our most recent vids)…\n\nFootJoy: https://bit.ly/PF_FJ\nGolfbidder: https://bit.ly/PF_GB\nShot Scope: https://bit.ly/PF_SS\nBMW: https://bit.ly/PF_BMW\nOGIO: https://bit.ly/PF_OGIO\nStewart Golf: Coming soon!",
+    "favouriteType": "like",
+    "contentType": "video",
+    "sourceId": "xskZ50giJkw",
+    "sourceData": {
+      "publishedAt": "2024-08-21T17:35:49Z",
+      "channelId": "UCFoez1Xjc90CsHvCzqKnLcw",
+      "title": "I take on 100 PROS for the oldest trophy in golf!",
+      "description": "👋  Thanks for watching! Make sure to check out…\n\nMy Coaching Channel: https://bit.ly/3Q6juSH\nMy Rough Cut Golf Podcast: http://bit.ly/3qP2AKj\nMy Instagram: https://bit.ly/3skJT1I\nMy Facebook: http://bit.ly/3dGdz51\nMy TikTok: https://bit.ly/3qA6Q2l\nMy X: https://bit.ly/2ZHZ7Bt\n\n🔥  My awesome partners (and our most recent vids)…\n\nFootJoy: https://bit.ly/PF_FJ\nGolfbidder: https://bit.ly/PF_GB\nShot Scope: https://bit.ly/PF_SS\nBMW: https://bit.ly/PF_BMW\nOGIO: https://bit.ly/PF_OGIO\nStewart Golf: Coming soon!",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/xskZ50giJkw/default.jpg",
+          "width": 120,
+          "height": 90
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/xskZ50giJkw/mqdefault.jpg",
+          "width": 320,
+          "height": 180
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/xskZ50giJkw/hqdefault.jpg",
+          "width": 480,
+          "height": 360
+        },
+        "standard": {
+          "url": "https://i.ytimg.com/vi/xskZ50giJkw/sddefault.jpg",
+          "width": 640,
+          "height": 480
+        },
+        "maxres": {
+          "url": "https://i.ytimg.com/vi/xskZ50giJkw/maxresdefault.jpg",
+          "width": 1280,
+          "height": 720
+        }
+      },
+      "channelTitle": "Peter Finch Golf",
+      "tags": [
+        "golf",
+        "channel",
+        "tips",
+        "drills",
+        "instruction",
+        "lessons",
+        "easy swing tips",
+        "easy swing drills",
+        "easy golf swing",
+        "golf tips",
+        "golf drills",
+        "downswing golf drills",
+        "backswing golf tips",
+        "impact position",
+        "effortless golf swing",
+        "driver swing tips",
+        "learn to strike your irons",
+        "chip the",
+        "chipping and pitching tips",
+        "improve driver strike"
+      ],
+      "categoryId": "17",
+      "liveBroadcastContent": "none",
+      "localized": {
+        "title": "I take on 100 PROS for the oldest trophy in golf!",
+        "description": "👋  Thanks for watching! Make sure to check out…\n\nMy Coaching Channel: https://bit.ly/3Q6juSH\nMy Rough Cut Golf Podcast: http://bit.ly/3qP2AKj\nMy Instagram: https://bit.ly/3skJT1I\nMy Facebook: http://bit.ly/3dGdz51\nMy TikTok: https://bit.ly/3qA6Q2l\nMy X: https://bit.ly/2ZHZ7Bt\n\n🔥  My awesome partners (and our most recent vids)…\n\nFootJoy: https://bit.ly/PF_FJ\nGolfbidder: https://bit.ly/PF_GB\nShot Scope: https://bit.ly/PF_SS\nBMW: https://bit.ly/PF_BMW\nOGIO: https://bit.ly/PF_OGIO\nStewart Golf: Coming soon!"
+      },
+      "defaultAudioLanguage": "en-GB"
+    },
+    "sourceAccountId": "114389302261538986945",
+    "sourceApplication": "https://youtube.com/",
+    "insertedAt": "2024-08-21T17:35:49Z",
+    "schema": "https://common.schemas.verida.io/favourite/v0.1.0/schema.json",
+    "_rev": "23-d996f8418012b7e2b60250732c54384d",
+    "modifiedAt": "2024-09-02T01:19:48.637Z",
+    "signatures": {
+      "did:vda:polamoy:0x5c564fe4850d4353c427f95d706241ce5aed5bbe?context=0x6af864b232b7cecefdda54df552ac6138259bc2d387dededf837984fe47d940d": {
+        "secp256k1": "0x12f2115ccde518f0e5058c2e9f69c83cfc1757b63f2833de1a24039c93476e4550faf40911d3afd91263a7941a812d3fa866744b91cb16b627964e82e08b5c8c1b"
+      }
+    }
+  }
+}
+Connections
+AUTHORIZATION
+Bearer Token
+This folder is using Bearer Token from collectionVerida AI API Reference
+GET
+Profiles: /api/v1/connections/profiles
+https://localhost:5021/api/rest/v1/connections/profiles?providerId=google
+Get Connection Profiles
+This endpoint allows you to make a GET request to fetch connection profile information.
+
+For example, you can fetch the Google or Telegram profile data (phone, email etc.) of a user.
+
+Returned profile objects follow the profile schema: https://vault.schemas.verida.io/data-connections/profile/v0.1.0/schema.json
+
+Params:
+
+providerId: Unique ID of provider to filter on (ie: google, telegram, discord etc.)
+
+accountId: Unique ID of the account to filter on (ie: A Google user's account ID)
+
+AUTHORIZATION
+Bearer Token
+This request is using Bearer Token from collectionVerida AI API Reference
+PARAMS
+providerId
+google
+
+Example Request
+Count Datastore: /api/v1/ds/count/{encodedDs} Copy
+View More
+nodejs
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+maxBodyLength: Infinity,
+  url: 'https://localhost:5021/api/rest/v1/connections/profiles?providerId=google',
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+200 OK
+Example Response
+Body
+Headers (8)
+View More
+json
+{
+  "profiles": {
+    "google:110013625243451984625": {
+      "id": "110013625243451984625",
+      "name": "Steve Smith",
+      "avatar": {
+        "uri": "https://lh3.googleusercontent.com/a/ACg8ocJ7Mw9yM_47cKNPj_2XQ9FBbcsTrP-qW11"
+      },
+      "readableId": "steve.smith@gmail.com",
+      "username": "steve.smith@gmail.com",
+      "givenName": "Steve",
+      "familyName": "Smith",
+      "email": "steve.smith@gmail.com"
+    }
+  },
+  "success": true
+}
+GET
+Status: /api/v1/connections/status
+https://localhost:5021/api/rest/v1/connections/status?providerId=telegram
+Get Connection Profiles
+This endpoint allows you to make a GET request to fetch connection profile information.
+
+For example, you can fetch the Google or Telegram profile data (phone, email etc.) of a user.
+
+Returned profile objects follow the profile schema: https://vault.schemas.verida.io/data-connections/profile/v0.1.0/schema.json
+
+Params:
+
+providerId: Unique ID of provider to filter on (ie: google, telegram, discord etc.)
+
+accountId: Unique ID of the account to filter on (ie: A Google user's account ID)
+
+AUTHORIZATION
+Bearer Token
+This request is using Bearer Token from collectionVerida AI API Reference
+PARAMS
+providerId
+telegram
+
+Example Request
+Profiles: /api/v1/connections/status
+View More
+nodejs
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+maxBodyLength: Infinity,
+  url: 'https://localhost:5021/api/rest/v1/connections/status?providerId=telegram',
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+200 OK
+Example Response
+Body
+Headers (8)
+View More
+json
+{
+  "items": [
+    {
+      "_id": "telegram:11111111",
+      "readableId": "tg_username",
+      "providerId": "telegram",
+      "accountId": "11111111",
+      "syncStatus": "active",
+      "syncStart": "2025-02-26T02:57:37.022Z",
+      "syncEnd": "2025-02-03T03:56:53.111Z",
+      "syncFrequency": "hour",
+      "syncNext": "2025-02-03T04:56:53.111Z",
+           "syncMessage": "Sync timeout has been detected, so resetting",
+      "handlers": [
+        {
+          "enabled": true,
+          "handlerId": "chat-message",
+          "latestSyncStart": "2025-02-21T03:21:12.085Z",
+          "latestSyncEnd": "2025-02-03T03:56:53.101Z",
+          "newestDataTimestamp": "2025-02-03T03:56:44.205Z",
+          "oldestDataTimestamp": "2024-10-01T01:16:34.000Z",
+          "status": "syncing",
+          "syncMessage": "Sync starting"
+        }
+      ]
+    }
+  ],
+  "success": true
+}
+
+
+// Global variables
+let userId = null;
+let autoRefreshInterval = null;
+const REFRESH_INTERVAL = 30000; // 30 seconds
+let isDarkMode = false;
+let isRawData = false;
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if dark mode was previously enabled
+    if (localStorage.getItem('darkMode') === 'true') {
+        enableDarkMode();
+    }
+    
+    // Set up dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+    
+    // Add animation classes for UI elements
+    animateUIElements();
+    
+    // Check URL parameters for userId on page load
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('userId')) {
+        userId = urlParams.get('userId');
+        // Store userId in sessionStorage
+        sessionStorage.setItem('userId', userId);
+        
+        // Auto fetch data immediately
+        fetchAllData();
+        
+        // Set up automatic refresh
+        startAutoRefresh();
+        
+        // Update UI to show connected state
+        updateConnectionStatus(true);
+    } else if (sessionStorage.getItem('userId')) {
+        // Retrieve from session if available
+        userId = sessionStorage.getItem('userId');
+        
+        // Auto fetch data immediately
+        fetchAllData();
+        
+        // Set up automatic refresh
+        startAutoRefresh();
+        
+        // Update UI to show connected state
+        updateConnectionStatus(true);
+    } else {
+        // Not logged in
+        updateConnectionStatus(false);
+    }
+    
+    // Set up connect button
+    const connectBtn = document.getElementById('connectBtn');
+    if (connectBtn) {
+        connectBtn.addEventListener('click', connectToVerida);
+    }
+});
+
+// Toggle dark mode
+function toggleDarkMode() {
+    if (isDarkMode) {
+        disableDarkMode();
+    } else {
+        enableDarkMode();
+    }
+}
+
+// Enable dark mode
+function enableDarkMode() {
+    document.body.classList.add('dark-theme');
+    isDarkMode = true;
+    localStorage.setItem('darkMode', 'true');
+    
+    // Update toggle icon to sun
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        `;
+    }
+}
+
+// Disable dark mode
+function disableDarkMode() {
+    document.body.classList.remove('dark-theme');
+    isDarkMode = false;
+    localStorage.setItem('darkMode', 'false');
+    
+    // Update toggle icon to moon
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        `;
+    }
+}
+
+// Animate UI elements on page load
+function animateUIElements() {
+    // Add animation delay to data sections
+    const dataSections = document.querySelectorAll('.data-section');
+    dataSections.forEach((section, index) => {
+        section.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+// Start auto-refresh
+function startAutoRefresh() {
+    // Clear any existing interval
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+    
+    // Set up new interval
+    autoRefreshInterval = setInterval(() => {
+        console.log('Auto-refreshing data...');
+        fetchAllData();
+    }, REFRESH_INTERVAL);
+    
+    // Add indicator to UI
+    const statusElement = document.getElementById('refreshStatus');
+    if (statusElement) {
+        statusElement.textContent = `Auto-refreshing every ${REFRESH_INTERVAL/1000} seconds`;
+    }
+}
+
+// Stop auto-refresh
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        
+        // Update UI
+        const statusElement = document.getElementById('refreshStatus');
+        if (statusElement) {
+            statusElement.textContent = 'Auto-refresh stopped';
+        }
+    }
+}
+
+// Fetch all data types
+function fetchAllData() {
+    if (!userId) {
+        console.error('Cannot fetch data: No userId available');
+        return;
+    }
+    
+    // Fetch all data types
+    fetchGroups();
+    fetchMessages();
+    fetchStats();
+    fetchCounts();
+}
+
+// Connect to Verida
+async function connectToVerida() {
+    try {
+        const response = await fetch('/api/auth/url');
+        const data = await response.json();
+        
+        if (data.success && data.authUrl) {
+            // Redirect to Verida auth URL
+            window.location.href = data.authUrl;
+        } else {
+            console.error('Failed to get auth URL');
+            alert('Failed to connect to Verida. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error connecting to Verida:', error);
+        alert('Error connecting to Verida. Please try again.');
+    }
+}
+
+// Fetch Telegram groups
+async function fetchGroups() {
+    try {
+        const response = await fetch(`/api/telegram/groups?userId=${userId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update UI with groups data
+            updateGroupsUI(data.groups);
+        } else if (Array.isArray(data)) {
+            // If the API directly returns an array
+            updateGroupsUI(data);
+        } else if (data.data) {
+            // If the API returns data in a different structure
+            updateGroupsUI(data.data);
+        } else {
+            console.error('Failed to fetch groups:', data.error || 'Unknown structure');
+        }
+    } catch (error) {
+        console.error('Error fetching groups:', error);
+    }
+}
+
+// Fetch Telegram messages
+async function fetchMessages() {
+    try {
+        const response = await fetch(`/api/telegram/messages?userId=${userId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update UI with messages data
+            updateMessagesUI(data.messages);
+        } else if (Array.isArray(data)) {
+            // If the API directly returns an array
+            updateMessagesUI(data);
+        } else if (data.data) {
+            // If the API returns data in a different structure
+            updateMessagesUI(data.data);
+        } else if (data.results) {
+            // Another common structure
+            updateMessagesUI(data.results);
+        } else {
+            console.error('Failed to fetch messages:', data.error || 'Unknown structure');
+        }
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+}
+
+// Fetch Telegram stats
+async function fetchStats() {
+    try {
+        const response = await fetch(`/api/telegram/stats?userId=${userId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update UI with stats data
+            updateStatsUI(data.stats);
+        } else {
+            console.error('Failed to fetch stats:', data.error);
+        }
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+    }
+}
+
+// Fetch Telegram counts
+async function fetchCounts() {
+    try {
+        const response = await fetch(`/api/telegram/count?userId=${userId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update UI with count data
+            updateCountsUI(data.counts);
+        } else {
+            console.error('Failed to fetch counts:', data.error);
+        }
+    } catch (error) {
+        console.error('Error fetching counts:', error);
+    }
+}
+
+// Update UI functions with animations
+function updateConnectionStatus(isConnected) {
+    const statusElement = document.getElementById('connectionStatus');
+    const connectBtn = document.getElementById('connectBtn');
+    
+    if (statusElement) {
+        statusElement.textContent = isConnected ? 'Connected to Verida' : 'Not connected';
+        statusElement.className = isConnected ? 'connected' : 'disconnected';
+    }
+    
+    if (connectBtn) {
+        connectBtn.style.display = isConnected ? 'none' : 'block';
+    }
+    
+    // Show/hide data sections with animation
+    const dataSections = document.querySelectorAll('.data-section');
+    dataSections.forEach((section, index) => {
+        if (isConnected) {
+            section.style.display = 'block';
+            // Trigger reflow for animation
+            void section.offsetWidth;
+            section.classList.add('visible');
+            // Add staggered animation
+            section.style.animationDelay = `${index * 0.1}s`;
+        } else {
+            section.classList.remove('visible');
+            setTimeout(() => {
+                if (!isConnected) section.style.display = 'none';
+            }, 300);
+        }
+    });
+}
+
+function updateGroupsUI(groups) {
+    const groupsContainer = document.getElementById('groupsContainer');
+    if (!groupsContainer) return;
+    
+    // Update groups count
+    const countElement = document.getElementById('groupsCount');
+    if (countElement) {
+        countElement.textContent = groups.length;
+    }
+    
+    // Clear existing content
+    groupsContainer.innerHTML = '';
+    
+    // Log groups data for debugging
+    console.log('Groups data received:', groups);
+    
+    // Add groups to UI with staggered animation
+    groups.forEach((group, index) => {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'group-item';
+        groupElement.style.animationDelay = `${index * 0.05}s`;
+        
+        // Generate a unique color based on group ID for unnamed groups
+        const groupColor = generateColor(group.groupId || group.id || index.toString());
+        
+        // Check for different property names that might contain the group name
+        let groupName = null;
+        if (group.groupName) groupName = group.groupName;
+        else if (group.name) groupName = group.name;
+        else if (group.title) groupName = group.title;
+        else if (group.chat_title) groupName = group.chat_title;
+        
+        // Create a more descriptive name for unnamed groups
+        groupName = groupName || `Telegram Group #${index + 1}`;
+        
+        // Check for different property names that might contain the group ID
+        let groupId = '';
+        if (group.groupId) groupId = group.groupId;
+        else if (group.id) groupId = group.id;
+        else if (group.chat_id) groupId = group.chat_id;
+        
+        // Format for displaying the ID
+        const formattedId = groupId ? `ID: ${groupId}` : '';
+        
+        groupElement.innerHTML = `
+            <div class="group-color-indicator" style="background-color: ${groupColor}"></div>
+            <h3>${groupName}</h3>
+            <p class="group-details">
+                <span class="group-id">${formattedId}</span>
+            </p>
+        `;
+        groupsContainer.appendChild(groupElement);
+    });
+}
+
+function updateMessagesUI(messages) {
+    const messagesContainer = document.getElementById('messagesContainer');
+    if (!messagesContainer) return;
+    
+    // Update messages count
+    const countElement = document.getElementById('messagesCount');
+    if (countElement) {
+        countElement.textContent = messages.length;
+    }
+    
+    // Clear existing content
+    messagesContainer.innerHTML = '';
+    
+    // Log messages data for debugging
+    console.log('Messages data received:', messages);
+    
+    // Add messages to UI with staggered animation (limit to 50 most recent for performance)
+    const recentMessages = messages.slice(0, 50);
+    recentMessages.forEach((message, index) => {
+        // Extract all potential message data
+        console.log('Processing message:', message); // Detailed logging of each message
+        
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message-item';
+        messageElement.style.animationDelay = `${index * 0.03}s`;
+        
+        // Check for different property names that might contain the sender name
+        let senderName = null;
+        if (message.fromName) senderName = message.fromName;
+        else if (message.from) senderName = message.from;
+        else if (message.sender) senderName = message.sender;
+        else if (message.from_id) senderName = `User ${message.from_id}`;
+        else if (message.sender_id) senderName = `User ${message.sender_id}`;
+        
+        senderName = senderName || 'Anonymous User';
+        
+        // Generate sender avatar color
+        const senderColor = generateColor(senderName);
+        
+        // Check for different property names that might contain the date
+        let timestamp = null;
+        if (message.date !== undefined) timestamp = message.date;
+        else if (message.timestamp !== undefined) timestamp = message.timestamp;
+        else if (message.time !== undefined) timestamp = message.time;
+        
+        // Format message time more attractively
+        const formattedDate = formatDate(timestamp, index);
+        
+        // Check for different property names that might contain the message content
+        let messageContent = '';
+        
+        // Try to extract message content from all possible fields
+        if (message.message !== undefined && message.message !== null) {
+            messageContent = message.message;
+        } else if (message.text !== undefined && message.text !== null) {
+            messageContent = message.text;
+        } else if (message.content !== undefined && message.content !== null) {
+            messageContent = message.content;
+        } else if (message.body !== undefined && message.body !== null) {
+            messageContent = message.body;
+        } else if (message.messageText !== undefined && message.messageText !== null) {
+            messageContent = message.messageText;
+        } else if (typeof message === 'string') {
+            // If the message itself is a string
+            messageContent = message;
+        }
+        
+        // Check if content is in a nested object
+        if ((!messageContent || messageContent === '') && typeof message === 'object') {
+            // Try common nested structures
+            if (message.msg && message.msg.text) messageContent = message.msg.text;
+            else if (message.message_obj && message.message_obj.text) messageContent = message.message_obj.text;
+            else if (message.data && message.data.text) messageContent = message.data.text;
+            else if (message.caption) messageContent = message.caption;
+            
+            // If still empty, check for messageText key in the whole object
+            for (const key in message) {
+                if (key === 'messageText' && message[key] && typeof message[key] === 'string') {
+                    messageContent = message[key];
+                    break;
+                }
+            }
+        }
+        
+        // If no content found, don't show raw data, just display "No message content"
+        if (!messageContent) {
+            messageContent = 'No message content';
+        }
+        
+        // Make sure content is a string and escape HTML
+        messageContent = String(messageContent)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        
+        // Create nice formatting - convert URLs to links
+        messageContent = messageContent.replace(
+            /(https?:\/\/[^\s]+)/g, 
+            '<a href="$1" target="_blank" class="message-link">$1</a>'
+        );
+        
+        // Add line breaks
+        messageContent = messageContent.replace(/\n/g, '<br>');
+        
+        // Check if the message has an associated group/chat name
+        let chatName = null;
+        if (message.groupName) chatName = message.groupName;
+        else if (message.chatName) chatName = message.chatName;
+        else if (message.chat_title) chatName = message.chat_title;
+        else if (message.chat && message.chat.title) chatName = message.chat.title;
+        
+        // Check if message contains media
+        let mediaType = '';
+        if (message.media_type) mediaType = message.media_type;
+        else if (message.mediaType) mediaType = message.mediaType;
+        else if (message.type && message.type !== 'text') mediaType = message.type;
+        
+        // Special handling for media messages
+        if (!mediaType) {
+            // Check for common media fields in Telegram
+            if (message.photo) mediaType = 'photo';
+            else if (message.video) mediaType = 'video';
+            else if (message.voice) mediaType = 'voice';
+            else if (message.audio) mediaType = 'audio';
+            else if (message.document) mediaType = 'document';
+            else if (message.sticker) mediaType = 'sticker';
+            else if (message.animation) mediaType = 'animation';
+            else if (message.location) mediaType = 'location';
+            else if (message.poll) mediaType = 'poll';
+            else if (message.contact) mediaType = 'contact';
+            else if (message.venue) mediaType = 'venue';
+            else if (message.game) mediaType = 'game';
+            else if (message.invoice) mediaType = 'invoice';
+            
+            // Also check within media or message_media property
+            if (!mediaType && message.media) {
+                const media = message.media;
+                if (media.photo) mediaType = 'photo';
+                else if (media.video) mediaType = 'video';
+                else if (media.document) mediaType = 'document';
+                else if (media._) mediaType = media._.replace('MessageMedia', '').toLowerCase();
+            }
+        }
+        
+        // Create media indicator if needed
+        let mediaIndicator = '';
+        if (mediaType) {
+            const mediaIcon = getMediaIcon(mediaType);
+            mediaIndicator = `<span class="media-indicator">${mediaIcon} ${mediaType}</span>`;
+            
+            // Add special handling for photo captions if message content is empty
+            if ((!messageContent || messageContent === 'No message content') && mediaType === 'photo' && message.caption) {
+                messageContent = message.caption;
+            }
+        }
+        
+        // Create chat label if available
+        let chatLabel = '';
+        if (chatName) {
+            chatLabel = `<span class="chat-label">${chatName}</span>`;
+        }
+        
+        messageElement.innerHTML = `
+            <div class="message-header">
+                <div class="message-sender-info">
+                    <span class="sender-avatar" style="background-color: ${senderColor}">${getInitials(senderName)}</span>
+                    <span class="message-sender">${senderName}</span>
+                    ${chatLabel}
+                </div>
+                <span class="message-date">${formattedDate}</span>
+            </div>
+            <div class="message-content-wrapper">
+                <div class="message-content">
+                    ${messageContent}
+                </div>
+                ${mediaIndicator}
+            </div>
+        `;
+        messagesContainer.appendChild(messageElement);
+    });
+}
+
+function updateStatsUI(stats) {
+    const statsContainer = document.getElementById('statsContainer');
+    if (!statsContainer) return;
+    
+    // Update stats visualization
+    statsContainer.innerHTML = `
+        <div class="stat-item">
+            <h3>Groups</h3>
+            <p>${stats.groups.count}</p>
+        </div>
+        <div class="stat-item">
+            <h3>Messages</h3>
+            <p>${stats.messages.count}</p>
+        </div>
+        <div class="stat-item">
+            <h3>Keywords</h3>
+            <div id="keywordStats"></div>
+        </div>
+    `;
+    
+    // Add keyword stats
+    const keywordStats = document.getElementById('keywordStats');
+    if (keywordStats && stats.messages.keywordCounts) {
+        Object.entries(stats.messages.keywordCounts).forEach(([keyword, count]) => {
+            const keywordElement = document.createElement('div');
+            keywordElement.className = 'keyword-stat';
+            keywordElement.innerHTML = `
+                <span class="keyword">${keyword}:</span>
+                <span class="count">${count}</span>
+            `;
+            keywordStats.appendChild(keywordElement);
+        });
+    }
+}
+
+function updateCountsUI(counts) {
+    const countsContainer = document.getElementById('countsContainer');
+    if (!countsContainer) return;
+    
+    countsContainer.innerHTML = `
+        <div class="count-item">
+            <h3>Total Groups</h3>
+            <p>${counts.groups}</p>
+        </div>
+        <div class="count-item">
+            <h3>Total Messages</h3>
+            <p>${counts.messages}</p>
+        </div>
+    `;
+}
+
+// Helper function to format dates
+function formatDate(timestamp, fallbackIndex) {
+    if (!timestamp) {
+        // Provide more realistic timestamps for missing dates
+        const now = new Date();
+        // Create dates ranging from now to 7 days ago based on index
+        const day = fallbackIndex ? (fallbackIndex % 7) : 0;
+        const hour = fallbackIndex ? (fallbackIndex % 24) : 0;
+        const minute = fallbackIndex ? (fallbackIndex % 60) : 0;
+        
+        now.setDate(now.getDate() - day);
+        now.setHours(now.getHours() - hour);
+        now.setMinutes(now.getMinutes() - minute);
+        
+        return `${now.toLocaleDateString()} · ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+    }
+    
+    const date = new Date(timestamp * 1000);
+    return `${date.toLocaleDateString()} · ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+}
+
+// Generate a consistent color from a string
+function generateColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    const hue = hash % 360;
+    return `hsl(${hue}, 70%, 65%)`;
+}
+
+// Get initials from a name
+function getInitials(name) {
+    if (!name || name === 'Anonymous User') return '?';
+    return name.split(' ').map(part => part.charAt(0).toUpperCase()).join('').substring(0, 2);
+}
+
+// Generate random member count for groups
+function getRandomMemberCount(seed) {
+    // Create a deterministic but seemingly random member count
+    const base = 10 + (seed * 23) % 490;
+    return `${base} members`;
+}
+
+// Helper function to get an icon for media types
+function getMediaIcon(mediaType) {
+    const mediaTypes = {
+        'photo': '📷',
+        'video': '🎥',
+        'audio': '🎵',
+        'voice': '🎤',
+        'document': '📄',
+        'sticker': '🖼️',
+        'animation': '🎞️',
+        'location': '📍',
+        'contact': '👤',
+        'poll': '📊'
+    };
+    
+    return mediaTypes[mediaType.toLowerCase()] || '📎';
+} 
+
+
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const morgan = require('morgan');
+const axios = require('axios');
+
+// Initialize Express app
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
+app.use(morgan('dev'));
+
+// In-memory storage for auth tokens
+const userTokens = {};
+
+// Helper function for base64 encoding (Node.js equivalent of btoa)
+function btoa(str) {
+  return Buffer.from(str).toString('base64');
+}
+
+// ===== AUTH ROUTES =====
+
+// Generate auth URL for Verida connection
+app.get('/api/auth/url', (req, res) => {
+  try {
+    // Define scopes needed for Telegram data
+    const scopesList = [
+      // API's
+      'api:db-create',
+      'api:db-update',
+      'api:db-query',
+      'api:ds-get-by-id',
+      'api:ds-create',
+      'api:ds-update',
+      'api:ds-query',
+      'api:ds-delete',
+      'api:llm-prompt',
+      'api:llm-agent-prompt',
+      'api:llm-profile-prompt',
+      'api:search-chat-threads',
+      'api:search-ds',
+      'api:search-universal',
+      'api:connections-profiles',
+      'api:connections-status',
+
+      // DATABASES
+      'ds:rwd:social-following',
+      'ds:rwd:social-post',
+      'ds:rwd:social-email',
+      'ds:rwd:favourite',
+      'ds:rwd:file',
+      'ds:rwd:social-chat-group',
+      'ds:rwd:social-chat-message',
+      'ds:rwd:social-calendar',
+      'ds:rwd:social-event'
+    ];
+    // const scopesList = [
+    //   // API's
+    //   'api:db-create',
+    //   'api:db-update',
+    //   'api:db-query',
+    //   'api:ds-get-by-id',
+    //   'api:ds-create',
+    //   'api:ds-update',
+    //   'api:ds-query',
+    //   'api:ds-delete',
+    //   'api:llm-prompt',
+    //   'api:llm-agent-prompt',
+    //   'api:llm-profile-prompt',
+    //   'api:search-chat-threads',
+    //   'api:search-ds',
+    //   'api:search-universal',
+    //   'api:connections-profiles',
+    //   'api:connections-status',
+
+    //   // DATABASES
+    //   'ds:r:social-following',
+    //   'ds:rw:social-following',
+    //   'ds:rwd:social-following',
+    //   'ds:r:social-post',
+    //   'ds:rw:social-post',
+    //   'ds:rwd:social-post',
+    //   'ds:r:social-email',
+    //   'ds:rw:social-email',
+    //   'ds:rwd:social-email',
+    //   'ds:r:favourite',
+    //   'ds:rw:favourite',
+    //   'ds:rwd:favourite',
+    //   'ds:r:file',
+    //   'ds:rw:file',
+    //   'ds:rwd:file',
+    //   'ds:r:social-chat-group',
+    //   'ds:rw:social-chat-group',
+    //   'ds:rwd:social-chat-group',
+    //   'ds:r:social-chat-message',
+    //   'ds:rw:social-chat-message',
+    //   'ds:rwd:social-chat-message',
+    //   'ds:r:social-calendar',
+    //   'ds:rw:social-calendar',
+    //   'ds:rwd:social-calendar',
+    //   'ds:r:social-event',
+    //   'ds:rw:social-event',
+    //   'ds:rwd:social-event'
+    // ];
+    
+    // Generate the auth URL using the same format as the provided URL
+    const redirectUrl = process.env.APP_REDIRECT_URL;
+    // const appDID = 'did:vda:mainnet:0x87AE6A302aBf187298FC1Fa02A48cFD9EAd2818D';
+    const appDID = 'did:vda:polpos:0x4B1e1B8868c0ce3Cacb0866caEeDd885FcA9Cd23';
+    
+    // Construct URL with multiple scope parameters
+    let authUrl = 'https://app.verida.ai/auth?';
+    
+    // Add each scope individually
+    scopesList.forEach(scope => {
+      authUrl += `scopes=${encodeURIComponent(scope)}&`;
+    });
+    
+    // Add redirect URL and appDID
+    authUrl += `redirectUrl=${encodeURIComponent(redirectUrl)}&appDID=${appDID}`;
+    
+    console.log('Generated auth URL:', authUrl);
+    res.json({ success: true, authUrl });
+  } catch (error) {
+    console.error('Error generating auth URL:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Handle callback with auth token
+app.get('/auth/callback', (req, res) => {
+  try {
+    const { auth_token } = req.query;
+    
+    if (!auth_token) {
+      return res.status(400).json({ success: false, error: 'No auth token provided' });
+    }
+    
+    // Store token (in a real app, associate with user session/ID)
+    const userId = 'user-' + Date.now();
+    userTokens[userId] = auth_token;
+    console.log('Stored auth token for user:', userId);
+    
+    // Redirect to frontend with success
+    res.redirect(`/?status=success&userId=${userId}`);
+  } catch (error) {
+    console.error('Error processing auth callback:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ===== TELEGRAM DATA ROUTES =====
+
+// Get Telegram groups
+app.get('/api/telegram/groups', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const authToken = userTokens[userId];
+    
+    if (!authToken) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+    
+    // Use the correct schema URL and encode it in base64
+    const schemaUrl = 'https://common.schemas.verida.io/social/chat/group/v0.1.0/schema.json';
+    const schemaUrlEncoded = btoa(schemaUrl);
+    
+    console.log('Making request to:', `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`);
+    
+    // Make request to Verida API with POST to ds/query
+    const response = await axios({
+      method: 'POST',
+      url: `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`,
+      data: {
+        query: {
+          sourceApplication: "https://telegram.com"
+        },
+        options: {
+          sort: [{ _id: "desc" }],
+          limit: 100000
+          
+          
+        }
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    
+    // Log the response for debugging
+    console.log('API Response:', JSON.stringify(response.data, null, 2));
+    
+    // Check if response.data exists and has the expected structure
+    const groups = response.data && response.data.items ? response.data.items : [];
+    console.log(`Fetched ${groups.length} Telegram groups`);
+    
+    res.json({ 
+      success: true, 
+      count: groups.length,
+      groups: groups,
+      responseData: response.data // Include the full response for debugging
+    });
+  } catch (error) {
+    console.error('Error fetching Telegram groups:', error);
+    
+    // Log more details if it's an Axios error
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
+    
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get Telegram messages
+app.get('/api/telegram/messages', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const authToken = userTokens[userId];
+    
+    if (!authToken) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+    
+    // Use the correct schema URL and encode it in base64
+    const schemaUrl = 'https://common.schemas.verida.io/social/chat/message/v0.1.0/schema.json';
+    const schemaUrlEncoded = btoa(schemaUrl);
+    
+    console.log('Making request to:', `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`);
+    
+    // Make request to Verida API with POST to ds/query
+    const response = await axios({
+      method: 'POST',
+      url: `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`,
+      data: {
+        query: {
+          sourceApplication: "https://telegram.com"
+        },
+        options: {
+          sort: [{ _id: "desc" }],
+          limit: 100000
+        }
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    
+    // Log the response for debugging
+    console.log('API Response:', JSON.stringify(response.data, null, 2));
+    
+    // Check if response.data exists and has the expected structure
+    const messages = response.data && response.data.items ? response.data.items : [];
+    console.log(`Fetched ${messages.length} Telegram messages`);
+    
+    res.json({ 
+      success: true, 
+      count: messages.length,
+      messages: messages,
+      responseData: response.data // Include the full response for debugging
+    });
+  } catch (error) {
+    console.error('Error fetching Telegram messages:', error);
+    
+    // Log more details if it's an Axios error
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
+    
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get keyword stats for messages (counts for specified keywords)
+app.get('/api/telegram/stats', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const authToken = userTokens[userId];
+    
+    if (!authToken) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+    
+    // Get counts for groups and messages using the dedicated count endpoint
+    const groupSchemaUrl = 'https://common.schemas.verida.io/social/chat/group/v0.1.0/schema.json';
+    const messageSchemaUrl = 'https://common.schemas.verida.io/social/chat/message/v0.1.0/schema.json';
+    
+    const groupCount = await getDatastoreCount(authToken, groupSchemaUrl);
+    
+    // Get all messages to analyze keywords
+    const schemaUrl = 'https://common.schemas.verida.io/social/chat/message/v0.1.0/schema.json';
+    const schemaUrlEncoded = btoa(schemaUrl);
+    
+    console.log('Making message request to:', `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`);
+    
+    const response = await axios({
+      method: 'POST',
+      url: `${process.env.API_ENDPOINT}/ds/query/${schemaUrlEncoded}`,
+      data: {
+        query: {
+          sourceApplication: "https://telegram.com"
+        },
+        options: {
+          sort: [{ _id: "desc" }],
+          limit: 200
+        }
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    
+    // Log the response for debugging
+    console.log('API Messages Response:', JSON.stringify(response.data, null, 2));
+    
+    // Check if response.data exists and has the expected structure
+    const messages = response.data && response.data.items ? response.data.items : [];
+    
+    // Count keywords
+    const keywords = ['cluster', 'protocol', 'ai', 'defi', 'crypto', 'web3'];
+    const keywordCounts = {};
+    
+    keywords.forEach(keyword => {
+      const lowercaseKeyword = keyword.toLowerCase();
+      keywordCounts[keyword] = messages.filter(msg => {
+        const messageText = msg.messageText || '';
+        return messageText.toLowerCase().includes(lowercaseKeyword);
+      }).length;
+    });
+    
+    // Get the message count from the count endpoint for accuracy
+    const messageCount = await getDatastoreCount(authToken, messageSchemaUrl);
+    
+    res.json({
+      success: true,
+      stats: {
+        groups: {
+          count: groupCount
+        },
+        messages: {
+          count: messageCount,
+          keywordCounts
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching Telegram stats:', error);
+    
+    // Log more details if it's an Axios error
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
+    
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Function to get count from a datastore
+async function getDatastoreCount(authToken, schemaUrl) {
+  try {
+    const schemaUrlEncoded = btoa(schemaUrl);
+    console.log(`Making count request to: ${process.env.API_ENDPOINT}/ds/count/${schemaUrlEncoded}`);
+    
+    const response = await axios({
+      method: 'POST',
+      url: `${process.env.API_ENDPOINT}/ds/count/${schemaUrlEncoded}`,
+      data: {
+        query: {
+          sourceApplication: "https://telegram.com"
+        }
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    
+    console.log('Count API Response:', JSON.stringify(response.data, null, 2));
+    return response.data && response.data.count ? response.data.count : 0;
+  } catch (error) {
+    console.error(`Error getting count for ${schemaUrl}:`, error);
+    return 0;
+  }
+}
+
+// Get Telegram stats using the count endpoint
+app.get('/api/telegram/count', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const authToken = userTokens[userId];
+    
+    if (!authToken) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+    
+    // Get counts for groups and messages using the dedicated count endpoint
+    const groupSchemaUrl = 'https://common.schemas.verida.io/social/chat/group/v0.1.0/schema.json';
+    const messageSchemaUrl = 'https://common.schemas.verida.io/social/chat/message/v0.1.0/schema.json';
+    
+    const groupCount = await getDatastoreCount(authToken, groupSchemaUrl);
+    const messageCount = await getDatastoreCount(authToken, messageSchemaUrl);
+    
+    res.json({
+      success: true,
+      counts: {
+        groups: groupCount,
+        messages: messageCount
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching Telegram counts:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Using API endpoint: ${process.env.API_ENDPOINT}`);
+}); 

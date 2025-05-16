@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,7 +10,8 @@ import { entryPointABI } from '@/contract/web3';
 import { useAccount, useReadContract } from 'wagmi';
 
 interface Hospital {
-  // id: string;
+  [x: string]: string | number | boolean | string[];
+  id: string;
   name: string;
   location: string;
   hospitalAddress: string;
@@ -17,7 +19,7 @@ interface Hospital {
   contact: string;
   about: string;
   witnessHash: string;
-  // rating: number;
+  rating: number;
   specialties: string[];
   imageUrl: string;
   isFavorite: boolean;
