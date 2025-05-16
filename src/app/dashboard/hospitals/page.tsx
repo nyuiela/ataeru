@@ -25,8 +25,14 @@ interface Hospital {
   verified: boolean;
 }
 
+interface HospitalList extends Hospital {
+  id: string;
+  rating: number;
+  specialties: [];
+}
+
 export default function HospitalsPage() {
-  const [hospitals, setHospitals] = useState<Hospital[]>([]);
+  const [hospitals, setHospitals] = useState<HospitalList[]>([]);
   const [favoriteOnly, setFavoriteOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [specialty, setSpecialty] = useState<string>('');
@@ -40,13 +46,15 @@ export default function HospitalsPage() {
     args: [],
   });
 
+
+
   console.log(hospitalList);
 
   useEffect(() => {
     // In a real app, you would fetch the list of hospitals from your backend
     // For now, we'll use mock data
     if (hospitalList) {
-      setHospitals((hospitalList as any).map((hospital: Hospital) => ({
+      setHospitals((hospitalList as HospitalList[]).map((hospital: HospitalList) => ({
         ...hospital,
         id: hospital.hospitalAddress,
         reviews: 0,
@@ -137,7 +145,7 @@ export default function HospitalsPage() {
     }
 
     // Filter by specialty
-    if (specialty && !hospital.specialties.some(s => s.toLowerCase() === specialty.toLowerCase())) {
+    if (specialty && !hospital.specialties.some((s: string) => s.toLowerCase() === specialty.toLowerCase())) {
       return false;
     }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import { Config, useAccount, useReadContract } from 'wagmi';
 import { entryPointABI } from '@/contract/web3';
 import { entryPointAddress } from '@/contract/web3';
 
@@ -13,6 +13,7 @@ interface UserProfile {
   address: string;
   city: string;
   country: string;
+  about: string;
   medicalInfo: {
     bloodType: string;
     allergies: string;
@@ -27,7 +28,7 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const { address } = useAccount();
-  const [profile, setProfile] = useState<UserProfile>({
+  const [profile, setProfile] = useState<Partial<UserProfile>>({
     name: '',
     email: '',
     phone: '',
@@ -35,6 +36,7 @@ export default function ProfilePage() {
     address: '',
     city: '',
     country: '',
+    about: '',
     medicalInfo: {
       bloodType: '',
       allergies: '',
@@ -49,7 +51,7 @@ export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState<'personal' | 'medical' | 'sharing'>('personal');
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { data: userInfo } = useReadContract({
+  const { data: userInfo } = useReadContract<typeof entryPointABI, 'getUserInfo', [], Config, { name: string; email: string; contact: string; location: string; about: string }>({
     address: entryPointAddress as `0x${string}`,
     account: address,
     abi: entryPointABI,
@@ -63,12 +65,11 @@ export default function ProfilePage() {
       name: userInfo?.name as string,
       email: userInfo?.email as string,
       phone: userInfo?.contact as string,
-      // dateOfBirth: userInfo.dateOfBirth,
+      dateOfBirth: 'classified',
       address: address as string,
       city: userInfo?.location as string,
       about: userInfo?.about as string,
-      // medicalInfo: userInfo.medicalInfo,
-      // dataSharing: userInfo.dataSharing,
+
     });
   }, [userInfo, address]);
 

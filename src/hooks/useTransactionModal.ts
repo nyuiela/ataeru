@@ -1,11 +1,13 @@
 "use client"
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
+import { Abi } from 'viem';
+import { TransactionReceipt } from 'viem';
 
 interface UseTransactionModalProps {
   contractAddress: string;
-  abi: any[];
-  onSuccess?: (receipt: any) => void;
+  abi: Abi;
+  onSuccess?: (receipt: TransactionReceipt) => void;
   onError?: (error: Error) => void;
 }
 
@@ -19,7 +21,7 @@ export function useTransactionModal({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [functionName, setFunctionName] = useState('');
-  const [args, setArgs] = useState<any[]>([]);
+  const [args, setArgs] = useState<unknown[]>([]);
   const { address } = useAccount();
 
   const openModal = ({
@@ -31,7 +33,7 @@ export function useTransactionModal({
     title: string;
     description?: string;
     functionName: string;
-    args?: any[];
+    args?: unknown[];
   }) => {
     if (!address) {
       // You might want to trigger wallet connection here

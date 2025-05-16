@@ -5,11 +5,18 @@ interface ContractButtonProps {
   contractAddress: string;
   abi: any;
   functionName: string;
-  args: any[];
+  args: any;
   buttonText: string;
   title: string;
   description: string;
-  onBeforeMint?: () => Promise<any>;
+  onBeforeMint?: () => Promise<
+    // {
+    // name: string;
+    // description: string;
+    // type: string;
+    // attributes: unknown[];
+    // }
+    any>;
   disabled?: boolean;
 }
 
@@ -26,6 +33,7 @@ export default function ContractButton({
 }: ContractButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentArgs, setCurrentArgs] = useState<unknown[]>(args);
 
   const handleClick = async () => {
     try {
@@ -34,7 +42,7 @@ export default function ContractButton({
         const result = await onBeforeMint();
         // Update args with the result if needed
         if (result) {
-          args = [result.name, result.description, result.type, result.attributes];
+          setCurrentArgs([result.name, result.description, result.type, result.attributes]);
         }
       }
       setIsOpen(true);
@@ -61,7 +69,7 @@ export default function ContractButton({
         contractAddress={contractAddress}
         abi={abi}
         functionName={functionName}
-        args={args}
+        args={currentArgs}
         title={title}
         description={description}
       />
