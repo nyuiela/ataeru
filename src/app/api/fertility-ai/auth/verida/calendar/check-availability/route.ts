@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { withSessionRoute } from '@/lib/verida-session';
@@ -27,18 +25,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Extract query parameters
     const { startDate, endDate, userId } = req.query;
-    
+
     if (!startDate || !endDate) {
       return res.status(400).json({
         success: false,
         error: 'Missing required parameters: startDate, endDate'
       });
     }
-    
+
     // Encode schema URL in base64
     const schemaUrl = 'https://common.schemas.verida.io/social/event/v0.1.0/schema.json';
     const schemaUrlEncoded = Buffer.from(schemaUrl).toString('base64');
-    
+
     // Fetch existing events in date range
     const response = await axios({
       method: 'POST',
@@ -51,10 +49,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             // Events that end within the range
             { endDate: { $gte: startDate, $lte: endDate } },
             // Events that span the entire range
-            { $and: [
-              { startDate: { $lte: startDate } },
-              { endDate: { $gte: endDate } }
-            ]}
+            {
+              $and: [
+                { startDate: { $lte: startDate } },
+                { endDate: { $gte: endDate } }
+              ]
+            }
           ]
         },
         options: {
@@ -67,19 +67,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         'Authorization': `Bearer ${veridaToken}`
       }
     });
-    
+
     const existingEvents = response.data.items || [];
-    
+
     // Generate time slots (e.g., hourly slots from 9am to 5pm)
     const startDateObj = new Date(startDate as string);
     const endDateObj = new Date(endDate as string);
-    
+
     const slots: Array<{
       start: string;
       end: string;
       available: boolean;
     }> = [];
-    
+
     // Loop through each day in the date range
     const currentDate = new Date(startDateObj);
     while (currentDate <= endDateObj) {
@@ -88,43 +88,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         // Generate slots for this day (9am-5pm)
         const dayStart = new Date(currentDate);
         dayStart.setHours(9, 0, 0, 0);
-        
+
         const dayEnd = new Date(currentDate);
         dayEnd.setHours(17, 0, 0, 0);
-        
+
         // Create hourly slots
         let slotStart = new Date(dayStart);
         while (slotStart < dayEnd) {
           const slotEnd = new Date(slotStart);
           slotEnd.setHours(slotStart.getHours() + 1);
-          
+
           // Check if this slot overlaps with any existing events
           const isOverlapping = existingEvents.some((event: any) => {
             const eventStart = new Date(event.startDate);
             const eventEnd = new Date(event.endDate);
-            
+
             return (
               (slotStart >= eventStart && slotStart < eventEnd) ||
               (slotEnd > eventStart && slotEnd <= eventEnd) ||
               (slotStart <= eventStart && slotEnd >= eventEnd)
             );
           });
-          
+
           slots.push({
             start: slotStart.toISOString(),
             end: slotEnd.toISOString(),
             available: !isOverlapping
           });
-          
+
           // Move to next slot
           slotStart = new Date(slotEnd);
         }
       }
-      
+
       // Move to next day
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
+
     // Return available slots to client
     return res.status(200).json({
       success: true,

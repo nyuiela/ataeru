@@ -128,7 +128,7 @@ export class InviteService {
     // Process each search result
     searchResults.items.forEach((result: SearchResult) => {
       const content = result.content || result.text || result.message || '';
-      
+
       // Extract preferred times (morning, afternoon, evening, specific hours)
       const timeRegex = /prefer(red)?\s+(morning|afternoon|evening|night|weekends|weekdays|[0-9]{1,2}(am|pm))/gi;
       const timeMatches = content.match(timeRegex);
@@ -211,7 +211,7 @@ export class InviteService {
     invitations: Array<{ donorId: string; invitationId: string; content: string }>;
   }> {
     try {
-      const results = [];
+      const results: { donorId: string; invitationId: string; content: string }[] = [];
       const hospitalInfo = await this.getHospitalInfo(request.hospitalId);
 
       for (const donorId of request.donorIds) {
@@ -302,7 +302,7 @@ export class InviteService {
 
       // Get donor's email from Verida
       const donorProfiles = await this.veridaService.getConnectionProfiles();
-      
+
       const donorEmail = this.extractEmailFromProfiles(donorProfiles);
 
       if (!donorEmail) {
@@ -329,12 +329,12 @@ export class InviteService {
 
   private extractEmailFromProfiles(profiles: VeridaProfiles): string | null {
     if (!profiles?.profiles) return null;
-    
+
     for (const profileKey in profiles.profiles) {
       const profile = profiles.profiles[profileKey];
       if (profile.email) return profile.email;
     }
-    
+
     return null;
   }
 }

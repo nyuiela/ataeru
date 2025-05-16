@@ -18,7 +18,7 @@ interface ContractButtonProps {
     // }
     any>;
   disabled?: boolean;
-  value: string;
+  // value: string;
 }
 
 export default function ContractButton({
@@ -29,7 +29,6 @@ export default function ContractButton({
   buttonText,
   title,
   description,
-  value,
   onBeforeMint,
   disabled = false
 }: ContractButtonProps) {

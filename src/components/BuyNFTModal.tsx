@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import ContractButton from './contractButton';
 import { contractAddresses, marketplaceABI } from '@/contract/web3';
@@ -83,7 +82,7 @@ export default function BuyNFTModal({ isOpen, onClose, nftId, price, nftDetails 
             title="Purchase NFT"
             description="Complete the purchase of this NFT"
             onBeforeMint={handleBuy}
-            value={price}
+          // value={price}
           />
         </div>
       </div>

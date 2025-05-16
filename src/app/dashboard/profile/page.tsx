@@ -48,6 +48,7 @@ export default function ProfilePage() {
     city: '',
     country: '',
     about: '',
+
     medicalInfo: {
       bloodType: '',
       allergies: '',
@@ -62,6 +63,7 @@ export default function ProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeSection, setActiveSection] = useState('personal');
   const { data: userInfo } = useReadContract<typeof entryPointABI, 'getUserInfo', [], Config, { name: string; email: string; contact: string; location: string; about: string }>({
     address: entryPointAddress as `0x${string}`,
     account: address,

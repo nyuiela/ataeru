@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -7,7 +6,7 @@ import { TransactionReceipt } from 'viem';
 
 interface UseTransactionModalProps {
   contractAddress: string;
-  abi: Abi;
+  abi: any;
   onSuccess?: (receipt: TransactionReceipt) => void;
   onError?: (error: Error) => void;
 }

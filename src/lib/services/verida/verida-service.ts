@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
 interface EventFilter {
@@ -80,7 +78,7 @@ export class VeridaService {
       // Then check session API
       const response = await fetch('/api/fertility-ai/auth/verida/token');
       const data = await response.json();
-      
+
       if (data.success && data.token) {
         this.authToken = data.token;
         // Also store in localStorage
@@ -103,10 +101,10 @@ export class VeridaService {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      
+
       const data = await response.json();
       if (!data.success) throw new Error(data.error);
-      
+
       return data.authUrl;
     } catch (error) {
       console.error('Error generating auth URL:', error);
@@ -124,7 +122,7 @@ export class VeridaService {
 
     const schemaUrl = 'https://common.schemas.verida.io/social/calendar/v0.1.0/schema.json';
     const schemaUrlEncoded = this.encodeSchemaUrl(schemaUrl);
-    
+
     try {
       const response = await axios({
         method: 'POST',
@@ -141,7 +139,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error fetching calendar events:', error);
@@ -159,7 +157,7 @@ export class VeridaService {
 
     const schemaUrl = 'https://common.schemas.verida.io/social/event/v0.1.0/schema.json';
     const schemaUrlEncoded = this.encodeSchemaUrl(schemaUrl);
-    
+
     try {
       const response = await axios({
         method: 'POST',
@@ -176,7 +174,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -194,7 +192,7 @@ export class VeridaService {
 
     const schemaUrl = 'https://common.schemas.verida.io/social/event/v0.1.0/schema.json';
     const schemaUrlEncoded = this.encodeSchemaUrl(schemaUrl);
-    
+
     try {
       const response = await axios({
         method: 'POST',
@@ -210,7 +208,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error creating event:', error);
@@ -227,10 +225,10 @@ export class VeridaService {
     }
 
     try {
-      const url = providerId 
+      const url = providerId
         ? `${this.baseUrl}/connections/profiles?providerId=${providerId}`
         : `${this.baseUrl}/connections/profiles`;
-        
+
       const response = await axios({
         method: 'GET',
         url,
@@ -238,7 +236,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error fetching connection profiles:', error);
@@ -255,10 +253,10 @@ export class VeridaService {
     }
 
     try {
-      const url = providerId 
+      const url = providerId
         ? `${this.baseUrl}/connections/status?providerId=${providerId}`
         : `${this.baseUrl}/connections/status`;
-        
+
       const response = await axios({
         method: 'GET',
         url,
@@ -266,7 +264,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error fetching connection status:', error);
@@ -298,7 +296,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error sending LLM prompt:', error);
@@ -330,7 +328,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error sending LLM agent prompt:', error);
@@ -363,7 +361,7 @@ export class VeridaService {
           'Authorization': `Bearer ${this.authToken}`
         }
       });
-      
+
       return response.data;
     } catch (error) {
       console.error('Error performing universal search:', error);

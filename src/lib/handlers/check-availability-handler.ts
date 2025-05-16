@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
@@ -17,7 +15,7 @@ export async function checkAvailabilityHandler(
   try {
     // Get token from cookie
     const veridaToken = (await cookies()).get('verida_token')?.value;
-    
+
     if (!veridaToken) {
       return NextResponse.json(
         {
@@ -101,21 +99,21 @@ function generateTimeSlots(startDate: string, endDate: string, existingEvents: a
 
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
-  
+
   const currentDate = new Date(startDateObj);
   while (currentDate <= endDateObj) {
     if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
       const dayStart = new Date(currentDate);
       dayStart.setHours(9, 0, 0, 0);
-      
+
       const dayEnd = new Date(currentDate);
       dayEnd.setHours(17, 0, 0, 0);
-      
+
       let slotStart = new Date(dayStart);
       while (slotStart < dayEnd) {
         const slotEnd = new Date(slotStart);
         slotEnd.setHours(slotStart.getHours() + 1);
-        
+
         const isOverlapping = existingEvents.some((event: any) => {
           const eventStart = new Date(event.startDate);
           const eventEnd = new Date(event.endDate);
@@ -125,18 +123,18 @@ function generateTimeSlots(startDate: string, endDate: string, existingEvents: a
             (slotStart <= eventStart && slotEnd >= eventEnd)
           );
         });
-        
+
         slots.push({
           start: slotStart.toISOString(),
           end: slotEnd.toISOString(),
           available: !isOverlapping
         });
-        
+
         slotStart = new Date(slotEnd);
       }
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  
+
   return slots;
 }

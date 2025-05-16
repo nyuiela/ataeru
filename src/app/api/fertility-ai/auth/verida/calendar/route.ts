@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest } from 'next/server';
 import { verifyCalendarAccess } from '@/lib/handlers/calendar-verify-handler';
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import VeridaService, { EventData } from "./verida-service";
 
 // Extend VeridaService interfaces to match our needs
@@ -101,7 +100,7 @@ export class BookingService {
     try {
       const response = await fetch('/api/fertility-ai/auth/verida/token');
       const data = await response.json();
-      
+
       if (data.token) {
         this.veridaService.setAuthToken(data.token);
         localStorage.setItem('veridaToken', data.token);
@@ -142,11 +141,11 @@ export class BookingService {
       try {
         // Try to get booked slots from Verida calendar
         const bookedSlots = await this.getBookedSlots(donorId, startDate, endDate);
-        
+
         // Mark slots as unavailable if they overlap with booked slots
         return slots.map(slot => ({
           ...slot,
-          available: !bookedSlots.some(bookedSlot => 
+          available: !bookedSlots.some(bookedSlot =>
             (slot.start >= bookedSlot.start && slot.start < bookedSlot.end) ||
             (slot.end > bookedSlot.start && slot.end <= bookedSlot.end)
           )
@@ -190,38 +189,38 @@ export class BookingService {
   private generatePossibleTimeSlots(startDate: Date, endDate: Date, slotDuration = 60): TimeSlot[] {
     const slots: TimeSlot[] = [];
     const currentDate = new Date(startDate);
-    
+
     while (currentDate < endDate) {
       // Generate slots for business hours (9am-5pm)
       const dayStart = new Date(currentDate);
       dayStart.setHours(9, 0, 0, 0);
-      
+
       const dayEnd = new Date(currentDate);
       dayEnd.setHours(17, 0, 0, 0);
-      
+
       let slotStart = new Date(dayStart);
-      
+
       while (slotStart < dayEnd) {
         const slotEnd = new Date(slotStart);
         slotEnd.setMinutes(slotStart.getMinutes() + slotDuration);
-        
+
         slots.push({
           start: new Date(slotStart),
           end: new Date(slotEnd),
           available: true
         });
-        
+
         slotStart = new Date(slotEnd);
       }
-      
+
       // Move to next day
       currentDate.setDate(currentDate.getDate() + 1);
       currentDate.setHours(0, 0, 0, 0);
     }
-    
+
     return slots;
   }
-  
+
   /**
    * Book an appointment for a donor
    */
@@ -256,7 +255,7 @@ export class BookingService {
       throw new Error('Failed to book appointment');
     }
   }
-  
+
   /**
    * Use AI to suggest optimal booking slots
    */
@@ -264,26 +263,26 @@ export class BookingService {
     try {
       // Get all available slots
       const availableSlots = await this.getAvailableSlots(donorId, startDate, endDate);
-      
+
       if (availableSlots.length === 0) {
         return [];
       }
-      
+
       // Use Verida's LLM agent to suggest optimal slots
       const prompt = `
         I need to find the best time slots for a sperm donation appointment.
         The donor's ID is ${donorId}.
         I have these available time slots: ${JSON.stringify(availableSlots.map(slot => ({
-          start: slot.start.toISOString(),
-          end: slot.end.toISOString()
-        })))}.
+        start: slot.start.toISOString(),
+        end: slot.end.toISOString()
+      })))}.
         
         Based on patterns in the donor's calendar and optimal times for sperm donation,
         what are the top 3 suggested time slots? Return only the time slots in JSON format.
       `;
-      
+
       const aiResponse = await this.veridaService.sendLLMAgentPrompt(prompt);
-      
+
       // Parse the suggested slots
       try {
         const suggestedSlots = JSON.parse(aiResponse.response);
@@ -292,7 +291,7 @@ export class BookingService {
         console.warn('Could not parse AI response:', parseError);
         return availableSlots.slice(0, 3);
       }
-      
+
     } catch (error) {
       console.error('Error suggesting optimal booking slots:', error);
       // Fallback to regular available slots
