@@ -8,7 +8,7 @@ import { useAccount, useReadContract } from 'wagmi';
 import { entryPointABI, entryPointAddress } from '@/contract/web3';
 import { hospitalRequestABI } from '@/contract/web3';
 
-// Add interfaces for donor request data
+
 interface DonorRequest {
   donorType: number;
   rules: string;
