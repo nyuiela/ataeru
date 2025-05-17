@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/contexts/use-auth';
+import ContractButton from './contractButton';
 import { contractAddresses, entryPointABI, entryPointAddress } from '@/contract/web3';
 import web3 from 'web3';
 
-// enum ReceiverType {
-//   SPERMRECEIVER,
-//   EGGRECEIVER,
-//   SURROGATERECEIVER
-// }
+
+export enum ReceiverType {
+  SPERMRECEIVER,
+  EGGRECEIVER,
+  SURROGATERECEIVER
+}
 
 interface RegistrationFormData {
   name: string;
@@ -27,8 +30,9 @@ interface RegistrationFormData {
 }
 
 export default function RegistrationModal() {
-  const { isRegistrationModalOpen, closeRegistrationModal, completeOnboarding } = useAuth();
+  const { isRegistrationModalOpen, closeRegistrationModal } = useAuth();
   const [selectedType, setSelectedType] = useState<'user' | 'hospital' | null>(null);
+  const [registrationId, setRegistrationId] = useState<string | null>(null);
   const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
@@ -42,29 +46,6 @@ export default function RegistrationModal() {
     documents: [] as File[],
   });
   const account = useAccount();
-  // const {
-  //   openModal,
-  //   modalProps,
-  // } = useTransactionModal({
-  //   contractAddress: process.env.NEXT_PUBLIC_ENTRY_POINT_ADDRESS || '',
-  //   abi: entryPointABI,
-  //   onSuccess: (receipt) => {
-  //     console.log('Registration successful:', receipt);
-  //     // The bytes32 ID will be in the logs of the transaction receipt
-  //     const event = receipt.logs[0];
-  //     console.log("Event: ", event);
-  //     if (event) {
-  //       const id = event.data; // This will be the bytes32 ID
-  //       setRegistrationId(id);
-  //       console.log('Registration ID:', id);
-  //     }
-  //     setSelectedType(selectedType);
-  //   },
-  //   onError: (error) => {
-  //     console.error('Registration failed:', error);
-  //     // Handle error (e.g., show error notification)
-  //   },
-  // });
 
 
   const isRegistered = useReadContract({
@@ -72,18 +53,18 @@ export default function RegistrationModal() {
     address: entryPointAddress as `0x${string}`,
     account: account.address,
     functionName: 'isregistered',
-  });
-
+  })
   const userInfo = useReadContract({
     abi: entryPointABI,
     address: entryPointAddress as `0x${string}`,
     account: account.address,
-    functionName: 'getUserInfo',
-    args: [],
-  });
-
+    functionName: 'getUsernDonorInfo',
+    args: [account.address],
+  })
+  // const userInfo = fetchUserInfo(account.address as `0x${string}`);
   console.log(userInfo.data);
   console.log(isRegistered.data);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -114,25 +95,25 @@ export default function RegistrationModal() {
   //     }
 
   //     // Prepare arguments based on registration type
-  //     // const args = selectedType === 'user'
-  //     //   ? [
-  //     //     formData.name,
-  //     //     formData.email,
-  //     //     formData.address,
-  //     //     web3.utils.padRight(formData.phone, 16),
-  //     //     formData.about,
-  //     //     web3.utils.padRight(witnessHash, 32),
-  //     //     formData.receiverType
-  //     //   ]
-  //     //   : [
-  //     //     account.address, // _ha: address
-  //     //     formData.name, // _name: string
-  //     //     formData.email, // _email: string
-  //     //     formData.address, // _location: string
-  //     //     formData.about, // _about: string
-  //     //     BigInt(formData.phone), // _contact: uint256
-  //     //     witnessHash // _witnessHash: bytes32
-  //     //   ];
+  //     const args = selectedType === 'user'
+  //       ? [
+  //         formData.name,
+  //         formData.email,
+  //         formData.address,
+  //         web3.utils.padRight(formData.phone, 16),
+  //         formData.about,
+  //         web3.utils.padRight(witnessHash, 32),
+  //         formData.receiverType
+  //       ]
+  //       : [
+  //         account.address, // _ha: address
+  //         formData.name, // _name: string
+  //         formData.email, // _email: string
+  //         formData.address, // _location: string
+  //         formData.about, // _about: string
+  //         BigInt(formData.phone), // _contact: uint256
+  //         witnessHash // _witnessHash: bytes32
+  //       ];
 
   //     // Open transaction modal with appropriate function name
   //     // openModal({
@@ -146,25 +127,11 @@ export default function RegistrationModal() {
   //   }
   // };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Store registration data in localStorage
-    localStorage.setItem('userRegistration', JSON.stringify({
-      type: selectedType,
-      ...formData,
-      timestamp: new Date().toISOString()
-    }));
-
-    // Complete onboarding through context
-    completeOnboarding(selectedType as 'user' | 'hospital');
-    closeRegistrationModal();
-  };
-
   if (!isRegistrationModalOpen) return null;
 
   if (isRegistrationModalOpen && !account.isConnected) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-6 w-full max-w-md text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Please Connect Your Wallet</h2>
           <p className="text-gray-600 mb-6">You need to connect your wallet to proceed with registration.</p>
@@ -181,7 +148,7 @@ export default function RegistrationModal() {
 
   if (!selectedType) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-900">Select Account Type</h2>
@@ -244,142 +211,139 @@ export default function RegistrationModal() {
 
   if (isRegistrationModalOpen) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-hidden">
-        <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl max-h-[90vh] flex flex-col">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">
-                {selectedType === 'user' ? 'User Registration' : 'Hospital Registration'}
-              </h2>
-              <button onClick={closeRegistrationModal} className="text-gray-500 hover:text-gray-700">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">
+              {selectedType === 'user' ? 'User Registration' : 'Hospital Registration'}
+            </h2>
+            <button onClick={closeRegistrationModal} className="text-gray-500 hover:text-gray-700">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
-          <div className="overflow-y-auto flex-1 p-6">
-            <form id="registrationForm" onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            // handleRegister(formData);
+          }} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {selectedType === 'user' ? 'Full Name' : 'Facility Name'}
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                placeholder={selectedType === 'user' ? "Enter your full name" : "Enter facility name"}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                value={formData.email}
+                placeholder="Enter email address"
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Witness Hash</label>
+              <input
+                type="text"
+                value={formData.witnessHash}
+                placeholder="witnesshash"
+                onChange={(e) => setFormData(prev => ({ ...prev, witnessHash: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <input
+                type="tel"
+                value={formData.phone}
+                placeholder="Enter phone number"
+                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Type</label>
+              <select
+                value={String(formData.receiverType)}
+                onChange={(e) => setFormData(prev => ({ ...prev, receiverType: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value={0}>Sperm Receiver</option>
+                <option value={1}>Egg Receiver</option>
+                <option value={2}>Surrogate Receiver</option>
+              </select>
+            </div>
+
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+              <textarea
+                value={formData.address}
+                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                placeholder={selectedType === 'user' ? "Enter your address" : "Enter facility address"}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows={3}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
+              <textarea
+                value={formData.about}
+                onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value }))}
+                placeholder={selectedType === 'user' ? "A short desc about yourself" : "Enter facility address"}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows={3}
+                required
+              />
+            </div>
+
+            {selectedType === 'hospital' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {selectedType === 'user' ? 'Full Name' : 'Facility Name'}
+                  {selectedType === 'hospital' ? 'Identity Documents' : 'Hospital Documents'}
                 </label>
                 <input
-                  type="text"
-                  value={formData.name}
-                  placeholder={selectedType === 'user' ? "Enter your full name" : "Enter facility name"}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  accept=".pdf,.jpg,.jpeg,.png"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Upload {selectedType === 'hospital' ? 'license, certifications, permits' : 'ID proof, medical records'}
+                </p>
               </div>
+            )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  placeholder="Enter email address"
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Witness Hash</label>
-                <input
-                  type="text"
-                  value={formData.witnessHash}
-                  placeholder="witnesshash"
-                  onChange={(e) => setFormData(prev => ({ ...prev, witnessHash: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  placeholder="Enter phone number"
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                  maxLength={10}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Type</label>
-                <select
-                  value={String(formData.receiverType)}
-                  onChange={(e) => setFormData(prev => ({ ...prev, receiverType: parseInt(e.target.value) }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                >
-                  <option value={0}>Sperm Receiver</option>
-                  <option value={1}>Egg Receiver</option>
-                  <option value={2}>Surrogate Receiver</option>
-                  <option value={3}>Does Not Apply</option>
-                </select>
-              </div>
-
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <textarea
-                  value={formData.address}
-                  onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder={selectedType === 'user' ? "Enter your address" : "Enter facility address"}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                  rows={3}
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">About</label>
-                <textarea
-                  value={formData.about}
-                  onChange={(e) => setFormData(prev => ({ ...prev, about: e.target.value }))}
-                  placeholder={selectedType === 'user' ? "A short desc about yourself" : "Enter facility address"}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                  rows={3}
-                  required
-                />
-              </div>
-
-              {selectedType === 'hospital' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {selectedType === 'hospital' ? 'Identity Documents' : 'Hospital Documents'}
-                  </label>
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleFileChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Upload {selectedType === 'hospital' ? 'license, certifications, permits' : 'ID proof, medical records'}
-                  </p>
-                </div>
-              )}
-            </form>
-          </div>
-
-          <div className="border-t border-gray-200 p-6">
             <div className="flex gap-4">
-              <button
-                type="submit"
-                form="registrationForm" // This tells the button which form to submit
-                onClick={handleSubmit}  // Add this onClick handler
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Register
-              </button>
+              <ContractButton
+                contractAddress={contractAddresses.entryPointAddress as string}
+                abi={entryPointABI}
+                functionName={selectedType === 'user' ? 'registerUser' : 'registerHospital'}
+                // args={[formData.name, formData.email, formData.address, web3.utils.padRight(`${formData.phone}`, 16), formData.about, web3.utils.padRight(`${formData.witnessHash}`, 32), formData.receiverType]}
+                args={selectedType === 'user' ? userArgs : hospitalArgs}
+                buttonText="Register"
+                title="Register as a user or hospital"
+                description="Register as a user or hospital to access fertility services"
+              />
               <button
                 type="button"
                 onClick={() => setSelectedType(null)}
@@ -388,8 +352,9 @@ export default function RegistrationModal() {
                 Back
               </button>
             </div>
-          </div>
+          </form>
         </div>
+
       </div>
     );
   }
