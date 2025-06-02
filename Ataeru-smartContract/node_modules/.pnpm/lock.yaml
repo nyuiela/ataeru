@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      pinata:
+        specifier: ^2.2.2
+        version: 2.2.2
+
+packages:
+
+  pinata@2.2.2:
+    resolution: {integrity: sha512-xIPWyN7xFU/YBBqXlPoMaAQYBNKlP6Zuq0HZ75KituByHzeCqxMdF87YXcZpADxyGcYRQ5JEJn1IBzX909erow==}
+    engines: {node: '>=20'}
+
+snapshots:
+
+  pinata@2.2.2: {}

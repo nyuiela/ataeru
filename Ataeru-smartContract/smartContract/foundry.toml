@@ -1,0 +1,22 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+via_ir = true
+
+
+
+
+remappings=[
+   "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"
+    ]
+
+
+[rpc_endpoints]
+localchain = "${LOCALCHAIN_URL}"
+basechain = "${BASE_URL}"
+
+[etherscan]
+# sidechain = { key = "${SIDECHAIN_KEY}" } 
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
